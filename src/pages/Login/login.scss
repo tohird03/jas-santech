@@ -1,0 +1,95 @@
+.login {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #EFEFEF;
+  height: 100vh;
+  &__ui {
+    width: 30%;
+    height: 100%;
+  }
+  &__ui-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    // background-color: #0880C4;
+
+    height: 100%;
+    width: 700px;
+    border-radius: 50%;
+    position: relative;
+    left: -350px;
+  }
+  &__logo {
+    background-color: #d4a706;
+    display: inline-block;
+    padding-bottom: -10px;
+    margin-bottom: -20px;
+    margin-left: 150px;
+    @media screen and (max-width: 600px) {
+      margin-left: 0;
+    }
+    svg {
+      margin-bottom: -20px;
+      margin-top: -10px;
+      @media screen and (max-width: 600px) {
+        width: 400px !important;
+      }
+    }
+  }
+  &__form-wrapper {
+    display: flex;
+    align-items: center;
+    background-image: url("/public/images/sas-product.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 200px -50px;
+    width: 70%;
+    height: 100%;
+    padding-left: 100px;
+    @media screen and (max-width: 600px) {
+      padding-left: 0;
+      width: 90%;
+      height: auto;
+      background-image: none !important;
+    }
+  }
+  &__form {
+    width: 100%;
+    max-width: 400px;
+  }
+  &__form__submit {
+    margin-top: 10px;
+  }
+  @media screen and (max-width: 600px) {
+    flex-direction: column;
+    padding-top: 150px;
+  }
+}
+
+
+.form__phone-input {
+  padding-left: 44px !important;
+}
+.form__password-input {
+  font-size: 14px;
+  letter-spacing: .01rem;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 12px;
+  margin-left: 0;
+  background: #FFFFFF;
+  border: 1px solid #CACACA;
+  border-radius: 5px;
+  line-height: 25px;
+  height: 35px;
+  outline: none;
+  width: 100%;
+}
+.form__pass-icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  size: 12px;
+}

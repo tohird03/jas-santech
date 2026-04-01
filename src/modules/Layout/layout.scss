@@ -1,0 +1,80 @@
+.layout {
+  height: 100%;
+  background: #f5f5f5;
+
+  &__logo {
+    align-items: center;
+    border-bottom: 1px solid rgb(99, 98, 98);
+    color: #fff !important;
+    display: flex;
+    padding: 0 10px;
+    margin: 0 10px 10px 0;
+    height: 64px;
+    width: 100%;
+
+    &--center {
+      justify-content: center;
+    }
+    &-text {
+      color: white !important;
+      padding-left: 15px;
+      font-size: 20px;
+    }
+  }
+
+  &__menu {
+    overflow-y: auto;
+  }
+
+  &__shadow {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+  }
+}
+
+.site-layout {
+  height: 100vh;
+  margin-left: 0;
+
+  @media screen and (min-width: 1201px) {
+    margin-left: 250px;
+  }
+}
+
+.site-layout__close {
+  @media screen and (min-width: 1201px) {
+    margin-left: 80px;
+  }
+}
+
+.content {
+  background-color: #fff !important;
+}
+
+.ant-layout-sider.ant-layout-sider-dark {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  flex: 0 0 250px;
+  max-width: 250px;
+  min-width: 250px;
+  width: 250px;
+  z-index: 1;
+}
+
+.ant-layout-content.content {
+  @media screen and (max-width: 1200px) {
+    margin-left: 100px;
+  }
+
+  @media screen and (max-width: 800px) {
+    margin-left: 0px;
+  }
+}

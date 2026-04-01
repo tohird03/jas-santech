@@ -1,0 +1,29 @@
+.returned-orders__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.returned-orders__filter {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+.returned-orders__search {
+  width: 250px;
+}
+
+@media only screen and (max-width: 800px) {
+  .returned-orders__head {
+    flex-direction: column;
+  }
+  .returned-orders__filter {
+    display: flex;
+    flex-direction: column;
+    gap: 15px !important;
+    width: 100%;
+  }
+  .returned-orders__search {
+    width: 100%;
+  }
+}

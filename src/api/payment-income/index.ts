@@ -1,0 +1,1 @@
+export {incomePaymentApi} from './payment';

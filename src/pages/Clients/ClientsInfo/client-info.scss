@@ -1,0 +1,29 @@
+.client-info__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.client-info__filter {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+}
+.client-info__search {
+  width: 250px;
+}
+
+@media only screen and (max-width: 800px) {
+  .client-info__head {
+    flex-direction: column;
+  }
+  .client-info__filter {
+    display: flex;
+    flex-direction: column;
+    gap: 15px !important;
+    width: 100%;
+  }
+  .client-info__search {
+    width: 100%;
+  }
+}

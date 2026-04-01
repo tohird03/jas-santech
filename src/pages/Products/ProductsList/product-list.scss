@@ -1,0 +1,33 @@
+.product-list__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.product-list__filter {
+  display: flex;
+  flex-direction: row;
+}
+
+.product-list__search {
+  width: 250px;
+  margin-right: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+  .product-list__head {
+    flex-direction: column;
+  }
+
+  .product-list__filter {
+    display: flex;
+    flex-direction: column;
+    gap: 15px !important;
+    width: 100%;
+  }
+
+  .product-list__search {
+    width: 100%;
+  }
+}

@@ -1,0 +1,1 @@
+export {Deed} from './Deed';

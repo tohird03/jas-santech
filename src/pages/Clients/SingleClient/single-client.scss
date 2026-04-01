@@ -1,0 +1,15 @@
+.single-client {
+  &__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  &__segment {
+    margin-bottom: 30px;
+  }
+  &__title {
+    margin: 0;
+    padding: 0;
+    margin-right: 200px;
+  }
+}

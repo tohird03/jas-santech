@@ -1,0 +1,15 @@
+.exit {
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+}
+
+.logout {
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+
+    &__title {
+        color: rgb(0, 0, 0);
+        font-size: 18px;
+    }
+}

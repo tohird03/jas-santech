@@ -1,0 +1,67 @@
+$small: 500px;
+
+.statistic {
+  &__top-wrapper {
+    display: grid;
+    grid-template-columns: 50% 22% 22%;
+    align-items: center;
+    margin-bottom: 40px;
+    gap: 3%;
+    @media screen and (max-width: $small) {
+      grid-template-columns: auto;
+    }
+  }
+  &__top-heading {
+    margin-bottom: 15px;
+  }
+  &__debts {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 50% 50%;
+    height: 100%;
+    justify-content: center;
+  }
+  &__top-order-card {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 20px;
+    @media screen and (max-width: $small) {
+      grid-template-columns: auto;
+    }
+  }
+  &__top-order-card-calc {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 20px;
+    @media screen and (max-width: $small) {
+      grid-template-columns: auto;
+    }
+  }
+  &__top-card {
+    width: 100%;
+    display: flex;
+    cursor: pointer;
+    align-self: stretch;
+    min-height: 170px;
+    .ant-card-body {
+      width: 100% !important;
+      text-align: center;
+    }
+  }
+  &__top-card-info {
+    font-weight: 600;
+    color: #8f8f8f;
+    height: 30px;
+    line-height: 26px;
+    margin: 0;
+  }
+  &__top-card-value {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: #f18024;
+    margin: 0;
+  }
+  &__top-order-calc {
+    width: 40%;
+  }
+}

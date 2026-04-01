@@ -1,0 +1,31 @@
+.header {
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  &__isclose-true {
+    background-color: red;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-right: 10px;
+  }
+  &__icon {
+    color: #fff;
+    font-size: 20px;
+  }
+
+  &__logout-btn {
+    margin-right: 10px;
+  }
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,47 @@
+.client-report__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.client-report__filter {
+  display: flex;
+  flex-direction: row;
+}
+.client-report__search {
+  width: 250px;
+  margin-right: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+  .client-report__head {
+    flex-direction: column;
+  }
+  .client-report__filter {
+    display: flex;
+    flex-direction: column;
+    gap: 15px !important;
+    width: 100%;
+  }
+  .client-report__search {
+    width: 100%;
+  }
+}
+
+.client__order {
+  background-color: #BFF5C0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.client__payment {
+  background-color: #BEE6FF;
+  text-align: center;
+  font-weight: bold;
+}
+
+.client__returning {
+  background-color: #FFBDBD;
+  text-align: center;
+  font-weight: bold;
+}

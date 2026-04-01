@@ -1,0 +1,1 @@
+export {ClientsPayments} from './Payments';

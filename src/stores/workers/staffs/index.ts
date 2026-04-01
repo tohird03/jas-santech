@@ -1,0 +1,1 @@
+export {staffsStore} from './staffs';

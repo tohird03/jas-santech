@@ -1,0 +1,10 @@
+.single-supplier {
+  &__segment {
+    margin-bottom: 30px;
+  }
+  &__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
