@@ -16,6 +16,7 @@ import 'react-phone-input-2/lib/style.css';
 // @ts-ignore
 import PhoneInput from 'react-phone-input-2';
 import ProductImg from '/public/images/sas-product.jpg';
+import JasImg from '/public/images/jas-logo.jpg';
 
 const cn = classNames.bind(styles);
 
@@ -48,7 +49,7 @@ export const Login = observer(() => {
       {/* <BackgroundAnimate count={20} /> */}
       <section className={cn('login')}>
         <div className={cn('login__logo')}>
-          <svg
+          {/* <svg
             version="1.0"
             xmlns="http://www.w3.org/2000/svg"
             width="600px"
@@ -104,7 +105,8 @@ m-4272 -7 c81 -86 112 -188 82 -268 -20 -50 -84 -113 -150 -145 -42 -20 -53
 c20 28 41 50 45 50 3 0 23 -17 42 -37z"
               />
             </g>
-          </svg>
+          </svg> */}
+          <img src={JasImg} alt="" />
         </div>
         <div style={{backgroundImage: `url(${ProductImg})`}} className={cn('login__form-wrapper')}>
           <Form
