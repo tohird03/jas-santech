@@ -7,7 +7,6 @@ import { addNotification } from '@/utils';
 import { IClientsPayments } from '@/api/payment/types';
 import { clientsPaymentApi } from '@/api/payment';
 import { singleClientStore } from '@/stores/clients';
-import { isShowEditPayments } from '@/utils/isShowEdit';
 import { authStore } from '@/stores/auth';
 
 type Props = {
@@ -37,25 +36,19 @@ export const Action: FC<Props> = observer(({ clientPayment }) => {
     deletePayment(clientPayment?.id);
   };
 
-  const isShowEdit = isShowEditPayments(clientPayment?.createdAt, authStore.isCloseDay);
-
   return (
     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
-      {isShowEdit &&
-        <>
-          <Button onClick={handleEditPayment} type="primary" icon={<EditOutlined />} />
-          <Popconfirm
-            title="To'lovni o'chirish"
-            description="Rostdan ham bu to'lovni o'chirishni xohlaysizmi?"
-            onConfirm={handleDeletePayment}
-            okText="Ha"
-            okButtonProps={{ style: { background: 'red' } }}
-            cancelText="Yo'q"
-          >
-            <Button type="primary" icon={<DeleteOutlined />} danger />
-          </Popconfirm>
-        </>
-      }
+      <Button onClick={handleEditPayment} type="primary" icon={<EditOutlined />} />
+      <Popconfirm
+        title="To'lovni o'chirish"
+        description="Rostdan ham bu to'lovni o'chirishni xohlaysizmi?"
+        onConfirm={handleDeletePayment}
+        okText="Ha"
+        okButtonProps={{ style: { background: 'red' } }}
+        cancelText="Yo'q"
+      >
+        <Button type="primary" icon={<DeleteOutlined />} danger />
+      </Popconfirm>
     </div>
   );
 });

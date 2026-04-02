@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Form, Input, InputNumber, Modal } from 'antd';
+import { Form, Image, Input, InputNumber, Modal, Select, Upload, UploadFile, UploadProps } from 'antd';
 import { addNotification } from '@/utils';
 import { productsListStore } from '@/stores/products';
 import { priceFormat } from '@/utils/priceFormat';
 import { productsApi } from '@/api/product/product';
 import { IAddEditProduct } from '@/api/product/types';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
+import { RcFile } from 'antd/es/upload';
+import { PlusOutlined } from '@ant-design/icons';
+import { UPLOAD_ACCEPT } from '@/constants/img';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [bannerFileList, setBannerFileList] = useState<UploadFile[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
 
   const { mutate: addNewProduct } =
     useMutation({
@@ -40,6 +47,33 @@ export const AddEditModal = observer(() => {
         setLoading(false);
       },
     });
+
+  const handleBeforeUpload = () => false;
+
+  const handleImgChange: UploadProps['onChange'] = ({
+    fileList: newFileList,
+  }) => {
+    setBannerFileList(newFileList);
+  };
+
+  const handlePreview = async (file: UploadFile) => {
+    let src = file.url as string;
+
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file.originFileObj as RcFile);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    setPreviewImage(src);
+    setPreviewOpen(true);
+  };
+
+  const handleCancel = () => {
+    setPreviewOpen(false);
+  };
 
   const handleSubmit = (values: IAddEditProduct) => {
     setLoading(true);
@@ -90,22 +124,46 @@ export const AddEditModal = observer(() => {
         autoComplete="off"
       >
         <Form.Item
+          label="Rasm"
+          name="images"
+        >
+          <Upload
+            maxCount={1}
+            onPreview={handlePreview}
+            beforeUpload={handleBeforeUpload}
+            onChange={handleImgChange}
+            fileList={bannerFileList}
+            listType="picture-card"
+            accept={UPLOAD_ACCEPT}
+          >
+            {bannerFileList.length === 0 && (
+              <div>
+                <PlusOutlined />
+                <div>
+                  Upload
+                </div>
+              </div>
+            )}
+          </Upload>
+          {previewImage && (
+            <Image
+              wrapperStyle={{ display: 'none' }}
+              preview={{
+                visible: previewOpen,
+                onVisibleChange: (visible) => setPreviewOpen(visible),
+                afterOpenChange: (visible) => !visible && setPreviewImage(''),
+              }}
+              src={previewImage}
+            />
+          )}
+        </Form.Item>
+
+        <Form.Item
           label="Mahsulot nomi"
           rules={[{ required: true }]}
           name="name"
         >
           <Input placeholder="Mahsulot nomi" />
-        </Form.Item>
-        <Form.Item
-          label="Mahsulot soni"
-          rules={[{ required: true }]}
-          name="count"
-        >
-          <InputNumber
-            placeholder="Qoldiq mahsulot"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-          />
         </Form.Item>
         <Form.Item
           label="Ogohlantiruvchi qoldiq"
@@ -117,26 +175,41 @@ export const AddEditModal = observer(() => {
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
-        <Form.Item
-          label="Sotish narxi"
-          rules={[{ required: true }]}
-          name="price"
-        >
-          <InputNumber
-            placeholder="Sotish narxi"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-          />
-        </Form.Item>
-        <Form.Item
+        <PriceWithCurrency
+          form={form}
+          valueName="cost"
+          currencyName="costCurrency"
           label="Sotib olingan narxi"
-          rules={[{ required: true }]}
-          name="cost"
+          required
+        />
+
+        <PriceWithCurrency
+          form={form}
+          valueName="wholesalePrice"
+          currencyName="wholesaleCurrency"
+          label="Ulgurji narxi"
+          required
+        />
+
+        <PriceWithCurrency
+          form={form}
+          valueName="price"
+          currencyName="sellCurrency"
+          label="Sotish narxi"
+          required
+        />
+
+        <Form.Item
+          label="Mahsulot haqida ma'lumot"
+          name="description"
         >
-          <InputNumber
-            placeholder="Sotib olingan narxi"
+          <Input.TextArea
+            placeholder="Mahsulot haqida ma'lumot"
             style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
+            rows={4}
+            maxLength={100}
+            showCount
+            autoSize={{ minRows: 2, maxRows: 6 }}
           />
         </Form.Item>
       </Form>

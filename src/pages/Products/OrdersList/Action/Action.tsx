@@ -4,7 +4,7 @@ import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, MoreOutlin
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Dropdown, Menu, Popconfirm, Tooltip } from 'antd';
 import { addNotification } from '@/utils';
-import { IOrder} from '@/api/order/types';
+import { IOrder } from '@/api/order/types';
 import { ordersStore } from '@/stores/products';
 import { ordersApi } from '@/api/order';
 import Item from 'antd/es/list/Item';
@@ -18,7 +18,6 @@ import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { useParams } from 'react-router-dom';
 import { singleClientStore } from '@/stores/clients';
-import { isShowEdit } from '@/utils/isShowEdit';
 import { authStore } from '@/stores/auth';
 
 export const Action: FC<Props> = observer(({ orders }) => {
@@ -34,7 +33,7 @@ export const Action: FC<Props> = observer(({ orders }) => {
         queryClient.invalidateQueries({ queryKey: ['getOrders'] });
 
         if (clientId) {
-          singleClientStore.getSingleClient({id: clientId});
+          singleClientStore.getSingleClient({ id: clientId });
         }
       },
       onError: addNotification,
@@ -92,8 +91,6 @@ export const Action: FC<Props> = observer(({ orders }) => {
   const handleDelete = () => {
     deleteOrder(orders?.id);
   };
-
-  const showEdit = isShowEdit(orders.status, orders.date, authStore.isCloseDay);
 
   const menuSaveOptions = (
     <Menu style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -167,12 +164,9 @@ export const Action: FC<Props> = observer(({ orders }) => {
       <Dropdown placement="bottomRight" overlay={menuSaveOptions} trigger={['click']}>
         <Button icon={<DownloadOutlined />} />
       </Dropdown>
-      {showEdit && (
-        <Dropdown placement="bottomRight" overlay={menuOrderOptions} trigger={['click']}>
-          <Button icon={<MoreOutlined />} />
-        </Dropdown>
-      )
-      }
+      <Dropdown placement="bottomRight" overlay={menuOrderOptions} trigger={['click']}>
+        <Button icon={<MoreOutlined />} />
+      </Dropdown>
     </div>
   );
 });

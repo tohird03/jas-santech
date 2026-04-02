@@ -43,6 +43,10 @@ export const SingleProduct = observer(() => {
           setLoading(false);
         });
     }
+
+    return () => {
+      productsListStore.setSingleProduct(null);
+    };
   }, [productId, productsListStore.startDate, productsListStore.endDate]);
 
   return (
