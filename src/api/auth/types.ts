@@ -8,3 +8,17 @@ export interface ILoginResponse {
     refreshToken: string;
   }
 }
+
+export interface ICurrency {
+  id: string;
+  name: string;
+  symbol: 'UZS' | 'USD';
+  exchangeRate: number;
+}
+
+export interface ICurrencyOptions {
+  value: string;
+  label: string;
+  code: string;
+  rate: number;
+}

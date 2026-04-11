@@ -72,7 +72,7 @@
   }
   &__add-products-form {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
     gap: 10px;
     align-items: center;
     width: 90%;
@@ -85,7 +85,7 @@
   }
   &__add-products-form-info {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
     gap: 10px;
     padding-top: 50px;
     align-items: center;

@@ -23,13 +23,14 @@ export interface IAddStaff {
 
 export interface IUpdateStaff {
   id?: string;
-  fullname: string;
+  fullname?: string;
   phone?: string;
-  password: string;
+  password?: string;
   actionsToConnect: string[];
   actionsToDisconnect: string[];
-  pagesToConnect: EPageAccess[];
-  pagesToDisconnect: EPageAccess[];
+  pagesToConnect?: EPageAccess[];
+  pagesToDisconnect?: EPageAccess[];
+  currencyId?: string;
 }
 
 export enum EPageAccess {

@@ -33,14 +33,14 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     dataIndex: 'cost',
     title: 'Sotib olingan narxi',
     align: 'center',
-    render: (value, record) => record?.cost,
+    render: (value, record) => <span>{record?.prices?.cost?.price} {record?.prices?.cost?.currency?.symbol}</span>,
   },
   {
     key: 'selling_price',
     dataIndex: 'selling_price',
     title: 'Sotilish narxi',
     align: 'center',
-    render: (value, record) => record?.price,
+    render: (value, record) => <span>{record?.prices?.selling?.price} {record?.prices?.selling?.currency?.symbol}</span>,
   },
   {
     key: 'totalPrice',
@@ -48,9 +48,9 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Umumiy qiymati',
     align: 'center',
     render: (value, record) => {
-      const totalSellingPrice = record?.cost * record?.count;
+      const totalSellingPrice = record?.prices?.cost?.price * record?.count;
 
-      return priceFormat(totalSellingPrice);
+      return <span>{priceFormat(totalSellingPrice)} {record?.prices?.cost?.currency?.symbol}</span>;
     },
   },
   {

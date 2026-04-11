@@ -8,6 +8,8 @@ export enum Endpoints {
   // SETTINGS
   SignIn = '/auth/sign-in',
   UserProfile = '/auth/profile',
+  CurrencyDefaultChange = '/common/staff/currency',
+  CurrencyManyGet = '/currency/many',
 
   // CLIENTS
   ClientsMany = '/client/many',
@@ -40,7 +42,7 @@ export enum Endpoints {
 
   SellingMany = '/selling/many',
   SellingOne = '/selling/one',
-  AddEditProductToSelling = '/product-mv/selling/one',
+  AddEditProductToSelling = '/selling-product-mv/one',
 
   IncomeMany = '/arrival/many',
   IncomeOne = '/arrival/one',

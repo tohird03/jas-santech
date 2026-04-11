@@ -7,3 +7,16 @@ export interface IMenuItems {
   label: string;
   parent?: IMenuItems['key'];
 }
+
+export enum PaymentTypes {
+  CASH = 'cash',
+  UZCARD = 'uzcard',
+  HUMO = 'humo',
+  TRANSFER = 'transfer',
+  CLICK = 'click',
+  PAYME = 'payme',
+  VISA = 'visa',
+  UZUM = 'uzum',
+  OTHER = 'other',
+}
+

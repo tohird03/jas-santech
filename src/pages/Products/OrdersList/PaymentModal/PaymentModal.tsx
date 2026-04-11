@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, InputNumber, Modal, Select, message} from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Form, Input, InputNumber, Modal, Select, message } from 'antd';
 import { observer } from 'mobx-react';
 import { ordersStore } from '@/stores/products';
 import { priceFormat } from '@/utils/priceFormat';
 import { IPaymentType } from '@/api/types';
 import { addNotification } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { singleClientStore } from '@/stores/clients';
 import { useParams } from 'react-router-dom';
 import { ordersApi } from '@/api/order';
 import { authStore } from '@/stores/auth';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
+import { PaymentTypeOptions, currencyTagUi } from '@/constants/payment';
+import { PaymentTypes } from '@/constants/types';
+import { calculateSettlement } from '../utils';
 
 export const PaymentModal = observer(() => {
   const [form] = Form.useForm();
@@ -18,11 +22,14 @@ export const PaymentModal = observer(() => {
   const [totalPrice, setTotalPrice] = useState(0);
   const { clientId } = useParams();
   const [loadingPayment, setLoadingPayment] = useState(false);
-  const {isCloseDay} = authStore;
+  const [prevCurrencies, setPrevCurrencies] = useState<Record<number, string>>({});
+  const paymentsForm = Form.useWatch('payments', form) || [];
 
-  const today = new Date().toISOString().split('T')[0];
-  const checkDate = ordersStore.order?.date?.split('T')[0]?.split(' ')[0];
-  const isToday = checkDate === today && !isCloseDay;
+  const { data: currencyMany } = useQuery({
+    queryKey: ['getCurrencyMany'],
+    queryFn: () =>
+      authStore.getCurrencyMany(),
+  });
 
   const handleModalClose = () => {
     if (clientId) {
@@ -44,60 +51,82 @@ export const PaymentModal = observer(() => {
   };
 
   const handleSubmitPayment = (values: IPaymentType) => {
+    console.log(values);
 
-    if (!isToday) {
-      message.info('Oldingi to\'lovni o\'zgartirolmaysiz!');
+    // if (!isToday) {
+    //   message.info('Oldingi to\'lovni o\'zgartirolmaysiz!');
 
-      return;
-    }
+    //   return;
+    // }
 
-    setLoadingPayment(true);
+    // setLoadingPayment(true);
 
-    ordersApi.updateOrder({
-      id: ordersStore?.order?.id!,
-      send: ordersStore.isSendUser,
-      clientId: form.getFieldValue('clientId'),
-      payment: values,
-    })
-      .then(() => {
-        queryClient.invalidateQueries({ queryKey: ['getOrders'] });
-        if (clientId) {
-          singleClientStore.getSingleClient({id: clientId});
-        }
-        handleModalClose();
-      })
-      .catch(addNotification)
-      .finally(() => {
-        setLoadingPayment(false);
-      });
+    // ordersApi.updateOrder({
+    //   id: ordersStore?.order?.id!,
+    //   send: ordersStore.isSendUser,
+    //   clientId: form.getFieldValue('clientId'),
+    //   payment: values,
+    // })
+    //   .then(() => {
+    //     queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+    //     if (clientId) {
+    //       singleClientStore.getSingleClient({ id: clientId });
+    //     }
+    //     handleModalClose();
+    //   })
+    //   .catch(addNotification)
+    //   .finally(() => {
+    //     setLoadingPayment(false);
+    //   });
   };
 
-  useEffect(() => {
-    if (ordersStore.orderPayment?.payment) {
-      const payment = ordersStore?.orderPayment?.payment;
+  const groupedPayments = useMemo(() => {
+    const payments = form.getFieldValue('payments') || [];
 
-      if (payment) {
-        const { cash, card, transfer, other, description }: IPaymentType = payment;
+    return payments.reduce((acc: any, p: any) => {
+      if (!p.currencyId) return acc;
 
-        form.setFieldsValue({
-          cash,
-          card,
-          transfer,
-          other,
-          description,
-          userId: ordersStore.orderPayment?.client?.id,
-        });
-
-        const totalPayCalc = cash + card + transfer + other;
-
-        setTotalPayment(totalPayCalc);
+      if (!acc[p.currencyId]) {
+        acc[p.currencyId] = {
+          currencyId: p.currencyId,
+          total: 0,
+        };
       }
+
+      acc[p.currencyId].total += Number(p.amount || 0);
+
+      return acc;
+    }, {});
+  }, [paymentsForm]);
+
+  const paymentTotals = useMemo(() =>
+    Object.values(groupedPayments).map((item: any) => {
+      const currency = currencyMany?.data.find(c => c.id === item.currencyId);
+
+      return {
+        currencyId: item.currencyId,
+        total: item.total,
+        symbol: currency?.symbol, // USD / UZS
+      };
+    }), [groupedPayments, currencyMany]);
+
+  const settlement = useMemo(() => {
+    if (!ordersStore.order || !currencyMany?.data) {
+      return {
+        debt: { uzs: 0, usd: 0 },
+        payment: { uzs: 0, usd: 0 },
+        order: { uzs: 0, usd: 0 },
+        change: { uzs: 0, usd: 0, default: 0 },
+      };
     }
 
-    const totalPriceCalc = ordersStore?.order?.products?.reduce((prev, current) => prev + (current?.price * current?.count), 0);
-
-    setTotalPrice(totalPriceCalc || 0);
-  }, [ordersStore.orderPayment, ordersStore?.order?.products]);
+    return calculateSettlement(
+      ordersStore.order,
+      paymentsForm,
+      currencyMany.data,
+      authStore.staffInfo?.currency?.symbol || 'UZS'
+    );
+  }, [ordersStore.order, currencyMany, paymentsForm]);
 
   const handleValuesChange = (changedValues: any, allValues: any) => {
     const { cash = 0, card = 0, transfer = 0, other = 0 } = allValues;
@@ -109,22 +138,50 @@ export const PaymentModal = observer(() => {
     setTotalPayment(total);
   };
 
-  const handleAddonClick = (fieldName: string) => {
-    const allValues = form.getFieldsValue();
-    const { cash = 0, card = 0, transfer = 0, other = 0 } = allValues;
+  const handleCurrencyChange = (newCurrencyId: string, index: number) => {
+    const payments = form.getFieldValue('payments') || [];
+    const current = payments[index];
 
-    const totalEntered = cash + card + transfer + other;
+    if (!current) return;
 
-    const remainingAmount = totalPrice - totalEntered;
+    const oldCurrencyId = prevCurrencies[index];
+    const oldCurrency = currencyManyData.find(c => c.value === oldCurrencyId);
+    const newCurrency = currencyManyData.find(c => c.value === newCurrencyId);
 
-    if (remainingAmount > 0) {
-      form.setFieldsValue({
-        [fieldName]: (allValues[fieldName] || 0) + remainingAmount,
-      });
+    if (!oldCurrency || !newCurrency) return;
+
+    let newAmount = current.amount;
+
+    if (current.amount) {
+      if (oldCurrency.code === 'USD' && newCurrency.code === 'UZS') {
+        newAmount = current.amount * oldCurrency.rate;
+      } else if (oldCurrency.code === 'UZS' && newCurrency.code === 'USD') {
+        newAmount = current.amount / newCurrency.rate;
+      }
     }
 
-    setTotalPayment(totalPrice);
+    const finalAmount = Math.round(newAmount * 100) / 100;
+
+    form.setFields([
+      {
+        name: ['payments', index, 'amount'],
+        value: finalAmount,
+      },
+      {
+        name: ['payments', index, 'currencyId'],
+        value: newCurrencyId,
+      },
+    ]);
   };
+
+  const currencyManyData = useMemo(() => (
+    currencyMany?.data.map((currency) => ({
+      value: currency?.id,
+      label: `${currency?.symbol} | ${priceFormat(currency?.exchangeRate)}`,
+      code: currency.symbol,
+      rate: currency.exchangeRate,
+    })) || []
+  ), [currencyMany]);
 
   return (
     <Modal
@@ -153,7 +210,6 @@ export const PaymentModal = observer(() => {
         <Button
           onClick={handleSavePayment}
           type="primary"
-          disabled={!isToday}
           loading={loadingPayment}
         >
           Maqullash
@@ -166,7 +222,16 @@ export const PaymentModal = observer(() => {
         layout="vertical"
         autoComplete="off"
         onValuesChange={handleValuesChange}
-        className="income-order__add-products-form-info"
+        className="order__payment-form"
+        initialValues={{
+          payments: [
+            {
+              amount: 0,
+              type: PaymentTypes.CASH,
+              currencyId: authStore?.staffInfo?.currency?.id,
+            },
+          ],
+        }}
       >
         <Form.Item
           label="Mijoz"
@@ -185,88 +250,78 @@ export const PaymentModal = observer(() => {
             allowClear
           />
         </Form.Item>
-        <Form.Item
-          label="Bank kartasi orqali to'lov"
-          name="card"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Bank kartasi orqali to'lov"
-            defaultValue={0}
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            addonAfter={
+        <Form.List name="payments">
+          {(fields, { add, remove }) => (
+            <div>
+              {fields.map(({ key, name }) => (
+                <div
+                  key={key}
+                  style={{ display: 'flex', marginBottom: 10 }}
+                >
+                  <Form.Item
+                    name={[name, 'type']}
+                    rules={[{ required: true, message: 'Turini tanlang' }]}
+                    style={{ width: '20%' }}
+                  >
+                    <Select
+                      placeholder="To'lov turi"
+                      options={PaymentTypeOptions}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name={[name, 'amount']}
+                    rules={[{ required: true, message: 'Summa kiriting' }]}
+                    style={{ width: '40%' }}
+                  >
+                    <InputNumber
+                      key={form.getFieldValue(['payments', name, 'currencyId'])}
+                      style={{ width: '100%' }}
+                      formatter={(value) => priceFormat(value!)}
+                      placeholder="0"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name={[name, 'currencyId']}
+                    initialValue={authStore?.staffInfo?.currency?.id}
+                    rules={[{ required: true, message: 'Valyuta tanlang' }]}
+                    style={{ width: '25%' }}
+                  >
+                    <Select
+                      options={currencyManyData}
+                      onMouseDown={() => {
+                        const payments = form.getFieldValue('payments') || [];
+
+                        setPrevCurrencies(prev => ({
+                          ...prev,
+                          [name]: payments[name]?.currencyId,
+                        }));
+                      }}
+                      onChange={(val) => handleCurrencyChange(val, name)}
+                    />
+                  </Form.Item>
+                  <Button danger onClick={() => remove(name)}>
+                    O‘chirish
+                  </Button>
+                </div>
+              ))}
+
               <Button
-                disabled={totalPayment >= totalPrice}
-                type="primary"
-                onClick={handleAddonClick?.bind(null, 'card')}
+                type="dashed"
+                block
+                onClick={() =>
+                  add({
+                    amount: 0,
+                    type: PaymentTypes.CASH,
+                    currencyId: authStore?.staffInfo?.currency?.id,
+                  })
+                }
               >
-                Umumiy miqdor
+                + To‘lov qo‘shish
               </Button>
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          label="Naqd to'lov"
-          name="cash"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Bank kartasi orqali to'lov"
-            defaultValue={0}
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            addonAfter={
-              <Button
-                disabled={totalPayment >= totalPrice}
-                type="primary"
-                onClick={handleAddonClick?.bind(null, 'cash')}
-              >
-                Umumiy miqdor
-              </Button>
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          label="Bank o'tkazmasi orqali to'lov"
-          name="transfer"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Bank o'tkazmasi orqali to'lov"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            addonAfter={
-              <Button
-                disabled={totalPayment >= totalPrice}
-                type="primary"
-                onClick={handleAddonClick?.bind(null, 'transfer')}
-              >
-                Umumiy miqdor
-              </Button>
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          label="Boshqa usullar bilan to'lov"
-          name="other"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Boshqa usullar bilan to'lov"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            addonAfter={
-              <Button
-                disabled={totalPayment >= totalPrice}
-                type="primary"
-                onClick={handleAddonClick?.bind(null, 'other')}
-              >
-                Umumiy miqdor
-              </Button>
-            }
-          />
-        </Form.Item>
+            </div>
+          )}
+        </Form.List>
+
         <Form.Item
           label="To'lov haqida ma'lumot"
           name="description"
@@ -282,36 +337,48 @@ export const PaymentModal = observer(() => {
         </Form.Item>
       </Form>
       <div>
-        <p
-          style={{
-            textAlign: 'end',
-            fontSize: '24px',
-            fontWeight: 'bold',
-            margin: 0,
-          }}
-        >
-          Umumiy qiymati: {priceFormat(totalPrice)}
-        </p>
-        <p
-          style={{
-            textAlign: 'end',
-            fontSize: '24px',
-            fontWeight: 'bold',
-            margin: 0,
-          }}
-        >
-          Jami to&apos;lov: {priceFormat(totalPayment)}
-        </p>
-        <p
-          style={{
-            textAlign: 'end',
-            fontSize: '24px',
-            fontWeight: 'bold',
-            margin: 0,
-          }}
-        >
-          Qarzga: {priceFormat(Number(totalPrice) - Number(totalPayment) || 0)}
-        </p>
+        <div>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+            <p style={{ margin: '0' }}>Umumiy qiymati:</p>
+            <div style={{ textAlign: 'end' }}>
+              {ordersStore?.order?.totalPrices?.map(price =>
+                <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+              <p style={{ margin: '0' }}>To&apos;lov:</p>
+              <div style={{ textAlign: 'end' }}>
+                {paymentTotals?.map(price =>
+                  <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price.symbol!)}</div>)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+              <p style={{ margin: '0' }}>Qarzga:</p>
+              <div style={{ textAlign: 'end' }}>
+                <div>{priceFormat(settlement?.debt?.uzs)} UZS</div>
+                <div>{priceFormat(settlement?.debt?.usd)} USD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+              <p style={{ margin: '0' }}>Qaytim:</p>
+              <div style={{ textAlign: 'end' }}>
+                <div>{priceFormat(settlement?.change?.uzs)} UZS</div>
+                <div>{priceFormat(settlement?.change?.usd)} USD</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Modal>
   );

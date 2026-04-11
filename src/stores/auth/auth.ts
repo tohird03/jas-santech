@@ -45,6 +45,11 @@ class AuthStore {
       })
       .catch(addNotification);
 
+  getCurrencyMany = () =>
+    authApi.getCurrencyMany()
+      .then(res => res?.data)
+      .catch(addNotification);
+
   getCloseDayType = () =>
     authApi.getCloseDay()
       .then(res =>

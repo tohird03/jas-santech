@@ -9,6 +9,7 @@ import { ROUTES } from '@/constants';
 import { useStores } from '@/stores';
 import { LogOut } from '../LogOut/LogOut';
 import { CloseDay } from '../CloseDay';
+import { DefaultCurrency } from '../DefaultCurrency';
 
 type Props = {
   collapsed: boolean;
@@ -60,6 +61,7 @@ export const Header = observer(({ collapsed, onCollapsedClick, isMobile }: Props
         }
 
         <div className="header__profile">
+          <DefaultCurrency />
           {!isMobile && (
             <>
               <Typography.Title level={5} style={{ color: 'white', margin: '0' }}>

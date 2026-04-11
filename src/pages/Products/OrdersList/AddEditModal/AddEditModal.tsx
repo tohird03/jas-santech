@@ -20,11 +20,15 @@ import {
   IOrderStatus,
 } from '@/api/order/types';
 import Table, { ColumnType } from 'antd/es/table';
-import { OrderStatus, OrderStatusColor } from '../constants';
+import { OrderStatus, OrderStatusColor, PRICE_TYPE_OPTIONS } from '../constants';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useParams } from 'react-router-dom';
 import { IClientsInfo } from '@/api/clients';
 import { getFullDateFormat } from '@/utils/getDateFormat';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
+import { authStore } from '@/stores/auth';
+import { ICurrencyOptions } from '@/api/auth/types';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -52,6 +56,7 @@ export const AddEditModal = observer(() => {
   const changeCostRef = useRef<any>(null);
   const changeCountRef = useRef<any>(null);
   const [selectedClient, setSelectedClient] = useState<IClientsInfo | null>(null);
+  const [priceType, setPriceType] = useState<'cost' | 'wholesalePrice' | 'price'>('price');
 
   // GET DATAS
   const { data: clientsData, isLoading: loadingClients } = useQuery({
@@ -72,6 +77,12 @@ export const AddEditModal = observer(() => {
         pageSize: 15,
         search: searchProducts!,
       }),
+  });
+
+  const { data: currencyMany } = useQuery({
+    queryKey: ['getCurrencyMany'],
+    queryFn: () =>
+      authStore.getCurrencyMany(),
   });
 
   const handleOpenPaymentModal = () => {
@@ -134,6 +145,7 @@ export const AddEditModal = observer(() => {
       productId: values?.productId,
       count: values?.count,
       price: values?.price,
+      currencyId: values?.currencyId,
     };
 
     if (ordersStore?.order) {
@@ -243,7 +255,7 @@ export const AddEditModal = observer(() => {
   const handleChangeProduct = (productId: string) => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
-    form.setFieldValue('price', findProduct?.price);
+    form.setFieldValue('price', findProduct?.prices);
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();
@@ -572,6 +584,15 @@ export const AddEditModal = observer(() => {
     return '';
   };
 
+  const currencyManyData = useMemo(() => (
+    currencyMany?.data.map((currency) => ({
+      value: currency?.id,
+      label: `${currency?.symbol} | ${priceFormat(currency?.exchangeRate)}`,
+      code: currency.symbol,
+      rate: currency.exchangeRate,
+    })) || []
+  ), [currencyMany]);
+
   return (
     <Modal
       open={ordersStore.isOpenAddEditNewOrderModal}
@@ -601,7 +622,7 @@ export const AddEditModal = observer(() => {
             <Button
               type="primary"
               onClick={handleOpenPaymentModal}
-              style={{marginRight: '8px'}}
+              style={{ marginRight: '8px' }}
             >
               Mijoz to&lsquo;lovi
             </Button>
@@ -722,7 +743,7 @@ export const AddEditModal = observer(() => {
                     </p>
                     <div className={cn('income-order__add-product-info')}>
                       <p className={cn('income-order__add-product-price')}>
-                        {product?.price}
+                        {product?.prices?.selling?.price} {product?.prices?.selling?.currency?.symbol}
                       </p>
                       <p
                         style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
@@ -738,20 +759,34 @@ export const AddEditModal = observer(() => {
           </Form.Item>
           <Button style={{ marginTop: '5px' }} onClick={handleAddProduct} icon={<PlusOutlined />} />
         </div>
-        <Form.Item
-          label="Narxi"
-          rules={[{ required: true }]}
-          name="price"
-          initialValue={0}
-          className={cn('form__row')}
-        >
-          <InputNumber
-            placeholder="Narxi"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            onKeyUp={handleChangePriceForm}
-          />
-        </Form.Item>
+        <PriceWithCurrency
+          form={form}
+          valueName="price"
+          currencyName="currencyId"
+          label="Sotib olingan narxi"
+          required
+          onKeyDown={handleChangePriceForm}
+          currencyOptions={currencyManyData}
+          addonBefore={
+            <Select
+              style={{ width: '30%' }}
+              options={PRICE_TYPE_OPTIONS}
+              value={priceType}
+              onChange={(val) => {
+                setPriceType(val);
+
+                const productId = form.getFieldValue('productId');
+                const findProduct = productsData?.data?.data?.find(
+                  (p) => p.id === productId
+                );
+
+                if (findProduct) {
+                  // form.setFieldValue('price', findProduct[val]);
+                }
+              }}
+            />
+          }
+        />
         <Form.Item
           label="Mahsulot soni"
           rules={[{ required: true }]}
@@ -792,10 +827,13 @@ export const AddEditModal = observer(() => {
       />
 
       <div>
-        <p style={{ textAlign: 'end', fontSize: '24px', fontWeight: 'bold' }}>Umumiy qiymati: {
-          priceFormat(ordersStore?.order?.products?.reduce((prev, current) => prev + (current?.price * current?.count), 0))
-        }
-        </p>
+        <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+          <p style={{margin: '0'}}>Umumiy qiymati:</p>
+          <div style={{textAlign: 'end'}}>
+            {ordersStore?.order?.totalPrices?.map(price =>
+              <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+          </div>
+        </div>
       </div>
     </Modal>
   );

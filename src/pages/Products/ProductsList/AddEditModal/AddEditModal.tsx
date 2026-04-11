@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Form, Image, Input, InputNumber, Modal, Select, Upload, UploadFile, UploadProps } from 'antd';
 import { addNotification } from '@/utils';
 import { productsListStore } from '@/stores/products';
 import { priceFormat } from '@/utils/priceFormat';
 import { productsApi } from '@/api/product/product';
-import { IAddEditProduct } from '@/api/product/types';
+import { IAddEditProduct, IAddEditProductForm } from '@/api/product/types';
 import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 import { RcFile } from 'antd/es/upload';
 import { PlusOutlined } from '@ant-design/icons';
 import { UPLOAD_ACCEPT } from '@/constants/img';
+import { authStore } from '@/stores/auth';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
@@ -19,6 +20,12 @@ export const AddEditModal = observer(() => {
   const [bannerFileList, setBannerFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+
+  const { data: currencyMany, isLoading: loadingClients } = useQuery({
+    queryKey: ['getCurrencyMany'],
+    queryFn: () =>
+      authStore.getCurrencyMany(),
+  });
 
   const { mutate: addNewProduct } =
     useMutation({
@@ -71,22 +78,39 @@ export const AddEditModal = observer(() => {
     setPreviewOpen(true);
   };
 
-  const handleCancel = () => {
-    setPreviewOpen(false);
-  };
-
-  const handleSubmit = (values: IAddEditProduct) => {
+  const handleSubmit = (values: IAddEditProductForm) => {
     setLoading(true);
+
+    const productData = {
+      name: values?.name,
+      count: 0,
+      minAmount: values?.minAmount,
+      description: values?.description,
+      prices: {
+        cost: {
+          price: values?.cost,
+          currencyId: values?.costCurrency,
+        },
+        selling: {
+          price: values?.price,
+          currencyId: values?.priceCurrency,
+        },
+        wholesale: {
+          price: values?.wholesale,
+          currencyId: values?.wholesaleCurrency,
+        },
+      },
+    };
 
     if (productsListStore?.singleProduct) {
       updateProduct({
-        ...values,
+        ...productData,
         id: productsListStore?.singleProduct?.id!,
       });
 
       return;
     }
-    addNewProduct(values);
+    addNewProduct(productData);
   };
 
   const handleModalClose = () => {
@@ -97,6 +121,15 @@ export const AddEditModal = observer(() => {
   const handleModalOk = () => {
     form.submit();
   };
+
+  const currencyManyData = useMemo(() => (
+    currencyMany?.data.map((currency) => ({
+      value: currency?.id,
+      label: `${currency?.symbol} | ${priceFormat(currency?.exchangeRate)}`,
+      code: currency?.symbol,
+      rate: currency?.exchangeRate,
+    })) || []
+  ), [currencyMany]);
 
   useEffect(() => {
     if (productsListStore.singleProduct) {
@@ -181,22 +214,25 @@ export const AddEditModal = observer(() => {
           currencyName="costCurrency"
           label="Sotib olingan narxi"
           required
+          currencyOptions={currencyManyData}
         />
 
         <PriceWithCurrency
           form={form}
-          valueName="wholesalePrice"
+          valueName="wholesale"
           currencyName="wholesaleCurrency"
           label="Ulgurji narxi"
           required
+          currencyOptions={currencyManyData}
         />
 
         <PriceWithCurrency
           form={form}
           valueName="price"
-          currencyName="sellCurrency"
+          currencyName="priceCurrency"
           label="Sotish narxi"
           required
+          currencyOptions={currencyManyData}
         />
 
         <Form.Item

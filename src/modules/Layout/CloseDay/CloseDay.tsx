@@ -36,7 +36,7 @@ export const CloseDay: React.FC = observer(() => {
 
   return (
     <div>
-      {authStore?.staffInfo?.phone === '998981157574' &&
+      {authStore?.staffInfo?.phone === '998917732299' &&
         <span onClick={showModal} className="logout">
           <Button style={{ width: '100%' }} type="primary" danger>Kunni yopish</Button>
         </span>

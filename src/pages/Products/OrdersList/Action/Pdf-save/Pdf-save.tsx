@@ -6,6 +6,7 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import LogoImg from '@/assets/img/logo-all.png';
 import CheckmarkIcon from '@/assets/img/check-mark.png';
 import { phoneFormat } from '@/utils/phoneFormat';
+import { currencyTagUi } from '@/constants/payment';
 
 Font.register({
   family: 'NotoSans',
@@ -71,7 +72,10 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
         <View>
           <View style={styles.totalCalcTextWrapper}>
             <Text style={styles.totalCalcText}>Жами сумма:</Text>
-            <Text style={styles.totalCalcPriceText}>{order?.totalPrice}</Text>
+            <Text style={styles.totalCalcPriceText}>
+              {order?.totalPrices?.map(price =>
+                <span key={price?.currencyId}>{priceFormat(price?.total)} {currencyTagUi(price?.currency?.symbol)}</span>)}
+            </Text>
           </View>
           <View style={styles.totalCalcTextWrapper}>
             <Text style={styles.totalCalcText}>Тулов килинди:</Text>

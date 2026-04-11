@@ -7,6 +7,7 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import { priceFormat } from '@/utils/priceFormat';
 import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
 import { PaymentStatus } from './PaymentStatus';
+import { currencyTagUi } from '@/constants/payment';
 
 export const ordersColumns: ColumnType<IOrder>[] = [
   {
@@ -57,8 +58,12 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    sorter: (a, b) => a?.totalPrice - b?.totalPrice,
-    render: (value, record) => priceFormat(record?.totalPrice),
+    render: (value, record) => (
+      <>
+        {record?.totalPrices?.map(price =>
+          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
   {
     key: 'totalPay',
@@ -126,6 +131,11 @@ export const ordersColumns: ColumnType<IOrder>[] = [
   },
 ];
 
+export const PRICE_TYPE_OPTIONS = [
+  { label: 'Sotib olingan narx (cost)', value: 'cost' },
+  { label: 'Ulgurji narx (wholesale)', value: 'wholesalePrice' },
+  { label: 'Sotish narxi (price)', value: 'price' },
+];
 
 export const OrderStatus: Record<IOrderStatus, string> = {
   [IOrderStatus.ACCEPTED]: 'Tasdiqlangan',
@@ -201,7 +211,12 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalPrice),
+    render: (value, record) => (
+      <>
+        {record?.totalPrices?.map(price =>
+          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
   {
     key: 'totalPay',
@@ -362,7 +377,7 @@ export const FilterOrderStatusOptions = [
     label: (
       <Tag
         color={OrderStatusColor[IOrderStatus.ACCEPTED]}
-        style={{width: '100%', fontSize: '14px'}}
+        style={{ width: '100%', fontSize: '14px' }}
       >
         {OrderStatus[IOrderStatus.ACCEPTED]}
       </Tag>
@@ -373,7 +388,7 @@ export const FilterOrderStatusOptions = [
     label: (
       <Tag
         color={OrderStatusColor[IOrderStatus.NOTACCEPTED]}
-        style={{width: '100%', fontSize: '14px'}}
+        style={{ width: '100%', fontSize: '14px' }}
       >
         {OrderStatus[IOrderStatus.NOTACCEPTED]}
       </Tag>

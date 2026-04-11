@@ -189,8 +189,8 @@ export const AddEditModal = observer(() => {
   const handleChangeProduct = (productId: string) => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
-    form.setFieldValue('cost', findProduct?.cost);
-    form.setFieldValue('price', findProduct?.price);
+    form.setFieldValue('cost', findProduct?.prices?.cost?.price);
+    form.setFieldValue('price', findProduct?.prices);
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();

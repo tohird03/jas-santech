@@ -18,6 +18,7 @@ export const AddEditModal = observer(() => {
       mutationFn: (params: IAddEditClientInfo) => clientsInfoApi.addClients(params),
       onSuccess: () => {
         queryClient.invalidateQueries({queryKey: ['getClients']});
+        addNotification('Mijoz qo\'shildi');
         handleModalClose();
       },
       onError: addNotification,
@@ -32,6 +33,7 @@ export const AddEditModal = observer(() => {
       mutationFn: (params: IAddEditClientInfo) => clientsInfoApi.updateClient(params),
       onSuccess: () => {
         queryClient.invalidateQueries({queryKey: ['getClients']});
+        addNotification('Mijoz tahrirlandi');
         handleModalClose();
       },
       onError: addNotification,

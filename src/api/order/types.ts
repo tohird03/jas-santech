@@ -1,3 +1,4 @@
+import { ICurrency } from '../auth/types';
 import { IClientsInfo, ISeller } from '../clients';
 import { IProducts } from '../product/types';
 import { IPagination, IPayment, IPaymentType } from '../types';
@@ -13,8 +14,14 @@ export interface IOrder {
   articl: number;
 
   debt: number;
-  totalPrice: number;
+  totalPrices: IOrderTotalPrice[];
   totalPayment: number;
+}
+
+export interface IOrderTotalPrice {
+  currencyId: string;
+  total: number;
+  currency: ICurrency;
 }
 
 export enum IOrderStatus {
@@ -45,6 +52,7 @@ export interface IAddOrderProducts {
   productId: string;
   count: number;
   price: number;
+  currencyId: string;
 }
 
 export interface IAddOrderModalForm extends IAddOrderProducts {
@@ -87,7 +95,7 @@ export interface ITotalOrderPaymentCalc {
   totalPrice: number | null;
   totalPayment: number | null;
   totalCardPayment: number | null;
-  totalCashPayment: number |null;
+  totalCashPayment: number | null;
   totalOtherPayment: number | null;
   totalTransferPayment: number | null;
   totalDebt: number | null;
