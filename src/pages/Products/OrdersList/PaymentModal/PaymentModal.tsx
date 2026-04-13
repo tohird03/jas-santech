@@ -174,6 +174,61 @@ export const PaymentModal = observer(() => {
     ]);
   };
 
+  // QAYTIM
+  const uzsChange = Form.useWatch('uzsChange', form) || 0;
+  const usdChange = Form.useWatch('usdChange', form) || 0;
+  const cashUzs = Form.useWatch('cashUzs', form) || 0;
+  const cashUsd = Form.useWatch('cashUsd', form) || 0;
+
+  useEffect(() => {
+    form.setFieldsValue({
+      uzsChange: settlement.change.uzs || 0,
+      usdChange: settlement.change.usd || 0,
+      uzsCash: 0,
+      usdCash: 0,
+    });
+  }, [settlement]);
+
+  const handleChangeUpdate = (type: 'uzs' | 'usd', newValue: number) => {
+    const base = settlement.change[type];
+
+    const diff = Math.max(0, base - newValue);
+
+    form.setFieldsValue({
+      [`${type}Cash`]: diff,
+    });
+  };
+
+  const handleCashChange = (type: 'uzs' | 'usd', cashValue: number) => {
+    const base = settlement.change[type];
+
+    const clientValue = Math.max(0, base - cashValue);
+
+    form.setFieldsValue({
+      [`${type}Change`]: clientValue,
+    });
+  };
+
+  // Q
+
+  useEffect(() => {
+    form.setFieldsValue({
+      uzsChange: settlement.change.uzs > 0 ? settlement.change.uzs : undefined,
+      usdChange: settlement.change.usd > 0 ? settlement.change.usd : undefined,
+    });
+  }, [settlement]);
+
+  // QAYTIM KASSADAN
+  const cashReturn = useMemo(() => {
+    const totalUZS = settlement.change.uzs || 0;
+    const totalUSD = settlement.change.usd || 0;
+
+    return {
+      uzs: Math.max(0, totalUZS - uzsChange),
+      usd: Math.max(0, totalUSD - usdChange),
+    };
+  }, [uzsChange, usdChange, settlement]);
+
   const currencyManyData = useMemo(() => (
     currencyMany?.data.map((currency) => ({
       value: currency?.id,
@@ -379,6 +434,65 @@ export const PaymentModal = observer(() => {
             </div>
           </div>
         </div>
+        <Form form={form}>
+          {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
+            <div style={{ marginTop: 20 }}>
+              <h3>Mijoz hisobidan ayirish</h3>
+
+              {settlement.change.uzs > 0 && (
+                <Form.Item
+                  name="uzsChange"
+                  label="UZS"
+                  initialValue={settlement.change.uzs}
+                >
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    formatter={(value) => priceFormat(value)}
+                    onChange={(val) => handleChangeUpdate('uzs', Number(val || 0))}
+                  />
+                </Form.Item>
+              )}
+
+              {settlement.change.usd > 0 && (
+                <Form.Item
+                  name="usdChange"
+                  label="USD"
+                  initialValue={settlement.change.usd}
+                >
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    formatter={(value) => priceFormat(value)}
+                    onChange={(val) => handleChangeUpdate('usd', Number(val || 0))}
+                  />
+                </Form.Item>
+              )}
+            </div>
+          )}
+
+          {settlement.change.uzs > 0 && uzsChange < settlement.change.uzs && (
+            <Form.Item name="uzsCash" label="Kassadan berish UZS">
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+                max={settlement.change.uzs}
+                formatter={(v) => priceFormat(v)}
+                onChange={(val) => handleCashChange('uzs', Number(val || 0))}
+              />
+            </Form.Item>
+          )}
+
+          {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
+            <Form.Item name="usdCash" label="Kassadan berish USD">
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+                max={settlement.change.usd}
+                formatter={(v) => priceFormat(v)}
+                onChange={(val) => handleCashChange('usd', Number(val || 0))}
+              />
+            </Form.Item>
+          )}
+        </Form>
       </div>
     </Modal>
   );
