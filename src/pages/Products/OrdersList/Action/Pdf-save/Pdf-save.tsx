@@ -63,8 +63,8 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
                 <Text style={{ ...styles.tableCell, maxWidth: '280px', minWidth: '280px', textAlign: 'left' }}>{product?.product?.name}</Text>
                 <Text style={{ ...styles.tableCell, maxWidth: '35px' }} />
                 <Text style={{ ...styles.tableCell }}>{product?.count}</Text>
-                <Text style={{ ...styles.tableCell }}>{product?.price}</Text>
-                <Text style={{ ...styles.tableCell }}>{priceFormat(product?.count * product?.price)}</Text>
+                <Text style={{ ...styles.tableCell }}>{product?.prices?.selling?.price}</Text>
+                <Text style={{ ...styles.tableCell }}>{priceFormat(product?.prices?.selling?.totalPrice)}</Text>
               </View>
             ))
           }

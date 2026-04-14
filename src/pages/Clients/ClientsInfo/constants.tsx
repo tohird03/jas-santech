@@ -7,6 +7,7 @@ import { priceFormat } from '@/utils/priceFormat';
 import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { Tag } from 'antd';
+import { currencyTagUi } from '@/constants/payment';
 
 export const clientsColumns: ColumnType<IClientsInfo>[] = [
   {
@@ -35,8 +36,11 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
     dataIndex: 'debt',
     title: 'Mijoz qarzi',
     align: 'center',
-    render: (value, record) => priceFormat(record?.debt),
-    sorter: (a, b) => a?.debt - b?.debt,
+    render: (value, record) => (
+      record?.debtByCurrency?.length > 0
+        ? record?.debtByCurrency?.map(debt => (
+          <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+        )) : 0),
   },
   {
     key: 'isActiveBot',
@@ -45,7 +49,7 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
     align: 'center',
     render: (value, record) => (
       <Tag color={record?.telegram?.isActive ? '#228B22' : '#FF7F50'}>
-        {record?.telegram?.isActive ? 'Active' : 'NoActive' }
+        {record?.telegram?.isActive ? 'Active' : 'NoActive'}
       </Tag>
     ),
   },

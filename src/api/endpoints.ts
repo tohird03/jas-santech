@@ -43,6 +43,7 @@ export enum Endpoints {
   SellingMany = '/selling/many',
   SellingOne = '/selling/one',
   AddEditProductToSelling = '/selling-product-mv/one',
+  DeleteSellingProduct = '/selling-product-mv/one',
 
   IncomeMany = '/arrival/many',
   IncomeOne = '/arrival/one',

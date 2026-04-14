@@ -74,8 +74,8 @@ export const ClientsInfo = observer(() => {
   }, []);
 
   const rowClassName = (record: IClientsInfo) =>
-    record.debt > 0 ? 'error__row'
-      : record.debt < 0
+    record.debtByCurrency[0]?.amount > 0 ? 'error__row'
+      : record.debtByCurrency[0]?.amount < 0
         ? 'info__row' : '';
 
   const handleDownloadExcel = () => {

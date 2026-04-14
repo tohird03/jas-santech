@@ -15,13 +15,15 @@ import { priceFormat } from '@/utils/priceFormat';
 import { addNotification } from '@/utils';
 import { dateFormat } from '@/utils/getDateFormat';
 import { staffsPaymentsApi } from '@/api/staffs-payments/staffs-payments';
+import { IStaffPaymentsTotal } from '@/api/staffs-payments/types';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
 export const StaffsPayments = observer(() => {
   const [downloadLoading, setDownLoadLoading] = useState(false);
 
-  const { data: clientsInfoData, isLoading: loading } = useQuery({
+  const { data: staffPaymentsData, isLoading: loading } = useQuery({
     queryKey: [
       'getStaffsPayments',
       staffsPaymentStore.pageNumber,
@@ -166,22 +168,26 @@ export const StaffsPayments = observer(() => {
 
       <Table
         columns={clientsColumns}
-        dataSource={clientsInfoData?.data?.data || []}
+        dataSource={staffPaymentsData?.data?.data || []}
         loading={loading}
         pagination={{
-          total: clientsInfoData?.data?.totalCount,
+          total: staffPaymentsData?.data?.totalCount,
           current: staffsPaymentStore?.pageNumber,
           pageSize: staffsPaymentStore?.pageSize,
           showSizeChanger: true,
           onChange: handlePageChange,
-          ...getPaginationParams(clientsInfoData?.data?.totalCount),
+          ...getPaginationParams(staffPaymentsData?.data?.totalCount),
         }}
         summary={() => (
           <Table.Summary.Row>
             <Table.Summary.Cell colSpan={2} index={1} />
             <Table.Summary.Cell index={2}>
               <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(clientsInfoData?.data?.calc?.sum)}
+                Jami: {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
+                  <span key={total?.currency?.id}>
+                    {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
+                  </span>
+                ))}
               </div>
             </Table.Summary.Cell>
             <Table.Summary.Cell colSpan={3} index={1} />

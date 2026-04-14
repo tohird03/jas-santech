@@ -1,3 +1,4 @@
+import { ICurrency } from '../auth/types';
 import { IOrder } from '../order/types';
 import { IReturnedOrder } from '../returned-order/types';
 import { IPagination, IPayment } from '../types';
@@ -7,7 +8,10 @@ export interface IClientsInfo {
   id: string;
   fullname: string;
   phone: string;
-  debt: number;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
   lastSellingDate: string;
   deedInfo: IClientDeedInfo;
   telegram?: {
@@ -96,7 +100,10 @@ export interface IClientStatistic {
   fullname: string;
   address: string;
   phone: string;
-  debt: number;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
   deedInfo: IClientDeedInfo;
   lastSellingDate: string;
   calc: {

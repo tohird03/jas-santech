@@ -105,9 +105,9 @@ export const ordersColumns: ColumnType<IOrder>[] = [
 ];
 
 export const PRICE_TYPE_OPTIONS = [
-  { label: 'Sotib olingan narx (cost)', value: 'cost' },
-  { label: 'Ulgurji narx (wholesale)', value: 'wholesalePrice' },
-  { label: 'Sotish narxi (price)', value: 'price' },
+  { label: 'Sotib olingan narx', value: 'cost' },
+  { label: 'Ulgurji narx', value: 'wholesale' },
+  { label: 'Sotish narxi', value: 'selling' },
 ];
 
 export const OrderStatus: Record<IOrderStatus, string> = {
@@ -272,7 +272,7 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'Sotish narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.price),
+    render: (value, record) => priceFormat(record?.prices?.selling?.price),
   },
   {
     key: 'total',
@@ -280,7 +280,7 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.count * record?.price),
+    render: (value, record) => priceFormat(record?.count * record?.prices?.selling?.price),
   },
 ];
 

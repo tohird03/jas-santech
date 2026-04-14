@@ -8,6 +8,7 @@ import { priceFormat } from '@/utils/priceFormat';
 import { clientsPaymentApi } from '@/api/payment';
 import { IAddEditPaymentParams } from '@/api/payment/types';
 import { useParams } from 'react-router-dom';
+import { currencyTagUi } from '@/constants/payment';
 
 const filterOption = (input: string, option?: { label: string, value: string }) =>
   (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -126,7 +127,11 @@ export const AddEditModal = observer(() => {
       title={(
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           {singleClientStore?.singlePayment ? 'To\'lovni tahrirlash' : 'To\'lov qo\'shish'}
-          <p style={{ margin: 0 }}>{singleClientStore?.activeClient && `Mijoz qarzi: ${priceFormat(singleClientStore?.activeClient?.debt)}`}</p>
+          <p style={{ margin: 0 }}>{singleClientStore?.activeClient && `Mijoz qarzi:
+          ${singleClientStore?.activeClient?.debtByCurrency?.map(debt => (
+          <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+        ))}`}
+          </p>
         </div>
       )}
       onCancel={handleModalClose}

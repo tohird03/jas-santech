@@ -14,11 +14,13 @@ import { clientsInfoStore } from '@/stores/clients';
 import styles from '../returned-orders.scss';
 import {
   IAddOrderModalForm,
+  IOrderProductUpdate,
   IOrderProducts,
 } from '@/api/order/types';
 import { ColumnType } from 'antd/es/table';
 import { IAddProductsToReturnedOrder, IAddReturnedOrderProducts, IAddReturnedOrders } from '@/api/returned-order/types';
 import { returnedOrderApi } from '@/api/returned-order/returned-order';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -35,7 +37,7 @@ export const AddEditModal = observer(() => {
   const [loading, setLoading] = useState(false);
   const [searchClients, setSearchClients] = useState<string | null>(null);
   const [searchProducts, setSearchProducts] = useState<string | null>(null);
-  const [isUpdatingProduct, setIsUpdatingProduct] = useState<IOrderProducts | null>(null);
+  const [isUpdatingProduct, setIsUpdatingProduct] = useState<IOrderProductUpdate | null>(null);
   const [isOpenProductSelect, setIsOpenProductSelect] = useState(false);
   const countInputRef = useRef<HTMLInputElement>(null);
 
@@ -169,7 +171,10 @@ export const AddEditModal = observer(() => {
 
   // TABLE ACTIONS
   const handleEditProduct = (orderProduct: IOrderProducts) => {
-    setIsUpdatingProduct(orderProduct);
+    setIsUpdatingProduct({
+      ...orderProduct,
+      price: orderProduct?.prices?.selling?.price,
+    });
   };
 
   const handleDeleteProduct = (orderId: string) => {
@@ -257,12 +262,12 @@ export const AddEditModal = observer(() => {
       render: (value, record) => (
         isUpdatingProduct?.id === record?.id ? (
           <InputNumber
-            defaultValue={record?.price}
+            defaultValue={record?.prices?.selling?.price}
             placeholder="Narxi"
             disabled={isUpdatingProduct?.id !== record?.id}
             onChange={handleChangePrice}
           />
-        ) : <span>{record?.price}</span>
+        ) : <span>{record?.prices?.selling?.price}</span>
       ),
     },
     {
@@ -270,7 +275,7 @@ export const AddEditModal = observer(() => {
       dataIndex: 'totalCost',
       title: 'Jami narxi',
       align: 'center',
-      render: (value, record) => priceFormat(record?.price * record?.count),
+      render: (value, record) => <span>{priceFormat(record?.prices?.selling?.totalPrice)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>,
     },
     {
       key: 'action',

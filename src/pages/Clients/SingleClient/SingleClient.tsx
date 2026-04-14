@@ -7,6 +7,7 @@ import { SegmentComponents, singleClientTabOptions } from './constants';
 import { useParams } from 'react-router-dom';
 import styles from './single-client.scss';
 import classNames from 'classnames';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -45,7 +46,9 @@ export const SingleClient = observer(() => {
           className={cn('single-client__title')}
           level={3}
         >
-          Jami qarz: {singleClientStore?.activeClient?.debt}
+          Jami qarz: {singleClientStore?.activeClient?.debtByCurrency?.map(debt => (
+            <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+          ))}
         </Typography.Title>
       </div>
 

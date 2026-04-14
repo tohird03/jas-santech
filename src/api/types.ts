@@ -5,6 +5,7 @@ export interface IResponse<TBody, TTotalCalc = any> {
     pageSize: number;
     data: TBody;
     calc?: TTotalCalc;
+    calcByCurrency?: TTotalCalc;
   };
 }
 

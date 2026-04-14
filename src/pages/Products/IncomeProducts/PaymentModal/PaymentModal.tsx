@@ -10,6 +10,7 @@ import { incomeProductsApi } from '@/api/income-products';
 import { singleSupplierStore } from '@/stores/supplier';
 import { useParams } from 'react-router-dom';
 import { authStore } from '@/stores/auth';
+import { currencyTagUi } from '@/constants/payment';
 
 export const PaymentModal = observer(() => {
   const [form] = Form.useForm();
@@ -18,7 +19,7 @@ export const PaymentModal = observer(() => {
   const [totalPrice, setTotalPrice] = useState(0);
   const { supplierId } = useParams();
   const [loadingPayment, setLoadingPayment] = useState(false);
-  const {isCloseDay} = authStore;
+  const { isCloseDay } = authStore;
 
   const today = new Date().toISOString().split('T')[0];
   const checkDate = incomeProductsStore.incomeOrder?.date?.split('T')[0]?.split(' ')[0];
@@ -126,7 +127,10 @@ export const PaymentModal = observer(() => {
       open={incomeProductsStore.isOpenIncomeOrderPaymentModal}
       title={`
         ${incomeProductsStore.incomeOrderPayment?.supplier?.fullname}: Yetkazib beruvchiga qarz
-        ${incomeProductsStore.incomeOrderPayment?.supplier?.debt || 0}`}
+        ${incomeProductsStore.incomeOrderPayment?.supplier?.debtByCurrency?.map(debt =>
+      (
+        <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+      ))}`}
       onCancel={handleModalClose}
       cancelText="Bekor qilish"
       centered

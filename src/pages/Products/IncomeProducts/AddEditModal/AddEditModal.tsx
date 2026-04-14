@@ -16,6 +16,7 @@ import { incomeProductsApi } from '@/api/income-products';
 import { IAddEditIncomeOrder, IAddIncomeOrderForm, IAddIncomeOrderProducts, IIncomeOrderProductAdd, IIncomeProduct } from '@/api/income-products/types';
 import { singleSupplierStore, supplierInfoStore } from '@/stores/supplier';
 import { ISupplierInfo } from '@/api/supplier/types';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -499,7 +500,14 @@ export const AddEditModal = observer(() => {
                 ? 'Tushurilgan mahsulotlarni tahrirlash'
                 : 'Yangi mahsulot tushurish'
             }
-            <p style={{ margin: 0 }}>{selectedSupplier && `Yetkazib beruvchiga qarz: ${priceFormat(selectedSupplier?.debt)}`}</p>
+            <p style={{ margin: 0 }}>{
+              selectedSupplier &&
+              `Yetkazib beruvchiga qarz:
+            ${selectedSupplier?.debtByCurrency?.map(debt =>
+          (
+            <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+          ))}`}
+            </p>
             {incomeProductsStore?.incomeOrder?.id && (
               <Button
                 type="primary"

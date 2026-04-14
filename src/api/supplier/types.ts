@@ -1,3 +1,4 @@
+import { ICurrency } from '../auth/types';
 import { IPagination } from '../types';
 
 export interface IGetSupplierInfoParams extends IPagination {
@@ -16,7 +17,10 @@ export interface ISupplierInfo {
   id: string;
   fullname: string;
   phone: string;
-  debt: number;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
   lastArrivalDate: string;
   deedInfo: ISupplierDeedInfo;
 }

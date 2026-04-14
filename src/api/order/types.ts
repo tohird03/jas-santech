@@ -41,7 +41,20 @@ export interface IGetOrdersParams extends IPagination {
 
 export interface IOrderProducts {
   id: string;
-  cost: number;
+  count: number;
+  prices: {
+    selling: {
+      price: number;
+      totalPrice: number;
+      currency: ICurrency;
+    };
+  };
+  avarage_cost: number;
+  product: IProducts;
+}
+
+export interface IOrderProductUpdate {
+  id: string;
   count: number;
   price: number;
   avarage_cost: number;

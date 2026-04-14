@@ -16,6 +16,7 @@ import {
   IAddOrderModalForm,
   IAddOrderProducts,
   IOrderProductAdd,
+  IOrderProductUpdate,
   IOrderProducts,
   IOrderStatus,
 } from '@/api/order/types';
@@ -27,7 +28,6 @@ import { IClientsInfo } from '@/api/clients';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 import { authStore } from '@/stores/auth';
-import { ICurrencyOptions } from '@/api/auth/types';
 import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
@@ -47,7 +47,7 @@ export const AddEditModal = observer(() => {
   const [createLoading, setCreateLoading] = useState(false);
   const [searchClients, setSearchClients] = useState<string | null>(null);
   const [searchProducts, setSearchProducts] = useState<string | null>(null);
-  const [isUpdatingProduct, setIsUpdatingProduct] = useState<IOrderProducts | null>(null);
+  const [isUpdatingProduct, setIsUpdatingProduct] = useState<IOrderProductUpdate | null>(null);
   const [isOpenProductSelect, setIsOpenProductSelect] = useState(false);
   const countInputRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<any>(null);
@@ -56,7 +56,7 @@ export const AddEditModal = observer(() => {
   const changeCostRef = useRef<any>(null);
   const changeCountRef = useRef<any>(null);
   const [selectedClient, setSelectedClient] = useState<IClientsInfo | null>(null);
-  const [priceType, setPriceType] = useState<'cost' | 'wholesalePrice' | 'price'>('price');
+  const [priceType, setPriceType] = useState<'cost' | 'wholesale' | 'selling'>('selling');
 
   // GET DATAS
   const { data: clientsData, isLoading: loadingClients } = useQuery({
@@ -255,7 +255,10 @@ export const AddEditModal = observer(() => {
   const handleChangeProduct = (productId: string) => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
-    form.setFieldValue('price', findProduct?.prices);
+    if (findProduct) {
+      form.setFieldValue('price', findProduct.prices[priceType]?.price);
+      form.setFieldValue('currencyId', findProduct.prices[priceType]?.currency?.id);
+    }
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();
@@ -297,12 +300,16 @@ export const AddEditModal = observer(() => {
 
   // TABLE ACTIONS
   const handleEditProduct = (orderProduct: IOrderProducts) => {
-    setIsUpdatingProduct(orderProduct);
+    setIsUpdatingProduct({
+      ...orderProduct,
+      price: orderProduct?.prices?.selling?.price,
+    });
   };
 
   const handleDeleteProduct = (orderId: string) => {
     ordersApi.deleteOrderProduct(orderId)
       .then(() => {
+        addNotification('Mahsulot o\'chirildi');
         ordersStore.getSingleOrder(ordersStore.order?.id!)
           .finally(() => {
             setLoading(false);
@@ -357,7 +364,10 @@ export const AddEditModal = observer(() => {
   };
 
   const handleDoubleClickChangeProduct = (order: IOrderProducts, fieldRef: any) => {
-    setIsUpdatingProduct(order);
+    setIsUpdatingProduct({
+      ...order,
+      price: order?.prices?.selling?.price,
+    });
     setTimeout(() => {
       fieldRef?.current?.focus();
     }, 0);
@@ -408,7 +418,7 @@ export const AddEditModal = observer(() => {
       render: (value, record) => (
         isUpdatingProduct?.id === record?.id ? (
           <InputNumber
-            defaultValue={record?.price}
+            defaultValue={record?.prices?.selling?.price}
             placeholder="Narxi"
             disabled={isUpdatingProduct?.id !== record?.id}
             onChange={handleChangePrice}
@@ -419,15 +429,20 @@ export const AddEditModal = observer(() => {
               }
             }}
           />
-        ) : <span onDoubleClick={handleDoubleClickChangeProduct?.bind(null, record, changeCostRef)}>{record?.price}</span>
-      ),
+        ) : (
+          <span onDoubleClick={handleDoubleClickChangeProduct?.bind(null, record, changeCostRef)}>
+            {record?.prices?.selling?.price}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}
+          </span>
+        )),
     },
     {
       key: 'totalCost',
       dataIndex: 'totalCost',
       title: 'Jami narxi',
       align: 'center',
-      render: (value, record) => priceFormat(record?.price * record?.count),
+      render: (value, record) => (
+        <span>{record?.prices?.selling?.totalPrice}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
+      ),
     },
     {
       key: 'action',
@@ -601,7 +616,13 @@ export const AddEditModal = observer(() => {
         <div className={cn('order__add-products-header')}>
           <div className={cn('order__add-products-header-left')}>
             {ordersStore?.order?.id ? 'Sotuvni tahrirlash' : 'Yangi sotuv'}
-            <p style={{ margin: 0 }}>{selectedClient && `Mijoz qarzi: ${priceFormat(selectedClient?.debt)}`}</p>
+            <p style={{ margin: 0 }}>{selectedClient && `Mijoz qarzi:
+        ${ordersStore?.order?.client?.debtByCurrency?.map(debt => (
+          <span key={debt?.currency?.id}>
+            {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
+          </span>
+        ))}`}
+            </p>
             {ordersStore?.order?.id && (
               <Button
                 type="primary"
@@ -743,7 +764,7 @@ export const AddEditModal = observer(() => {
                     </p>
                     <div className={cn('income-order__add-product-info')}>
                       <p className={cn('income-order__add-product-price')}>
-                        {product?.prices?.selling?.price} {product?.prices?.selling?.currency?.symbol}
+                        {priceFormat(product?.prices?.selling?.price)} {product?.prices?.selling?.currency?.symbol}
                       </p>
                       <p
                         style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
@@ -774,15 +795,6 @@ export const AddEditModal = observer(() => {
               value={priceType}
               onChange={(val) => {
                 setPriceType(val);
-
-                const productId = form.getFieldValue('productId');
-                const findProduct = productsData?.data?.data?.find(
-                  (p) => p.id === productId
-                );
-
-                if (findProduct) {
-                  // form.setFieldValue('price', findProduct[val]);
-                }
               }}
             />
           }
@@ -828,8 +840,8 @@ export const AddEditModal = observer(() => {
 
       <div>
         <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-          <p style={{margin: '0'}}>Umumiy qiymati:</p>
-          <div style={{textAlign: 'end'}}>
+          <p style={{ margin: '0' }}>Umumiy qiymati:</p>
+          <div style={{ textAlign: 'end' }}>
             {ordersStore?.order?.totalPrices?.map(price =>
               <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
           </div>

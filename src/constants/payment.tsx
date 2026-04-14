@@ -17,39 +17,39 @@ export const orderPaymentType: Record<PaymentTypes, string> = {
 export const PaymentTypeOptions = [
   {
     value: PaymentTypes.CASH,
-    label: PaymentTypes.CASH,
+    label: 'Naqd',
   },
   {
     value: PaymentTypes.CLICK,
-    label: PaymentTypes.CLICK,
+    label: 'Click',
   },
   {
     value: PaymentTypes.HUMO,
-    label: PaymentTypes.HUMO,
-  },
-  {
-    value: PaymentTypes.OTHER,
-    label: PaymentTypes.OTHER,
+    label: 'Humo',
   },
   {
     value: PaymentTypes.PAYME,
-    label: PaymentTypes.PAYME,
+    label: 'Payme',
   },
   {
     value: PaymentTypes.TRANSFER,
-    label: PaymentTypes.TRANSFER,
+    label: 'O\'tkazma',
   },
   {
     value: PaymentTypes.UZCARD,
-    label: PaymentTypes.UZCARD,
+    label: 'Uzcard',
   },
   {
     value: PaymentTypes.UZUM,
-    label: PaymentTypes.UZUM,
+    label: 'Uzum',
   },
   {
     value: PaymentTypes.VISA,
-    label: PaymentTypes.VISA,
+    label: 'Visa',
+  },
+  {
+    value: PaymentTypes.OTHER,
+    label: 'Boshqa usullar',
   },
 ];
 

@@ -46,7 +46,7 @@ class OrdersApi extends Instance {
     this.patch(Endpoints.AddEditProductToSelling, params, { params: { id: params?.id } });
 
   deleteOrderProduct = (productId: string): Promise<AxiosResponse> =>
-    this.delete(Endpoints.ProductMv, { params: { id: productId } });
+    this.delete(Endpoints.DeleteSellingProduct, { params: { id: productId } });
 
   getAllUploadOrderToExel = (params: IGetOrdersParams): Promise<any> =>
     this.get(`${Endpoints.OrderAllExcel}`, {

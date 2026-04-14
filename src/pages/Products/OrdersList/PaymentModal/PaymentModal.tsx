@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Form, Input, InputNumber, Modal, Select, message } from 'antd';
+import { Button, Card, Form, Input, InputNumber, Modal, Select, message } from 'antd';
 import { observer } from 'mobx-react';
 import { ordersStore } from '@/stores/products';
 import { priceFormat } from '@/utils/priceFormat';
@@ -241,7 +241,12 @@ export const PaymentModal = observer(() => {
             To&apos;lov {ordersStore.orderPayment?.client?.fullname}
           </p>
           <p style={{ margin: 0 }}>
-            {ordersStore?.order?.client?.debt && `Mijoz qarzi: ${priceFormat(ordersStore?.order?.client?.debt)}`}
+            {ordersStore?.order?.client?.debtByCurrency[0] && `Mijoz qarzi:
+    ${ordersStore?.order?.client?.debtByCurrency?.map(debt => (
+      <span key={debt?.currency?.id}>
+        {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
+      </span>
+    ))}`}
           </p>
         </div>
       }
@@ -265,229 +270,238 @@ export const PaymentModal = observer(() => {
         </Button>
       }
     >
-      <Form
-        form={form}
-        onFinish={handleSubmitPayment}
-        layout="vertical"
-        autoComplete="off"
-        onValuesChange={handleValuesChange}
-        className="order__payment-form"
-        initialValues={{
-          payments: [
-            {
-              amount: 0,
-              type: PaymentTypes.CASH,
-              currencyId: authStore?.staffInfo?.currency?.id,
-            },
-          ],
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          padding: '30px',
         }}
       >
-        <Form.Item
-          label="Mijoz"
-          rules={[{ required: true }]}
-          name="userId"
-          initialValue={ordersStore.orderPayment?.client?.id}
+        <Form
+          form={form}
+          onFinish={handleSubmitPayment}
+          layout="vertical"
+          autoComplete="off"
+          onValuesChange={handleValuesChange}
+          className="order__payment-form"
+          initialValues={{
+            payments: [
+              {
+                amount: 0,
+                type: PaymentTypes.CASH,
+                currencyId: authStore?.staffInfo?.currency?.id,
+              },
+            ],
+          }}
         >
-          <Select
-            showSearch
-            placeholder="Mijoz"
-            optionFilterProp="children"
-            options={[{
-              value: ordersStore.orderPayment?.client?.id,
-              label: `${ordersStore.orderPayment?.client?.fullname} ${ordersStore.orderPayment?.client?.phone}`,
-            }]}
-            allowClear
-          />
-        </Form.Item>
-        <Form.List name="payments">
-          {(fields, { add, remove }) => (
-            <div>
-              {fields.map(({ key, name }) => (
-                <div
-                  key={key}
-                  style={{ display: 'flex', marginBottom: 10 }}
-                >
-                  <Form.Item
-                    name={[name, 'type']}
-                    rules={[{ required: true, message: 'Turini tanlang' }]}
-                    style={{ width: '20%' }}
+          <Form.Item
+            label="Mijoz"
+            rules={[{ required: true }]}
+            name="userId"
+            initialValue={ordersStore.orderPayment?.client?.id}
+          >
+            <Select
+              showSearch
+              placeholder="Mijoz"
+              optionFilterProp="children"
+              options={[{
+                value: ordersStore.orderPayment?.client?.id,
+                label: `${ordersStore.orderPayment?.client?.fullname} ${ordersStore.orderPayment?.client?.phone}`,
+              }]}
+              allowClear
+            />
+          </Form.Item>
+          <Form.List name="payments">
+            {(fields, { add, remove }) => (
+              <div>
+                {fields.map(({ key, name }) => (
+                  <div
+                    key={key}
+                    style={{ display: 'flex', marginBottom: 10 }}
                   >
-                    <Select
-                      placeholder="To'lov turi"
-                      options={PaymentTypeOptions}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name={[name, 'amount']}
-                    rules={[{ required: true, message: 'Summa kiriting' }]}
-                    style={{ width: '40%' }}
-                  >
-                    <InputNumber
-                      key={form.getFieldValue(['payments', name, 'currencyId'])}
-                      style={{ width: '100%' }}
-                      formatter={(value) => priceFormat(value!)}
-                      placeholder="0"
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name={[name, 'currencyId']}
-                    initialValue={authStore?.staffInfo?.currency?.id}
-                    rules={[{ required: true, message: 'Valyuta tanlang' }]}
-                    style={{ width: '25%' }}
-                  >
-                    <Select
-                      options={currencyManyData}
-                      onMouseDown={() => {
-                        const payments = form.getFieldValue('payments') || [];
+                    <Form.Item
+                      name={[name, 'type']}
+                      rules={[{ required: true, message: 'Turini tanlang' }]}
+                      style={{ width: '20%' }}
+                    >
+                      <Select
+                        placeholder="To'lov turi"
+                        options={PaymentTypeOptions}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name={[name, 'amount']}
+                      rules={[{ required: true, message: 'Summa kiriting' }]}
+                      style={{ width: '40%' }}
+                    >
+                      <InputNumber
+                        key={form.getFieldValue(['payments', name, 'currencyId'])}
+                        style={{ width: '100%' }}
+                        formatter={(value) => priceFormat(value!)}
+                        placeholder="0"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name={[name, 'currencyId']}
+                      initialValue={authStore?.staffInfo?.currency?.id}
+                      rules={[{ required: true, message: 'Valyuta tanlang' }]}
+                      style={{ width: '25%' }}
+                    >
+                      <Select
+                        options={currencyManyData}
+                        onMouseDown={() => {
+                          const payments = form.getFieldValue('payments') || [];
 
-                        setPrevCurrencies(prev => ({
-                          ...prev,
-                          [name]: payments[name]?.currencyId,
-                        }));
-                      }}
-                      onChange={(val) => handleCurrencyChange(val, name)}
-                    />
-                  </Form.Item>
-                  <Button danger onClick={() => remove(name)}>
-                    O‘chirish
-                  </Button>
-                </div>
-              ))}
+                          setPrevCurrencies(prev => ({
+                            ...prev,
+                            [name]: payments[name]?.currencyId,
+                          }));
+                        }}
+                        onChange={(val) => handleCurrencyChange(val, name)}
+                      />
+                    </Form.Item>
+                    <Button danger onClick={() => remove(name)}>
+                      O‘chirish
+                    </Button>
+                  </div>
+                ))}
 
-              <Button
-                type="dashed"
-                block
-                onClick={() =>
-                  add({
-                    amount: 0,
-                    type: PaymentTypes.CASH,
-                    currencyId: authStore?.staffInfo?.currency?.id,
-                  })
-                }
-              >
-                + To‘lov qo‘shish
-              </Button>
-            </div>
-          )}
-        </Form.List>
-
-        <Form.Item
-          label="To'lov haqida ma'lumot"
-          name="description"
-        >
-          <Input.TextArea
-            placeholder="To'lov haqida ma'lumot"
-            style={{ width: '100%' }}
-            rows={4}
-            maxLength={100}
-            showCount
-            autoSize={{ minRows: 2, maxRows: 6 }}
-          />
-        </Form.Item>
-      </Form>
-      <div>
-        <div>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-            <p style={{ margin: '0' }}>Umumiy qiymati:</p>
-            <div style={{ textAlign: 'end' }}>
-              {ordersStore?.order?.totalPrices?.map(price =>
-                <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
-            </div>
-          </div>
-        </div>
-        <div>
-          <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-              <p style={{ margin: '0' }}>To&apos;lov:</p>
-              <div style={{ textAlign: 'end' }}>
-                {paymentTotals?.map(price =>
-                  <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price.symbol!)}</div>)}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-              <p style={{ margin: '0' }}>Qarzga:</p>
-              <div style={{ textAlign: 'end' }}>
-                <div>{priceFormat(settlement?.debt?.uzs)} UZS</div>
-                <div>{priceFormat(settlement?.debt?.usd)} USD</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-              <p style={{ margin: '0' }}>Qaytim:</p>
-              <div style={{ textAlign: 'end' }}>
-                <div>{priceFormat(settlement?.change?.uzs)} UZS</div>
-                <div>{priceFormat(settlement?.change?.usd)} USD</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Form form={form}>
-          {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
-            <div style={{ marginTop: 20 }}>
-              <h3>Mijoz hisobidan ayirish</h3>
-
-              {settlement.change.uzs > 0 && (
-                <Form.Item
-                  name="uzsChange"
-                  label="UZS"
-                  initialValue={settlement.change.uzs}
+                <Button
+                  type="primary"
+                  block
+                  onClick={() =>
+                    add({
+                      amount: 0,
+                      type: PaymentTypes.CASH,
+                      currencyId: authStore?.staffInfo?.currency?.id,
+                    })
+                  }
                 >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    formatter={(value) => priceFormat(value)}
-                    onChange={(val) => handleChangeUpdate('uzs', Number(val || 0))}
-                  />
-                </Form.Item>
-              )}
+                  + To‘lov qo‘shish
+                </Button>
+              </div>
+            )}
+          </Form.List>
 
-              {settlement.change.usd > 0 && (
-                <Form.Item
-                  name="usdChange"
-                  label="USD"
-                  initialValue={settlement.change.usd}
-                >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    formatter={(value) => priceFormat(value)}
-                    onChange={(val) => handleChangeUpdate('usd', Number(val || 0))}
-                  />
-                </Form.Item>
-              )}
-            </div>
-          )}
-
-          {settlement.change.uzs > 0 && uzsChange < settlement.change.uzs && (
-            <Form.Item name="uzsCash" label="Kassadan berish UZS">
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                max={settlement.change.uzs}
-                formatter={(v) => priceFormat(v)}
-                onChange={(val) => handleCashChange('uzs', Number(val || 0))}
-              />
-            </Form.Item>
-          )}
-
-          {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
-            <Form.Item name="usdCash" label="Kassadan berish USD">
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                max={settlement.change.usd}
-                formatter={(v) => priceFormat(v)}
-                onChange={(val) => handleCashChange('usd', Number(val || 0))}
-              />
-            </Form.Item>
-          )}
+          <Form.Item
+            label="To'lov haqida ma'lumot"
+            name="description"
+          >
+            <Input.TextArea
+              placeholder="To'lov haqida ma'lumot"
+              style={{ width: '100%' }}
+              rows={4}
+              maxLength={100}
+              showCount
+              autoSize={{ minRows: 2, maxRows: 6 }}
+            />
+          </Form.Item>
         </Form>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <Card style={{ background: '#F5F5F5' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+              <p style={{ margin: '0' }}>Umumiy qiymati:</p>
+              <div style={{ textAlign: 'end' }}>
+                {ordersStore?.order?.totalPrices?.map(price =>
+                  <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+              </div>
+            </div>
+          </Card>
+          <Card style={{ background: '#F5F5F5' }}>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+                <p style={{ margin: '0' }}>To&apos;lov:</p>
+                <div style={{ textAlign: 'end' }}>
+                  {paymentTotals?.map(price =>
+                    <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price.symbol!)}</div>)}
+                </div>
+              </div>
+            </div>
+          </Card>
+          <Card style={{ background: '#F5F5F5' }}>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+                <p style={{ margin: '0' }}>Qarzga:</p>
+                <div style={{ textAlign: 'end' }}>
+                  <div>{priceFormat(settlement?.debt?.uzs)}{currencyTagUi('UZS')}</div>
+                  <div>{priceFormat(settlement?.debt?.usd)}{currencyTagUi('USD')}</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+          <Card style={{ background: '#F5F5F5' }}>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+                <p style={{ margin: '0' }}>Qaytim:</p>
+                <div style={{ textAlign: 'end' }}>
+                  <div>{priceFormat(settlement?.change?.uzs)}{currencyTagUi('UZS')}</div>
+                  <div>{priceFormat(settlement?.change?.usd)}{currencyTagUi('USD')}</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
+      <Form form={form}>
+        {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
+          <div style={{ marginTop: 20 }}>
+            <h3>Mijoz hisobidan ayirish</h3>
+
+            {settlement.change.uzs > 0 && (
+              <Form.Item
+                name="uzsChange"
+                label="UZS"
+                initialValue={settlement.change.uzs}
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  formatter={(value) => priceFormat(value)}
+                  onChange={(val) => handleChangeUpdate('uzs', Number(val || 0))}
+                />
+              </Form.Item>
+            )}
+
+            {settlement.change.usd > 0 && (
+              <Form.Item
+                name="usdChange"
+                label="USD"
+                initialValue={settlement.change.usd}
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  formatter={(value) => priceFormat(value)}
+                  onChange={(val) => handleChangeUpdate('usd', Number(val || 0))}
+                />
+              </Form.Item>
+            )}
+          </div>
+        )}
+
+        {uzsChange < settlement.change.uzs && (
+          <Form.Item name="uzsCash" label="Kassadan berish UZS">
+            <InputNumber
+              style={{ width: '100%' }}
+              min={0}
+              max={settlement.change.uzs}
+              formatter={(v) => priceFormat(v)}
+              onChange={(val) => handleCashChange('uzs', Number(val || 0))}
+            />
+          </Form.Item>
+        )}
+
+        {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
+          <Form.Item name="usdCash" label="Kassadan berish USD">
+            <InputNumber
+              style={{ width: '100%' }}
+              min={0}
+              max={settlement.change.usd}
+              formatter={(v) => priceFormat(v)}
+              onChange={(val) => handleCashChange('usd', Number(val || 0))}
+            />
+          </Form.Item>
+        )}
+      </Form>
     </Modal>
   );
 });

@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import styles from './single-supplier.scss';
 import classNames from 'classnames';
 import { ISingleSupplierTabs, singleSupplierStore } from '@/stores/supplier';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -45,7 +46,13 @@ export const SingleSupplier = observer(() => {
           className={cn('single-client__title')}
           level={3}
         >
-          Yetkazib beruvchiga qarz: {singleSupplierStore?.activeSupplier?.debt}
+          Yetkazib beruvchiga qarz: {
+            singleSupplierStore?.activeSupplier?.debtByCurrency?.map(debt => (
+              <span key={debt?.currency?.id}>
+                {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
+              </span>
+            ))
+          }
         </Typography.Title>
       </div>
 

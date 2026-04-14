@@ -29,6 +29,7 @@ export const Action: FC<Props> = observer(({ orders }) => {
       mutationFn: (id: string) => ordersApi.deleteOrder(id!),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+        addNotification('Sotuv o\'chirildi');
 
         if (clientId) {
           singleClientStore.getSingleClient({ id: clientId });

@@ -4,6 +4,7 @@ import { Action } from './Action';
 import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { IStaffsPayments } from '@/api/staffs-payments/types';
+import { currencyTagUi } from '@/constants/payment';
 
 export const clientsColumns: ColumnType<IStaffsPayments>[] = [
   {
@@ -20,8 +21,8 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     align: 'center',
     render: (value, record) => (
       <div>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.user?.fullname}</p>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.user?.phone}</p>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.employee?.fullname}</p>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.employee?.phone}</p>
       </div>
     ),
   },
@@ -31,14 +32,19 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     title: 'To\'lov qiymati',
     align: 'center',
     width: 200,
-    render: (value, record) => <span>{priceFormat(record?.sum)}</span>,
+    render: (value, record) => (
+      <span>
+        {record?.methods?.map(method => (
+          <span key={method?.currency?.id}>{priceFormat(method?.amount)}{currencyTagUi(method?.currency?.symbol)}</span>
+        ))}
+      </span>
+    ),
   },
   {
     key: 'description',
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    width: 200,
     render: (value, record) => <span>{record?.description}</span>,
   },
   {

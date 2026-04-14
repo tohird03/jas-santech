@@ -1,3 +1,4 @@
+import { ICurrency } from "../auth/types";
 import { ISeller } from "../clients";
 import { IPagination } from "../types";
 
@@ -9,15 +10,33 @@ export interface IGetStaffsPaymentsParams extends IPagination {
 
 export interface IStaffsPayments {
   id: string;
-  sum: string;
   description: string;
   createdAt: string;
-  user: ISeller;
+  employee: ISeller;
+  methods: {
+    amount: number;
+    currency: ICurrency;
+  }[]
+}
+
+export interface IStaffPaymentsTotal {
+  total: number;
+  currency: ICurrency;
 }
 
 export interface IAddEditStaffsPayment {
   id?: string;
-  sum: number;
+  method: {
+    amount: number;
+    currencyId: string;
+  }
   description: string;
-  userId: string
+  employeeId: string;
+}
+
+export interface IAddEditStafPaymentForm {
+  amount: number;
+  currencyId: string;
+  description: string;
+  employeeId: string;
 }

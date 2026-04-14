@@ -6,13 +6,20 @@ import {addNotification} from '@/utils';
 import { priceFormat } from '@/utils/priceFormat';
 import { staffsApi } from '@/api/staffs';
 import { staffsPaymentStore } from '@/stores/workers/staffs-payments';
-import { IAddEditStaffsPayment } from '@/api/staffs-payments/types';
+import { IAddEditStafPaymentForm, IAddEditStaffsPayment } from '@/api/staffs-payments/types';
 import { staffsPaymentsApi } from '@/api/staffs-payments/staffs-payments';
+import { authStore } from '@/stores/auth';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const { data: currencyMany, isLoading: loadingClients } = useQuery({
+    queryKey: ['getCurrencyMany'],
+    queryFn: () =>
+      authStore.getCurrencyMany(),
+  });
 
   const { data: sellerData, isLoading: loadingSeller } = useQuery({
     queryKey: ['getSellers'],
@@ -53,18 +60,27 @@ export const AddEditModal = observer(() => {
       },
     });
 
-  const handleSubmit = (values: IAddEditStaffsPayment) => {
+  const handleSubmit = (values: IAddEditStafPaymentForm) => {
     setLoading(true);
+
+    const staffPay: IAddEditStaffsPayment = {
+      method: {
+        currencyId: values?.currencyId!,
+        amount: values?.amount!,
+      },
+      description: values?.description,
+      employeeId: values?.employeeId,
+    };
 
     if (staffsPaymentStore?.singleStaffPayments) {
       updateClient({
-        ...values,
+        ...staffPay,
         id: staffsPaymentStore?.singleStaffPayments?.id!,
       });
 
       return;
     }
-    addNewStaffPayment(values);
+    addNewStaffPayment(staffPay);
   };
 
   const handleModalClose = () => {
@@ -83,11 +99,22 @@ export const AddEditModal = observer(() => {
     }))
   ), [sellerData]);
 
+  const currencyManyData = useMemo(() => (
+    currencyMany?.data.map((currency) => ({
+      value: currency?.id,
+      label: `${currency?.symbol} | ${priceFormat(currency?.exchangeRate)}`,
+      code: currency?.symbol,
+      rate: currency?.exchangeRate,
+    })) || []
+  ), [currencyMany]);
+
   useEffect(() => {
     if (staffsPaymentStore.singleStaffPayments) {
       form.setFieldsValue({
         ...staffsPaymentStore.singleStaffPayments,
-        userId: staffsPaymentStore.singleStaffPayments?.user?.id,
+        employeeId: staffsPaymentStore.singleStaffPayments?.employee?.id,
+        currencyId: staffsPaymentStore?.singleStaffPayments?.methods[0]?.currency?.id,
+        amount: staffsPaymentStore?.singleStaffPayments?.methods[0]?.amount,
       });
     }
   }, [staffsPaymentStore.singleStaffPayments]);
@@ -110,7 +137,7 @@ export const AddEditModal = observer(() => {
         autoComplete="off"
       >
         <Form.Item
-          name="userId"
+          name="employeeId"
           label="Xodim"
           rules={[{required: true}]}
         >
@@ -123,18 +150,14 @@ export const AddEditModal = observer(() => {
           />
         </Form.Item>
 
-        <Form.Item
+        <PriceWithCurrency
+          form={form}
+          valueName="amount"
+          currencyName="currencyId"
           label="To'lov qiymati"
-          name="sum"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="To'lov qiymati"
-            defaultValue={0}
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-          />
-        </Form.Item>
+          required
+          currencyOptions={currencyManyData}
+        />
 
         <Form.Item
           label="To'lov haqida ma'lumot"

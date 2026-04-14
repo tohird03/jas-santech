@@ -86,8 +86,8 @@ export const SupplierInfo = observer(() => {
   };
 
   const rowClassName = (record: ISupplierInfo) =>
-    record.debt > 0 ? 'info__row'
-      : record.debt < 0
+    record.debtByCurrency[0]?.amount > 0 ? 'info__row'
+      : record.debtByCurrency[0]?.amount < 0
         ? 'error__row' : '';
 
   useEffect(() => () => {
