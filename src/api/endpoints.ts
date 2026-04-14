@@ -115,11 +115,11 @@ export enum Endpoints {
 const config: Record<string, TStage> = {
   dev: {
     // apiUrl: 'https://tmp.16.170.250.134.nip.io',
-    apiUrl: 'http://173.212.241.67:7000',
+    apiUrl: 'https://173-212-241-67.jas-santech.nip.io',
   },
   prod: {
     // apiUrl: 'https://tmp.16.170.250.134.nip.io',
-    apiUrl: 'http://173.212.241.67:7000',
+    apiUrl: 'https://173-212-241-67.jas-santech.nip.io',
   },
 };
 

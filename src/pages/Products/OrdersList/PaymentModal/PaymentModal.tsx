@@ -53,12 +53,6 @@ export const PaymentModal = observer(() => {
   const handleSubmitPayment = (values: IPaymentType) => {
     console.log(values);
 
-    // if (!isToday) {
-    //   message.info('Oldingi to\'lovni o\'zgartirolmaysiz!');
-
-    //   return;
-    // }
-
     // setLoadingPayment(true);
 
     // ordersApi.updateOrder({

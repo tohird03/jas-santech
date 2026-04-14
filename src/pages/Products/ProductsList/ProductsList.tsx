@@ -115,6 +115,7 @@ export const ProductsList = observer(() => {
         dataSource={productsData?.data?.data || []}
         loading={loading}
         rowClassName={rowClassName}
+        bordered
         pagination={{
           total: productsData?.data?.totalCount,
           current: productsListStore?.pageNumber,
@@ -130,7 +131,7 @@ export const ProductsList = observer(() => {
             <Table.Summary.Cell index={2}>
               <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
                 Umumiy:
-                <p style={{ margin: '0', fontWeight: 'bold' }}>{productsData?.data?.calc?.calcTotal?.totalCount}</p>
+                <p style={{ margin: '0', fontWeight: 'bold' }}>{productsData?.data?.calc?.calcTotal?.totalCount || 0}</p>
               </div>
             </Table.Summary.Cell>
             <Table.Summary.Cell index={2}>

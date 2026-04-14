@@ -1,10 +1,11 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
 import { IProducts } from '@/api/product/types';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { priceFormat } from '@/utils/priceFormat';
 import { NavLink } from 'react-router-dom';
+import { currencyTagUi } from '@/constants/payment';
 
 export const productsListColumn: ColumnType<IProducts>[] = [
   {
@@ -33,25 +34,33 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     dataIndex: 'cost',
     title: 'Sotib olingan narxi',
     align: 'center',
-    render: (value, record) => <span>{record?.prices?.cost?.price} {record?.prices?.cost?.currency?.symbol}</span>,
+    render: (value, record) => (
+      <span>
+        {priceFormat(record?.prices?.cost?.price)} {currencyTagUi(record?.prices?.cost?.currency?.symbol)}
+      </span>
+    ),
+  },
+  {
+    key: 'wholePrice',
+    dataIndex: 'wholePrice',
+    title: 'Ulgurji narxi',
+    align: 'center',
+    render: (value, record) => (
+      <span>
+        {priceFormat(record?.prices?.wholesale?.price)} {currencyTagUi(record?.prices?.wholesale?.currency?.symbol)}
+      </span>
+    ),
   },
   {
     key: 'selling_price',
     dataIndex: 'selling_price',
     title: 'Sotilish narxi',
     align: 'center',
-    render: (value, record) => <span>{record?.prices?.selling?.price} {record?.prices?.selling?.currency?.symbol}</span>,
-  },
-  {
-    key: 'totalPrice',
-    dataIndex: 'totalPrice',
-    title: 'Umumiy qiymati',
-    align: 'center',
-    render: (value, record) => {
-      const totalSellingPrice = record?.prices?.cost?.price * record?.count;
-
-      return <span>{priceFormat(totalSellingPrice)} {record?.prices?.cost?.currency?.symbol}</span>;
-    },
+    render: (value, record) => (
+      <span>
+        {priceFormat(record?.prices?.selling?.price)} {currencyTagUi(record?.prices?.selling?.currency?.symbol)}
+      </span>
+    ),
   },
   {
     key: 'min_amount',
@@ -59,6 +68,14 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Ogohlantirish',
     align: 'center',
     render: (value, record) => `${record?.minAmount} dona`,
+  },
+  {
+    key: 'description',
+    dataIndex: 'description',
+    title: 'O\'ram haqida ma\'lumot',
+    align: 'center',
+    width: 300,
+    render: (value, record) => <span>{record?.description}</span>,
   },
   {
     key: 'createdAt',

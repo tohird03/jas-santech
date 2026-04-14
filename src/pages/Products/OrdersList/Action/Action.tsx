@@ -8,17 +8,15 @@ import { IOrder } from '@/api/order/types';
 import { ordersStore } from '@/stores/products';
 import { ordersApi } from '@/api/order';
 import Item from 'antd/es/list/Item';
-
-type Props = {
-  orders: IOrder;
-};
-
 import { MyDocument } from './Pdf-save';
 import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { useParams } from 'react-router-dom';
 import { singleClientStore } from '@/stores/clients';
-import { authStore } from '@/stores/auth';
+
+type Props = {
+  orders: IOrder;
+};
 
 export const Action: FC<Props> = observer(({ orders }) => {
   const queryClient = useQueryClient();

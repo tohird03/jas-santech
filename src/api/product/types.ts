@@ -22,6 +22,7 @@ export interface IProducts {
     wholesale: IProductPrice,
   };
   lastSellingDate: string;
+  description: string;
 }
 
 export interface IProductPrice {
