@@ -17,6 +17,8 @@ import { IAddEditIncomeOrder, IAddIncomeOrderForm, IAddIncomeOrderProducts, IInc
 import { singleSupplierStore, supplierInfoStore } from '@/stores/supplier';
 import { ISupplierInfo } from '@/api/supplier/types';
 import { currencyTagUi } from '@/constants/payment';
+import { authStore } from '@/stores/auth';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 
 const cn = classNames.bind(styles);
 
@@ -79,6 +81,12 @@ export const AddEditModal = observer(() => {
       }),
   });
 
+  const { data: currencyMany } = useQuery({
+    queryKey: ['getCurrencyMany'],
+    queryFn: () =>
+      authStore.getCurrencyMany(),
+  });
+
   const handleOpenPaymentModal = () => {
     if (incomeProductsStore?.incomeOrder?.id) {
       incomeProductsStore.setIncomeOrderPayment({
@@ -118,6 +126,8 @@ export const AddEditModal = observer(() => {
       count: values?.count,
       cost: values?.cost,
       price: values?.price,
+      costCurrencyId: values?.costCurrencyId,
+      priceCurrencyId: values?.priceCurrencyId,
     };
 
     if (incomeProductsStore?.incomeOrder) {
@@ -191,7 +201,7 @@ export const AddEditModal = observer(() => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
     form.setFieldValue('cost', findProduct?.prices?.cost?.price);
-    form.setFieldValue('price', findProduct?.prices);
+    form.setFieldValue('price', findProduct?.prices?.selling?.price);
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();
@@ -489,6 +499,15 @@ export const AddEditModal = observer(() => {
     return '';
   };
 
+  const currencyManyData = useMemo(() => (
+    currencyMany?.data.map((currency) => ({
+      value: currency?.id,
+      label: `${currency?.symbol} | ${priceFormat(currency?.exchangeRate)}`,
+      code: currency.symbol,
+      rate: currency.exchangeRate,
+    })) || []
+  ), [currencyMany]);
+
   return (
     <Modal
       open={incomeProductsStore.isOpenAddEditIncomeProductsModal}
@@ -503,10 +522,7 @@ export const AddEditModal = observer(() => {
             <p style={{ margin: 0 }}>{
               selectedSupplier &&
               `Yetkazib beruvchiga qarz:
-            ${selectedSupplier?.debtByCurrency?.map(debt =>
-          (
-            <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
-          ))}`}
+            ${selectedSupplier?.debtByCurrency?.map(debt => (<span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>))}`}
             </p>
             {incomeProductsStore?.incomeOrder?.id && (
               <Button
@@ -629,19 +645,15 @@ export const AddEditModal = observer(() => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
+        <PriceWithCurrency
+          form={form}
+          valueName="cost"
+          currencyName="costCurrencyId"
           label="Sotib olish narxi"
-          rules={[{ required: true }]}
-          name="cost"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Sotib olingan narxi"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            onKeyUp={handleChangeCostForm}
-          />
-        </Form.Item>
+          required
+          onKeyDown={handleChangeCostForm}
+          currencyOptions={currencyManyData}
+        />
         <Form.Item
           label="Mahsulot soni"
           rules={[{ required: true }]}
@@ -654,19 +666,15 @@ export const AddEditModal = observer(() => {
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
-        <Form.Item
+        <PriceWithCurrency
+          form={form}
+          valueName="price"
+          currencyName="priceCurrencyId"
           label="Sotish narxi"
-          rules={[{ required: true }]}
-          name="price"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Sotib olingan narxi"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            onKeyUp={handleChangePriceForm}
-          />
-        </Form.Item>
+          required
+          onKeyDown={handleChangePriceForm}
+          currencyOptions={currencyManyData}
+        />
         <Button
           onClick={handleCreateOrUpdateOrder}
           type="primary"

@@ -232,6 +232,8 @@ export const PaymentModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
+  const clientDebt = ordersStore?.order?.client?.debtByCurrency ?? [];
+
   return (
     <Modal
       open={ordersStore.isOpenPaymentModal}
@@ -241,12 +243,17 @@ export const PaymentModal = observer(() => {
             To&apos;lov {ordersStore.orderPayment?.client?.fullname}
           </p>
           <p style={{ margin: 0 }}>
-            {ordersStore?.order?.client?.debtByCurrency[0] && `Mijoz qarzi:
-    ${ordersStore?.order?.client?.debtByCurrency?.map(debt => (
-      <span key={debt?.currency?.id}>
-        {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
-      </span>
-    ))}`}
+            {clientDebt.length > 0 && (
+              <>
+                Mijoz qarzi:{' '}
+                {clientDebt.map((debt) => (
+                  <span key={debt.currency.id} style={{ marginLeft: 6 }}>
+                    {priceFormat(debt.amount)}
+                    {currencyTagUi(debt.currency.symbol)}
+                  </span>
+                ))}
+              </>
+            )}
           </p>
         </div>
       }

@@ -1,9 +1,8 @@
 import { ICurrency } from '@/api/auth/types';
-import { IClientsInfo } from '@/api/clients';
-
+import { IIncomeOrder } from '@/api/income-products/types';
 
 export function calculateSettlement(
-  debts: { amount: number, currency: ICurrency }[],
+  order: IIncomeOrder,
   payments: { currencyId: string, amount: number }[],
   currencies: ICurrency[],
   defaultCurrencySymbol: 'UZS' | 'USD'
@@ -16,10 +15,10 @@ export function calculateSettlement(
 
   // ---------------- ORDER
   const orderUZS =
-    debts.find(d => d.currency.symbol === 'UZS')?.amount || 0;
+    order.totalPrices?.cost?.find(p => p.currency.symbol === 'UZS')?.total || 0;
 
   const orderUSD =
-    debts.find(d => d.currency.symbol === 'USD')?.amount || 0;
+    order.totalPrices?.cost?.find(p => p.currency.symbol === 'USD')?.total || 0;
 
   // ---------------- PAYMENTS
   const paymentUZS = payments

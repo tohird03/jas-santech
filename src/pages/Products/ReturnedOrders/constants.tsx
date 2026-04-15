@@ -1,12 +1,13 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
 import { priceFormat } from '@/utils/priceFormat';
 import { IReturnedOrder, IReturnedOrderProducts } from '@/api/returned-order/types';
 import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
 import { Tag } from 'antd';
 import { OrderStatus, OrderStatusColor } from '../OrdersList/constants';
 import { getFullDateFormat } from '@/utils/getDateFormat';
+import { currencyTagUi } from '@/constants/payment';
 
 export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
   {
@@ -24,13 +25,6 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     render: (value, record) => <ClientNameLink client={record?.client} />,
   },
   {
-    key: 'sum',
-    dataIndex: 'sum',
-    title: 'Jami narxi',
-    align: 'center',
-    render: (value, record) => priceFormat(record?.totalPrice),
-  },
-  {
     key: 'status',
     dataIndex: 'status',
     title: 'Qaytaruv holati',
@@ -44,18 +38,16 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     ),
   },
   {
-    key: 'fromClient',
-    dataIndex: 'fromClient',
-    title: 'Mijozning hisobidan',
+    key: 'sum',
+    dataIndex: 'sum',
+    title: 'Jami narxi',
     align: 'center',
-    render: (value, record) => priceFormat(record?.payment?.fromBalance),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Naqd to\'lov',
-    align: 'center',
-    render: (value, record) => priceFormat(record?.payment?.cash),
+    render: (value, record) => (
+      <>
+        {record?.totalPrices?.map(price =>
+          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
   {
     key: 'seller',

@@ -6,6 +6,7 @@ import { priceFormat } from '@/utils/priceFormat';
 import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
 import { PaymentStatus } from './PaymentStatus';
 import { getFullDateFormat } from '@/utils/getDateFormat';
+import { currencyTagUi } from '@/constants/payment';
 
 export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
   {
@@ -48,7 +49,12 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalCost),
+    render: (value, record) => (
+      <>
+        {record?.totalPrices?.cost?.map(price =>
+          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
   {
     key: 'totalPay',
@@ -154,7 +160,12 @@ export const ordersInfoColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalCost),
+    render: (value, record) => (
+      <>
+        {record?.totalPrices?.cost?.map(price =>
+          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
 ];
 

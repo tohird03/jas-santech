@@ -1,3 +1,5 @@
+import { IOrderPayment } from "@/stores/products/orders-list/types";
+import { ICurrency } from "../auth/types";
 import { IClientsInfo, ISeller } from "../clients";
 import { IOrderStatus } from "../order/types";
 import { IProducts } from "../product/types";
@@ -20,8 +22,14 @@ export interface IReturnedOrder {
   returnedDate: string,
   staff: ISeller,
   products: IReturnedOrderProducts[],
-  totalPrice: number;
-  payment: IReturnedOrderPayments;
+  totalPrices: IReturnedOrderTotalPrice[];
+  payment: IOrderPayment;
+}
+
+export interface IReturnedOrderTotalPrice {
+  currencyId: string;
+  total: number;
+  currency: ICurrency;
 }
 
 export interface IReturnedOrderProducts {
@@ -41,9 +49,10 @@ export interface IAddReturnedOrders {
 }
 
 export interface IAddReturnedOrderProducts {
-  productId: string,
-  count: number,
-  price: number
+  productId: string;
+  count: number;
+  price: number;
+  currencyId: string;
 }
 
 export interface IAddProductsToReturnedOrder extends IAddReturnedOrderProducts {

@@ -1,9 +1,10 @@
 import { ICurrency } from '@/api/auth/types';
-import { IClientsInfo } from '@/api/clients';
+import { IOrder } from '@/api/order/types';
+import { IReturnedOrder } from '@/api/returned-order/types';
 
 
 export function calculateSettlement(
-  debts: { amount: number, currency: ICurrency }[],
+  order: IReturnedOrder,
   payments: { currencyId: string, amount: number }[],
   currencies: ICurrency[],
   defaultCurrencySymbol: 'UZS' | 'USD'
@@ -16,10 +17,10 @@ export function calculateSettlement(
 
   // ---------------- ORDER
   const orderUZS =
-    debts.find(d => d.currency.symbol === 'UZS')?.amount || 0;
+    order.totalPrices.find(p => p.currency.symbol === 'UZS')?.total || 0;
 
   const orderUSD =
-    debts.find(d => d.currency.symbol === 'USD')?.amount || 0;
+    order.totalPrices.find(p => p.currency.symbol === 'USD')?.total || 0;
 
   // ---------------- PAYMENTS
   const paymentUZS = payments

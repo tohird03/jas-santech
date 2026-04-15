@@ -21,6 +21,8 @@ import { ColumnType } from 'antd/es/table';
 import { IAddProductsToReturnedOrder, IAddReturnedOrderProducts, IAddReturnedOrders } from '@/api/returned-order/types';
 import { returnedOrderApi } from '@/api/returned-order/returned-order';
 import { currencyTagUi } from '@/constants/payment';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
+import { authStore } from '@/stores/auth';
 
 const cn = classNames.bind(styles);
 
@@ -40,6 +42,12 @@ export const AddEditModal = observer(() => {
   const [isUpdatingProduct, setIsUpdatingProduct] = useState<IOrderProductUpdate | null>(null);
   const [isOpenProductSelect, setIsOpenProductSelect] = useState(false);
   const countInputRef = useRef<HTMLInputElement>(null);
+
+  const { data: currencyMany } = useQuery({
+    queryKey: ['getCurrencyMany'],
+    queryFn: () =>
+      authStore.getCurrencyMany(),
+  });
 
   // GET DATAS
   const { data: clientsData, isLoading: loadingClients } = useQuery({
@@ -64,10 +72,7 @@ export const AddEditModal = observer(() => {
 
   const handleOpenPaymentModal = () => {
     if (returnedOrdersStore?.singleReturnedOrder?.id) {
-      returnedOrdersStore.setSinglePayment({
-        cash: returnedOrdersStore?.singleReturnedOrder?.payment?.cash,
-        fromBalance: returnedOrdersStore?.singleReturnedOrder?.payment?.fromBalance,
-      });
+      returnedOrdersStore.setSinglePayment(returnedOrdersStore?.singleReturnedOrder?.payment);
       returnedOrdersStore.setIsOpenPaymentModal(true);
     }
   };
@@ -84,6 +89,7 @@ export const AddEditModal = observer(() => {
       productId: values?.productId,
       count: values?.count,
       price: values?.price,
+      currencyId: values?.currencyId,
     };
 
     if (returnedOrdersStore?.singleReturnedOrder?.id) {
@@ -159,7 +165,7 @@ export const AddEditModal = observer(() => {
   const handleChangeProduct = (productId: string) => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
-    form.setFieldValue('price', findProduct?.prices);
+    form.setFieldValue('price', findProduct?.prices?.selling?.price);
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();
@@ -421,6 +427,15 @@ export const AddEditModal = observer(() => {
     return '';
   };
 
+  const currencyManyData = useMemo(() => (
+    currencyMany?.data.map((currency) => ({
+      value: currency?.id,
+      label: `${currency?.symbol} | ${priceFormat(currency?.exchangeRate)}`,
+      code: currency.symbol,
+      rate: currency.exchangeRate,
+    })) || []
+  ), [currencyMany]);
+
   return (
     <Modal
       open={returnedOrdersStore.isOpenAddEditReturnedOrderModal}
@@ -538,19 +553,15 @@ export const AddEditModal = observer(() => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
+        <PriceWithCurrency
+          form={form}
+          valueName="price"
+          currencyName="currencyId"
           label="Narxi"
-          rules={[{ required: true }]}
-          name="price"
-          initialValue={0}
-        >
-          <InputNumber
-            placeholder="Sotib olingan narxi"
-            style={{ width: '100%' }}
-            formatter={(value) => priceFormat(value!)}
-            onKeyUp={handleChangePriceForm}
-          />
-        </Form.Item>
+          required
+          onKeyDown={handleChangePriceForm}
+          currencyOptions={currencyManyData}
+        />
         <Form.Item
           label="Mahsulot soni"
           rules={[{ required: true }]}

@@ -1,3 +1,4 @@
+import { ICurrency } from "../auth/types";
 import { IProducts } from "../product/types"
 import { IStaffs } from "../staffs";
 import { ISupplierInfo } from "../supplier/types";
@@ -13,8 +14,17 @@ export interface IIncomeOrder {
   createdAt: string;
   date: string;
   totalPayment: number;
-  totalCost: number;
+  totalPrices: {
+    cost: IIncomeOrderTotalPrice[];
+    selling: IIncomeOrderTotalPrice[];
+  };
   debt: number;
+}
+
+export interface IIncomeOrderTotalPrice {
+  currencyId: string;
+  total: number;
+  currency: ICurrency;
 }
 
 export interface IIncomeProduct {
@@ -38,7 +48,9 @@ export interface IAddIncomeOrderProducts {
   productId: string;
   count: number;
   cost: number;
+  costCurrencyId: string;
   price: number;
+  priceCurrencyId: string;
 }
 
 export interface IAddIncomeOrderForm extends IAddIncomeOrderProducts {

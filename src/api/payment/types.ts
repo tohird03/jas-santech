@@ -20,13 +20,21 @@ export interface IGetClientsPaymentsParams extends IPagination {
 
 export interface IAddEditPaymentParams {
   id?: string,
-  orderId?: string,
-  userId: string,
-  cash: number,
-  card: number,
-  transfer: number,
-  other: number,
-  sendUser?: boolean,
+  clientId: string,
+  description: string;
+  paymentMethods: IPaymentMethods[];
+}
+
+export interface IPaymentMethods {
+  type: string,
+  currencyId: string;
+  amount: number;
+}
+
+export interface IAddEditPaymentForm {
+  paymentMethods: IPaymentMethods[];
+  clientId: string;
+  description: string;
 }
 
 export interface ITotalPayment {
