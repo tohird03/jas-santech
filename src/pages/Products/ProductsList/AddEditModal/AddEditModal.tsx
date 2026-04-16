@@ -135,6 +135,12 @@ export const AddEditModal = observer(() => {
     if (productsListStore.singleProduct) {
       form.setFieldsValue({
         ...productsListStore.singleProduct,
+        cost: productsListStore?.singleProduct?.prices?.cost?.price,
+        price: productsListStore?.singleProduct?.prices?.selling?.price,
+        wholesale: productsListStore?.singleProduct?.prices?.wholesale?.price,
+        costCurrency: productsListStore?.singleProduct?.prices?.cost?.currency?.id,
+        priceCurrency: productsListStore?.singleProduct?.prices?.selling?.currency?.id,
+        wholesaleCurrency: productsListStore?.singleProduct?.prices?.wholesale?.currency?.id,
       });
     }
   }, [productsListStore.singleProduct]);

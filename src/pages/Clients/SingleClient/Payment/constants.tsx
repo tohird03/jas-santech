@@ -20,8 +20,8 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     align: 'center',
     render: (value, record) => (
       <div>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.user?.fullname}</p>
-        <i>+{record?.user?.phone}</i>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.client?.fullname}</p>
+        <i>+{record?.client?.phone}</i>
       </div>
     ),
   },

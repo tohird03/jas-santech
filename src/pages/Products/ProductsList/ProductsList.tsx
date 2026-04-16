@@ -140,6 +140,12 @@ export const ProductsList = observer(() => {
                 <p style={{ margin: '0', fontWeight: 'bold' }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalCost)}</p>
               </div>
             </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold', maxWidth: '150px', margin: '0 auto' }}>
+                Umumiy ulgurji narxi:
+                <p style={{ margin: '0', fontWeight: 'bold' }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalWholesale)}</p>
+              </div>
+            </Table.Summary.Cell>
             <Table.Summary.Cell index={3}>
               <div style={{ textAlign: 'center', fontWeight: 'bold', maxWidth: '150px', margin: '0 auto' }}>
                 Umumiy sotilish narxi:

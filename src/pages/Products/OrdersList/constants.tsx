@@ -83,8 +83,12 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Qarzga',
     align: 'center',
     width: '130px',
-    sorter: (a, b) => a?.debt - b?.debt,
-    render: (value, record) => priceFormat(record?.debt),
+    render: (value, record) => (
+      <>
+        {record?.debtByCurrency?.map(price =>
+          <div key={price?.currency?.id}>{priceFormat(price?.amount)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
   {
     key: 'createdAt',
@@ -205,7 +209,12 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     title: 'Qarzga',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.debt),
+    render: (value, record) => (
+      <>
+        {record?.debtByCurrency?.map(price =>
+          <div key={price?.currency?.id}>{priceFormat(price?.amount)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+      </>
+    ),
   },
   {
     key: 'cash',

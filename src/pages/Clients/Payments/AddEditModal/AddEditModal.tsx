@@ -247,6 +247,8 @@ export const AddEditModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
+  const clientDebt = paymentsStore?.singlePayment?.client?.debtByCurrency ?? [];
+
   return (
     <Modal
       open={paymentsStore.isOpenAddEditPaymentModal}
@@ -256,7 +258,7 @@ export const AddEditModal = observer(() => {
             To&apos;lov
           </p>
           <p style={{ margin: 0 }}>
-            {paymentsStore?.singlePayment?.user?.debtByCurrency[0] && `Mijoz qarzi: ${paymentsStore?.singlePayment?.user?.debtByCurrency?.map(debt => (
+            {clientDebt?.length > 0 && `Mijoz qarzi: ${paymentsStore?.singlePayment?.client?.debtByCurrency?.map(debt => (
               <span key={debt?.currency?.id}>
                 {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
               </span>
@@ -422,7 +424,7 @@ export const AddEditModal = observer(() => {
           <div>
             {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
               <div style={{ marginTop: 20 }}>
-                <h3>Mijoz hisobidan ayirish</h3>
+                <h3>Kassadan</h3>
 
                 {settlement.change.uzs > 0 && (
                   <Form.Item
@@ -455,7 +457,7 @@ export const AddEditModal = observer(() => {
             )}
 
             {uzsChange < settlement.change.uzs && (
-              <Form.Item name="uzsCash" label="Kassadan berish UZS">
+              <Form.Item name="uzsCash" label="Mijoz hisobidan ayirish UZS">
                 <InputNumber
                   style={{ width: '100%' }}
                   min={0}
@@ -467,7 +469,7 @@ export const AddEditModal = observer(() => {
             )}
 
             {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
-              <Form.Item name="usdCash" label="Kassadan berish USD">
+              <Form.Item name="usdCash" label="Mijoz hisobidan ayirish USD">
                 <InputNumber
                   style={{ width: '100%' }}
                   min={0}

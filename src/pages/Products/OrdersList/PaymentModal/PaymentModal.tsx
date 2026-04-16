@@ -171,8 +171,6 @@ export const PaymentModal = observer(() => {
   // QAYTIM
   const uzsChange = Form.useWatch('uzsChange', form) || 0;
   const usdChange = Form.useWatch('usdChange', form) || 0;
-  const cashUzs = Form.useWatch('cashUzs', form) || 0;
-  const cashUsd = Form.useWatch('cashUsd', form) || 0;
 
   useEffect(() => {
     form.setFieldsValue({

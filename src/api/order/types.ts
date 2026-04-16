@@ -13,7 +13,10 @@ export interface IOrder {
   date: string;
   articl: number;
 
-  debt: number;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
   totalPrices: IOrderTotalPrice[];
   totalPayment: number;
 }

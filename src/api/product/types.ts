@@ -78,6 +78,7 @@ export interface IProductTotalCalc {
   calcTotal: {
     totalPrice: number,
     totalCost: number,
+    totalWholesale: number,
     totalCount: number,
   }
 }

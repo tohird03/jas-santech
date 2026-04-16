@@ -29,7 +29,7 @@ export enum Endpoints {
 
   ProductsMany = '/product/many',
   ProductsOne = '/product/one',
-  ProductSingleStatus = '/product-mv/many-product-stats',
+  ProductSingleStatus = '/statistics/product-mv',
   GetProductsToExcel = '/product/excel-download/many',
 
   StaffsMany = '/staff/many',
