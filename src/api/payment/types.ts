@@ -32,6 +32,7 @@ export interface IAddEditPaymentParams {
   clientId: string,
   description: string;
   paymentMethods: IPaymentMethods[];
+  changeMethods: IPaymentMethods[];
 }
 
 export interface IPaymentMethods {
@@ -44,6 +45,10 @@ export interface IAddEditPaymentForm {
   paymentMethods: IPaymentMethods[];
   clientId: string;
   description: string;
+  uzsChange: number;
+  usdChange: number;
+  uzsCash: number;
+  usdCash: number;
 }
 
 export interface ITotalPayment {

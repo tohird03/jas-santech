@@ -110,6 +110,11 @@ export const mainMenuList: IMenuItems[] = [
         key: ROUTES.workersStaffsPayments,
         roleKey: EPageAccess.STUFFPAYMENT,
       },
+      {
+        label: <><SolutionOutlined /> Valyuta</>,
+        key: ROUTES.workersCurrency,
+        roleKey: EPageAccess.STUFFPAYMENT,
+      },
     ],
   },
 ];

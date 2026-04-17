@@ -6,7 +6,7 @@ export interface ISupplierPayments extends IPaymentType {
   id: string,
   createdAt: string,
   order: IOrder,
-  user: ISupplierInfo,
+  supplier: ISupplierInfo,
 }
 
 export interface IIncomeGetClientsPaymentsParams extends IPagination {
@@ -16,8 +16,26 @@ export interface IIncomeGetClientsPaymentsParams extends IPagination {
   userId?: string;
 }
 
-export interface IIncomeAddEditPaymentParams extends IPaymentType {
+export interface IAddEditPaymentParams {
   id?: string,
-  orderId?: string,
   supplierId: string,
+  description: string;
+  paymentMethods: IPaymentMethods[];
+  changeMethods: IPaymentMethods[];
+}
+
+export interface IPaymentMethods {
+  type: string,
+  currencyId: string;
+  amount: number;
+}
+
+export interface IAddEditPaymentForm {
+  payments: IPaymentMethods[];
+  supplierId: string;
+  description: string;
+  uzsChange: number;
+  usdChange: number;
+  uzsCash: number;
+  usdCash: number;
 }

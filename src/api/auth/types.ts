@@ -22,3 +22,8 @@ export interface ICurrencyOptions {
   code: string;
   rate: number;
 }
+
+export interface IEditCurrency {
+  exchangeRate: number;
+  id: string;
+}

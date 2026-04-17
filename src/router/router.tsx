@@ -7,6 +7,7 @@ import {Layout} from '@/modules/Layout';
 import {
   ClientsInfo,
   ClientsPayments,
+  Currency,
   IncomeProducts,
   Login,
   Orders,
@@ -52,6 +53,10 @@ export const Router = ({isAuth}: Props) => useRoutes([
           {
             element: <Suspense fallback={<Loading />}><StaffsPayments /></Suspense>,
             path: ROUTES.workersStaffsPayments,
+          },
+          {
+            element: <Suspense fallback={<Loading />}><Currency /></Suspense>,
+            path: ROUTES.workersCurrency,
           },
           // CLIENTS
           {

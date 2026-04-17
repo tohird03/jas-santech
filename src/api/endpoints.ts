@@ -10,6 +10,7 @@ export enum Endpoints {
   UserProfile = '/auth/profile',
   CurrencyDefaultChange = '/common/staff/currency',
   CurrencyManyGet = '/currency/many',
+  CurrencyOne = '/currency/one',
 
   // CLIENTS
   ClientsMany = '/client/many',

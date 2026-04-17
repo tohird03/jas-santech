@@ -1,7 +1,7 @@
 import {authStore} from './auth';
 import {profileStore} from './profile';
 import {clientsInfoStore, paymentsStore, singleClientStore} from './clients';
-import {staffsStore} from './workers';
+import {staffsStore, currencyStore} from './workers';
 import {supplierInfoStore, supplierPaymentsStore, singleSupplierStore} from './supplier';
 import {productsListStore, incomeProductsStore, ordersStore, returnedOrdersStore} from './products';
 
@@ -9,6 +9,7 @@ export const stores = {
   authStore,
   profileStore,
   staffsStore,
+  currencyStore,
   clientsInfoStore,
   paymentsStore,
   singleClientStore,
@@ -25,6 +26,7 @@ export const resetStores = () => {
   authStore.reset();
   profileStore.reset();
   staffsStore.reset();
+  currencyStore.reset();
   clientsInfoStore.reset();
   paymentsStore.reset();
   singleClientStore.reset();

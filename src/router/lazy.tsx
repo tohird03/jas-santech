@@ -21,6 +21,9 @@ export const Staffs = lazy(() =>
 export const StaffsPayments = lazy(() =>
   import('@/pages/Workers').then(({ StaffsPayments }) => ({ default: StaffsPayments })).catch(handleCatchChunkError));
 
+export const Currency = lazy(() =>
+  import('@/pages/Workers').then(({ Currency }) => ({ default: Currency })).catch(handleCatchChunkError));
+
 // CLIENTS
 export const ClientsInfo = lazy(() =>
   import('@/pages/Clients').then(({ ClientsInfo }) => ({ default: ClientsInfo })).catch(handleCatchChunkError));
