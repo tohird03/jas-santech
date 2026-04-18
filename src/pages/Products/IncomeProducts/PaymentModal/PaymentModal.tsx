@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, InputNumber, Modal, Select, message } from 'antd';
+import { Button, Card, Form, Input, InputNumber, Modal, Select, message, notification } from 'antd';
 import { observer } from 'mobx-react';
 import { priceFormat } from '@/utils/priceFormat';
 import { IPaymentType } from '@/api/types';
@@ -11,11 +11,14 @@ import { PaymentTypeOptions, currencyTagUi } from '@/constants/payment';
 import { PaymentTypes } from '@/constants/types';
 import { calculateSettlement } from '../utils';
 import { incomeProductsStore } from '@/stores/products';
+import { IIncomeOrderPayment, IIncomeOrderPaymentForm, IIncomeOrderPaymentParams } from '@/api/income-products/types';
+import { incomeProductsApi } from '@/api/income-products';
+import { addNotification } from '@/utils';
 
 export const PaymentModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
-  const { clientId } = useParams();
+  const { supplierId } = useParams();
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [prevCurrencies, setPrevCurrencies] = useState<Record<number, string>>({});
   const paymentsForm = Form.useWatch('payments', form) || [];
@@ -27,9 +30,9 @@ export const PaymentModal = observer(() => {
   });
 
   const handleModalClose = () => {
-    if (clientId) {
+    if (supplierId) {
       singleClientStore.getSingleClient({
-        id: clientId,
+        id: supplierId,
         deedEndDate: singleClientStore.endDate!,
         deedStartDate: singleClientStore.startDate!,
       });
@@ -44,28 +47,75 @@ export const PaymentModal = observer(() => {
     form.submit();
   };
 
-  const handleSubmitPayment = (values: IPaymentType) => {
-    console.log(values);
+  const handleSubmitPayment = (values: IIncomeOrderPaymentForm) => {
+    const changeMethods = [];
 
-    // setLoadingPayment(true);
+    if (!currencyMany) {
+      notification.error({
+        message: 'Valyuta aniqlanmadi!',
+      });
 
-    // ordersApi.updateOrder({
-    //   id: incomeProductsStore?.order?.id!,
-    //   send: incomeProductsStore.isSendUser,
-    //   clientId: form.getFieldValue('clientId'),
-    //   payment: values,
-    // })
-    //   .then(() => {
-    //     queryClient.invalidateQueries({ queryKey: ['getOrders'] });
-    //     if (clientId) {
-    //       singleClientStore.getSingleClient({ id: clientId });
-    //     }
-    //     handleModalClose();
-    //   })
-    //   .catch(addNotification)
-    //   .finally(() => {
-    //     setLoadingPayment(false);
-    //   });
+      return;
+    }
+
+    // KASSADAN BERISH
+    if (values.uzsChange > 0) {
+      changeMethods.push({
+        type: 'cash',
+        amount: values.uzsChange,
+        currencyId: currencyMany.data.find(c => c.symbol === 'UZS')!.id,
+      });
+    }
+
+    if (values.usdChange > 0) {
+      changeMethods.push({
+        type: 'cash',
+        amount: values.usdChange,
+        currencyId: currencyMany.data.find(c => c.symbol === 'USD')!.id,
+      });
+    }
+
+    // MIJOZ HISOBIDAN AYIRISH
+    if (values.uzsCash > 0) {
+      changeMethods.push({
+        type: 'balance',
+        amount: values.uzsCash,
+        currencyId: currencyMany.data.find(c => c.symbol === 'UZS')!.id,
+      });
+    }
+
+    if (values.usdCash > 0) {
+      changeMethods.push({
+        type: 'balance',
+        amount: values.usdCash,
+        currencyId: currencyMany.data.find(c => c.symbol === 'USD')!.id,
+      });
+    }
+
+    const orderPaymentData: IIncomeOrderPaymentParams = {
+      paymentMethods: values?.payments,
+      description: values?.description,
+      changeMethods,
+    };
+
+    setLoadingPayment(true);
+
+    incomeProductsApi.updateIncomeOrder({
+      id: incomeProductsStore?.incomeOrder?.id!,
+      supplierId: form.getFieldValue('supplierId'),
+      payment: orderPaymentData,
+    })
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['getIncomeOrders'] });
+        if (supplierId) {
+          singleClientStore.getSingleClient({ id: supplierId });
+        }
+        handleModalClose();
+      })
+      .catch(addNotification)
+      .finally(() => {
+        setLoadingPayment(false);
+      });
   };
 
   const groupedPayments = useMemo(() => {
@@ -99,7 +149,7 @@ export const PaymentModal = observer(() => {
     }), [groupedPayments, currencyMany]);
 
   const settlement = useMemo(() => {
-    if (!incomeProductsStore.singleIncomeOrder || !currencyMany?.data) {
+    if (!incomeProductsStore.incomeOrder || !currencyMany?.data) {
       return {
         debt: { uzs: 0, usd: 0 },
         payment: { uzs: 0, usd: 0 },
@@ -108,13 +158,17 @@ export const PaymentModal = observer(() => {
       };
     }
 
+    console.log(incomeProductsStore.incomeOrder);
+
     return calculateSettlement(
-      incomeProductsStore.singleIncomeOrder,
+      incomeProductsStore.incomeOrder,
       paymentsForm,
       currencyMany.data,
       authStore.staffInfo?.currency?.symbol || 'UZS'
     );
-  }, [incomeProductsStore.singleIncomeOrder, currencyMany, paymentsForm]);
+  }, [incomeProductsStore.incomeOrder, currencyMany, paymentsForm]);
+
+  console.log(settlement);
 
   const handleCurrencyChange = (newCurrencyId: string, index: number) => {
     const payments = form.getFieldValue('payments') || [];
@@ -155,8 +209,6 @@ export const PaymentModal = observer(() => {
   // QAYTIM
   const uzsChange = Form.useWatch('uzsChange', form) || 0;
   const usdChange = Form.useWatch('usdChange', form) || 0;
-  const cashUzs = Form.useWatch('cashUzs', form) || 0;
-  const cashUsd = Form.useWatch('cashUsd', form) || 0;
 
   useEffect(() => {
     form.setFieldsValue({
@@ -196,17 +248,6 @@ export const PaymentModal = observer(() => {
     });
   }, [settlement]);
 
-  // QAYTIM KASSADAN
-  const cashReturn = useMemo(() => {
-    const totalUZS = settlement.change.uzs || 0;
-    const totalUSD = settlement.change.usd || 0;
-
-    return {
-      uzs: Math.max(0, totalUZS - uzsChange),
-      usd: Math.max(0, totalUSD - usdChange),
-    };
-  }, [uzsChange, usdChange, settlement]);
-
   const currencyManyData = useMemo(() => (
     currencyMany?.data.map((currency) => ({
       value: currency?.id,
@@ -216,7 +257,7 @@ export const PaymentModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
-  const debts = incomeProductsStore?.singleIncomeOrder?.supplier?.debtByCurrency ?? [];
+  const debts = incomeProductsStore?.incomeOrder?.supplier?.debtByCurrency ?? [];
 
   return (
     <Modal
@@ -386,13 +427,72 @@ export const PaymentModal = observer(() => {
               autoSize={{ minRows: 2, maxRows: 6 }}
             />
           </Form.Item>
+          <div>
+            {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
+              <div style={{ marginTop: 20 }}>
+                <h3>Kassadan</h3>
+
+                {settlement.change.uzs > 0 && (
+                  <Form.Item
+                    name="uzsChange"
+                    label="UZS"
+                    initialValue={settlement.change.uzs}
+                  >
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      formatter={(value) => priceFormat(value)}
+                      onChange={(val) => handleChangeUpdate('uzs', Number(val || 0))}
+                    />
+                  </Form.Item>
+                )}
+
+                {settlement.change.usd > 0 && (
+                  <Form.Item
+                    name="usdChange"
+                    label="USD"
+                    initialValue={settlement.change.usd}
+                  >
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      formatter={(value) => priceFormat(value)}
+                      onChange={(val) => handleChangeUpdate('usd', Number(val || 0))}
+                    />
+                  </Form.Item>
+                )}
+              </div>
+            )}
+
+            {uzsChange < settlement.change.uzs && (
+              <Form.Item name="uzsCash" label="Mijoz hisobidan ayirish UZS">
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={settlement.change.uzs}
+                  formatter={(v) => priceFormat(v)}
+                  onChange={(val) => handleCashChange('uzs', Number(val || 0))}
+                />
+              </Form.Item>
+            )}
+
+            {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
+              <Form.Item name="usdCash" label="Mijoz hisobidan ayirish USD">
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={settlement.change.usd}
+                  formatter={(v) => priceFormat(v)}
+                  onChange={(val) => handleCashChange('usd', Number(val || 0))}
+                />
+              </Form.Item>
+            )}
+          </div>
         </Form>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <Card style={{ background: '#F5F5F5' }}>
             <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
               <p style={{ margin: '0' }}>Umumiy qiymati:</p>
               <div style={{ textAlign: 'end' }}>
-                {incomeProductsStore?.singleIncomeOrder?.totalPrices?.cost?.map(price =>
+                {incomeProductsStore?.incomeOrder?.totalPrices?.cost?.map(price =>
                   <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
               </div>
             </div>
@@ -432,65 +532,6 @@ export const PaymentModal = observer(() => {
           </Card>
         </div>
       </div>
-      <Form form={form}>
-        {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
-          <div style={{ marginTop: 20 }}>
-            <h3>Mijoz hisobidan ayirish</h3>
-
-            {settlement.change.uzs > 0 && (
-              <Form.Item
-                name="uzsChange"
-                label="UZS"
-                initialValue={settlement.change.uzs}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  formatter={(value) => priceFormat(value)}
-                  onChange={(val) => handleChangeUpdate('uzs', Number(val || 0))}
-                />
-              </Form.Item>
-            )}
-
-            {settlement.change.usd > 0 && (
-              <Form.Item
-                name="usdChange"
-                label="USD"
-                initialValue={settlement.change.usd}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  formatter={(value) => priceFormat(value)}
-                  onChange={(val) => handleChangeUpdate('usd', Number(val || 0))}
-                />
-              </Form.Item>
-            )}
-          </div>
-        )}
-
-        {uzsChange < settlement.change.uzs && (
-          <Form.Item name="uzsCash" label="Kassadan berish UZS">
-            <InputNumber
-              style={{ width: '100%' }}
-              min={0}
-              max={settlement.change.uzs}
-              formatter={(v) => priceFormat(v)}
-              onChange={(val) => handleCashChange('uzs', Number(val || 0))}
-            />
-          </Form.Item>
-        )}
-
-        {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
-          <Form.Item name="usdCash" label="Kassadan berish USD">
-            <InputNumber
-              style={{ width: '100%' }}
-              min={0}
-              max={settlement.change.usd}
-              formatter={(v) => priceFormat(v)}
-              onChange={(val) => handleCashChange('usd', Number(val || 0))}
-            />
-          </Form.Item>
-        )}
-      </Form>
     </Modal>
   );
 });

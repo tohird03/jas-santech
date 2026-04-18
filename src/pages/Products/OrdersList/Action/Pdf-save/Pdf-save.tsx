@@ -47,11 +47,11 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={{ ...styles.tableHeaderCell, maxWidth: '30px' }}>№</Text>
-            <Text style={{ ...styles.tableHeaderCell, maxWidth: '280px', minWidth: '280px' }}>Махсулот номи</Text>
+            <Text style={{ ...styles.tableHeaderCell, maxWidth: '250', minWidth: '250' }}>Махсулот номи</Text>
             <Text style={{ ...styles.tableHeaderCell, maxWidth: '35px' }}>
               <Image src={CheckmarkIcon} style={{ width: 10, height: 10 }} />
             </Text>
-            <Text style={{ ...styles.tableHeaderCell }}>Сони</Text>
+            <Text style={{ ...styles.tableHeaderCell, maxWidth: '45px' }}>Сони</Text>
             <Text style={{ ...styles.tableHeaderCell }}>Нархи</Text>
             <Text style={{ ...styles.tableHeaderCell }}>Суммаси</Text>
           </View>
@@ -59,11 +59,15 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
             order?.products?.map((product, index) => (
               <View key={product?.id} style={styles.tableRow}>
                 <Text style={{ ...styles.tableCell, maxWidth: '30px' }}>{index + 1}</Text>
-                <Text style={{ ...styles.tableCell, maxWidth: '280px', minWidth: '280px', textAlign: 'left' }}>{product?.product?.name}</Text>
+                <Text style={{ ...styles.tableCell, maxWidth: '250px', minWidth: '250px', textAlign: 'left' }}>{product?.product?.name}</Text>
                 <Text style={{ ...styles.tableCell, maxWidth: '35px' }} />
-                <Text style={{ ...styles.tableCell }}>{product?.count}</Text>
-                <Text style={{ ...styles.tableCell }}>{priceFormat(product?.prices?.selling?.price)}</Text>
-                <Text style={{ ...styles.tableCell }}>{priceFormat(product?.prices?.selling?.totalPrice)}</Text>
+                <Text style={{ ...styles.tableCell, maxWidth: '45px' }}>{product?.count}</Text>
+                <Text style={{ ...styles.tableCell, ...styles.tablePriceCol }}>
+                  {priceFormat(product?.prices?.selling?.price)} {(product?.prices?.selling?.currency?.symbol)}
+                </Text>
+                <Text style={{ ...styles.tableCell, ...styles.tablePriceCol }}>
+                  {priceFormat(product?.prices?.selling?.totalPrice)} {(product?.prices?.selling?.currency?.symbol)}
+                </Text>
               </View>
             ))
           }
@@ -78,7 +82,10 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
           </View>
           <View style={styles.totalCalcTextWrapper}>
             <Text style={styles.totalCalcText}>Тулов килинди:</Text>
-            <Text style={styles.totalCalcPriceText}>{order?.totalPayment || 0}</Text>
+            <View style={styles.totalCalcPriceText}>
+              {order?.totalPayments?.map(price =>
+                <Text key={price?.currencyId}>{priceFormat(price?.total)} {(price?.currency?.symbol)}</Text>)}
+            </View>
           </View>
         </View>
       </View>
@@ -145,6 +152,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     marginBottom: 10,
+    marginTop: 20,
   },
   tableHeader: {
     flexDirection: 'row',
@@ -173,6 +181,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: 'black',
     fontSize: 9,
+  },
+  tablePriceCol: {
+    textAlign: 'right',
   },
   totalCalcTextWrapper: {
     flexDirection: 'row',

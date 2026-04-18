@@ -616,7 +616,8 @@ export const AddEditModal = observer(() => {
         <div className={cn('order__add-products-header')}>
           <div className={cn('order__add-products-header-left')}>
             {ordersStore?.order?.id ? 'Sotuvni tahrirlash' : 'Yangi sotuv'}
-            <p style={{ margin: 0 }}>{selectedClient && `Mijoz qarzi:
+            <p style={{ margin: 0 }}>{selectedClient &&
+              `Mijoz qarzi:
         ${ordersStore?.order?.client?.debtByCurrency?.map(debt => (
           <span key={debt?.currency?.id}>
             {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
@@ -758,21 +759,26 @@ export const AddEditModal = observer(() => {
                   label={product?.name}
                   className={cn('income-order__add-product')}
                 >
-                  <div className={cn('income-order__add-product-option')}>
-                    <p className={cn('income-order__add-product-name')}>
-                      {product?.name}
-                    </p>
-                    <div className={cn('income-order__add-product-info')}>
-                      <p className={cn('income-order__add-product-price')}>
-                        {priceFormat(product?.prices?.selling?.price)} {product?.prices?.selling?.currency?.symbol}
+                  <div className={cn('order__add-select-option')}>
+                    <div className={cn('income-order__add-product-option')}>
+                      <p className={cn('income-order__add-product-name')}>
+                        {product?.name}
                       </p>
-                      <p
-                        style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
-                        className={cn('income-order__add-product-count')}
-                      >
-                        {product?.count} dona
-                      </p>
+                      <div className={cn('income-order__add-product-info')}>
+                        <p className={cn('income-order__add-product-price')}>
+                          {priceFormat(product?.prices?.selling?.price)} {product?.prices?.selling?.currency?.symbol}
+                        </p>
+                        <p
+                          style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
+                          className={cn('income-order__add-product-count')}
+                        >
+                          {product?.count} dona
+                        </p>
+                      </div>
                     </div>
+                    <p className={cn('order__add-product-desc')}>
+                      {product?.description}
+                    </p>
                   </div>
                 </Select.Option>
               ))}

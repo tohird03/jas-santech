@@ -273,7 +273,7 @@ export const AddEditModal = observer(() => {
             disabled={isUpdatingProduct?.id !== record?.id}
             onChange={handleChangePrice}
           />
-        ) : <span>{record?.prices?.selling?.price}</span>
+        ) : <span>{record?.prices?.selling?.price}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
       ),
     },
     {
@@ -533,21 +533,26 @@ export const AddEditModal = observer(() => {
                 label={product?.name}
                 className={cn('income-order__add-product')}
               >
-                <div className={cn('income-order__add-product-option')}>
-                  <p className={cn('income-order__add-product-name')}>
-                    {product?.name}
-                  </p>
-                  <div className={cn('income-order__add-product-info')}>
-                    <p className={cn('income-order__add-product-price')}>
-                      {product?.prices?.selling?.price} {product?.prices?.selling?.currency?.symbol}
+                <div className={cn('order__add-select-option')}>
+                  <div className={cn('income-order__add-product-option')}>
+                    <p className={cn('income-order__add-product-name')}>
+                      {product?.name}
                     </p>
-                    <p
-                      style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
-                      className={cn('income-order__add-product-count')}
-                    >
-                      {product?.count} dona
-                    </p>
+                    <div className={cn('income-order__add-product-info')}>
+                      <p className={cn('income-order__add-product-price')}>
+                        {priceFormat(product?.prices?.selling?.price)} {product?.prices?.selling?.currency?.symbol}
+                      </p>
+                      <p
+                        style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
+                        className={cn('income-order__add-product-count')}
+                      >
+                        {product?.count} dona
+                      </p>
+                    </div>
                   </div>
+                  <p className={cn('order__add-product-desc')}>
+                    {product?.description}
+                  </p>
                 </div>
               </Select.Option>
             ))}

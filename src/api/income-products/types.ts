@@ -68,13 +68,34 @@ export interface IUpdateIncomeOrder {
   id: string;
   supplierId?: string;
   date?: string;
-  payment?: IPaymentType;
+  payment?: IIncomeOrderPaymentParams;
 }
 
 export interface IIncomeOrderPayment {
   supplier?: ISupplierInfo;
   orderId: string;
   payment: IPayment | undefined;
+}
+
+export interface IIncomeOrderPaymentParams {
+  description: string;
+  paymentMethods: IPaymentMethods[];
+  changeMethods: IPaymentMethods[];
+}
+
+export interface IPaymentMethods {
+  type: string;
+  currencyId: string;
+  amount: number;
+}
+
+export interface IIncomeOrderPaymentForm {
+  payments: IPaymentMethods[];
+  description: string;
+  uzsChange: number;
+  usdChange: number;
+  uzsCash: number;
+  usdCash: number;
 }
 
 export interface IIncomeOrderProductAdd extends IAddIncomeOrderProducts {

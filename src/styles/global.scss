@@ -65,6 +65,10 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.ant-select-item {
+  border: 1px solid rgb(215, 213, 213);
+}
+
 // CUSTOM
 .create-flight__info-courierChoose .ant-select-selector {
   height: 50px !important;

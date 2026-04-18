@@ -17,8 +17,8 @@ export interface IOrder {
     amount: number;
     currency: ICurrency;
   }[];
+  totalPayments: IOrderTotalPrice[];
   totalPrices: IOrderTotalPrice[];
-  totalPayment: number;
 }
 
 export interface IOrderTotalPrice {
@@ -90,7 +90,28 @@ export interface IUpdateOrder {
   date?: Date | string;
   status?: IOrderStatus;
   send: boolean;
-  payment?: IPaymentType;
+  payment?: IOrderPayment;
+}
+
+export interface IOrderPayment {
+  description: string;
+  paymentMethods: IPaymentMethods[];
+  changeMethods: IPaymentMethods[];
+}
+
+export interface IPaymentMethods {
+  type: string;
+  currencyId: string;
+  amount: number;
+}
+
+export interface IAddEditPaymentForm {
+  payments: IPaymentMethods[];
+  description: string;
+  uzsChange: number;
+  usdChange: number;
+  uzsCash: number;
+  usdCash: number;
 }
 
 export interface IUploadOrderToExelParams extends IGetOrdersParams {

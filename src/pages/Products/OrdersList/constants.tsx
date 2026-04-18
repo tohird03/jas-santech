@@ -62,12 +62,24 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => (
-      <>
-        {record?.totalPrices?.map(price =>
-          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
-      </>
-    ),
+    render: (value, record) => {
+      const data = record?.totalPrices;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'totalPay',
@@ -75,7 +87,24 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Jami to\'lov',
     align: 'center',
     width: '120px',
-    render: (value, record) => priceFormat(record?.totalPayment),
+    render: (value, record) => {
+      const data = record?.totalPayments;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'debt',
@@ -83,12 +112,24 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Qarzga',
     align: 'center',
     width: '130px',
-    render: (value, record) => (
-      <>
-        {record?.debtByCurrency?.map(price =>
-          <div key={price?.currency?.id}>{priceFormat(price?.amount)}{currencyTagUi(price?.currency?.symbol)}</div>)}
-      </>
-    ),
+    render: (value, record) => {
+      const data = record?.debtByCurrency;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.amount)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'createdAt',
@@ -188,65 +229,74 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => (
-      <>
-        {record?.totalPrices?.map(price =>
-          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
-      </>
-    ),
+    render: (value, record) => {
+      const data = record?.totalPrices;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'totalPay',
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalPayment),
+    width: '120px',
+    render: (value, record) => {
+      const data = record?.totalPayments;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'debt',
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
-    width: '150px',
-    render: (value, record) => (
-      <>
-        {record?.debtByCurrency?.map(price =>
-          <div key={price?.currency?.id}>{priceFormat(price?.amount)}{currencyTagUi(price?.currency?.symbol)}</div>)}
-      </>
-    ),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Naqd to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.cash),
-  },
-  {
-    key: 'card',
-    dataIndex: 'card',
-    title: 'Bank kartasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.card),
-  },
-  {
-    key: 'transfer',
-    dataIndex: 'transfer',
-    title: 'Bank o\'tkazmasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.transfer),
-  },
-  {
-    key: 'other',
-    dataIndex: 'other',
-    title: 'Boshqa usullar bilan to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.other),
+    width: '130px',
+    render: (value, record) => {
+      const data = record?.debtByCurrency;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.amount)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
 ];
 
@@ -281,7 +331,9 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'Sotish narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.prices?.selling?.price),
+    render: (value, record) => (
+      <span>{priceFormat(record?.prices?.selling?.price)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
+    ),
   },
   {
     key: 'total',
@@ -289,7 +341,9 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.count * record?.prices?.selling?.price),
+    render: (value, record) => (
+      <span>{priceFormat(record?.prices?.selling?.totalPrice)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
+    ),
   },
 ];
 
@@ -310,38 +364,6 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     align: 'center',
     width: '150px',
     render: (value, record) => priceFormat(record?.totalPayment),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Jami - Naqd to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCashPayment),
-  },
-  {
-    key: 'card',
-    dataIndex: 'card',
-    title: 'Jami - Bank kartasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCardPayment),
-  },
-  {
-    key: 'transfer',
-    dataIndex: 'transfer',
-    title: 'Jami - Bank o\'tkazmasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalTransferPayment),
-  },
-  {
-    key: 'other',
-    dataIndex: 'other',
-    title: 'Jami - Boshqa usullar bilan to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalOtherPayment),
   },
   {
     key: 'debt',

@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+
   @media (max-width: 1600px) {
     flex-direction: column;
     align-items: flex-start;
@@ -13,10 +14,12 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
+
   @media (max-width: 1600px) {
     display: grid;
     grid-template-columns: 45% 45% 45%;
   }
+
   @media (max-width: 1200px) {
     display: grid;
     grid-template-columns: 45% 45%;
@@ -81,7 +84,6 @@
       gap: 10px;
     }
   }
-
   &__add-products-form {
     display: grid;
     grid-template-columns: 45% 45%;
@@ -96,6 +98,16 @@
       padding: 0px;
       margin-bottom: 20px;
     }
+  }
+
+  &__add-product-desc {
+    background-color: #C2DBFF;
+    margin: 0;
+    padding: 0 5px;
+    color: #468FDC;
+    white-space: normal;
+    word-break: break-word;
+    border-radius: 3px;
   }
 
   &__show-header {

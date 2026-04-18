@@ -1,9 +1,8 @@
-import { IOrderPayment } from "@/stores/products/orders-list/types";
 import { ICurrency } from "../auth/types";
 import { IClientsInfo, ISeller } from "../clients";
-import { IOrderStatus } from "../order/types";
+import { IOrderPayment, IOrderStatus } from "../order/types";
 import { IProducts } from "../product/types";
-import { IPagination } from "../types";
+import { IPagination, IPayment } from "../types";
 
 export interface IGetReturnedOrdersParams extends IPagination {
   search?: string;
@@ -23,7 +22,7 @@ export interface IReturnedOrder {
   staff: ISeller,
   products: IReturnedOrderProducts[],
   totalPrices: IReturnedOrderTotalPrice[];
-  payment: IOrderPayment;
+  payment: IReturnedOrderPayment;
 }
 
 export interface IReturnedOrderTotalPrice {
@@ -63,7 +62,28 @@ export interface IUpdateReturnedOrder {
   id: string,
   clientId?: string,
   description?: string,
-  payment?: IReturnedOrderPayments,
+  payment?: IReturnedOrderPaymentParams;
+}
+
+export interface IReturnedOrderPaymentParams {
+  description: string;
+  paymentMethods: IPaymentMethods[];
+  changeMethods: IPaymentMethods[];
+}
+
+export interface IPaymentMethods {
+  type: string;
+  currencyId: string;
+  amount: number;
+}
+
+export interface IEditReturnedPaymentForm {
+  payments: IPaymentMethods[];
+  description: string;
+  uzsChange: number;
+  usdChange: number;
+  uzsCash: number;
+  usdCash: number;
 }
 
 export interface IUpdateProductFromReturnedOrders {
@@ -72,7 +92,8 @@ export interface IUpdateProductFromReturnedOrders {
   count: number,
 }
 
-export interface IReturnedOrderPayments {
-  cash?: number,
-  fromBalance?: number,
+export interface IReturnedOrderPayment {
+  client?: IClientsInfo;
+  orderId: string;
+  payment: IPayment | undefined;
 }
