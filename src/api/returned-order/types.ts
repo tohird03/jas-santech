@@ -23,6 +23,17 @@ export interface IReturnedOrder {
   products: IReturnedOrderProducts[],
   totalPrices: IReturnedOrderTotalPrice[];
   payment: IReturnedOrderPayment;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
+  totalPayments: IReturnedOrderPayment[];
+}
+
+export interface IReturnedOrderPayment {
+  currencyId: string;
+  total: number;
+  currency: ICurrency;
 }
 
 export interface IReturnedOrderTotalPrice {

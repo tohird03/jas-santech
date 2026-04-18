@@ -38,6 +38,18 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     ),
   },
   {
+    key: 'seller',
+    dataIndex: 'seller',
+    title: 'Sotuvchi',
+    align: 'center',
+    render: (value, record) => (
+      <div>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
+        <i>+{record?.staff?.phone}</i>
+      </div>
+    ),
+  },
+  {
     key: 'sum',
     dataIndex: 'sum',
     title: 'Jami narxi',
@@ -50,16 +62,54 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     ),
   },
   {
-    key: 'seller',
-    dataIndex: 'seller',
-    title: 'Sotuvchi',
+    key: 'totalPay',
+    dataIndex: 'totalPay',
+    title: 'Jami to\'lov',
     align: 'center',
-    render: (value, record) => (
-      <div>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
-        <i>+{record?.staff?.phone}</i>
-      </div>
-    ),
+    width: '120px',
+    render: (value, record) => {
+      const data = record?.totalPayments;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
+  },
+  {
+    key: 'debt',
+    dataIndex: 'debt',
+    title: 'Qarzga',
+    align: 'center',
+    width: '130px',
+    render: (value, record) => {
+      const data = record?.debtByCurrency;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.amount)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'createdAt',
