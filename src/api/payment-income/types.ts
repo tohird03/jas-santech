@@ -1,3 +1,4 @@
+import { ICurrency } from "../auth/types";
 import { IOrder } from "../order/types"
 import { ISupplierInfo } from "../supplier/types";
 import { IPagination, IPaymentType } from "../types"
@@ -7,6 +8,10 @@ export interface ISupplierPayments extends IPaymentType {
   createdAt: string,
   order: IOrder,
   supplier: ISupplierInfo,
+  totalsByCurrency: {
+    total: number;
+    currency: ICurrency;
+  }[];
 }
 
 export interface IIncomeGetClientsPaymentsParams extends IPagination {

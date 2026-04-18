@@ -6,6 +6,7 @@ import { priceFormat } from '@/utils/priceFormat';
 import { IClientsPayments } from '@/api/payment/types';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
+import { currencyTagUi } from '@/constants/payment';
 
 export const paymentsColumns: ColumnType<IClientsPayments>[] = [
   {
@@ -20,7 +21,6 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'client',
     title: 'Mijoz',
     align: 'center',
-    width: '200px',
     render: (value, record) => <ClientNameLink client={record?.client} />,
   },
   {
@@ -28,8 +28,14 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'cash',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.cash),
+    render: (value, record) => (
+      record?.totalsByCurrency?.map(payment => (
+        <div key={payment?.currency?.id}>
+          {priceFormat(payment?.total)}
+          {currencyTagUi(payment?.currency?.symbol)}
+        </div>
+      ))
+    ),
   },
   {
     key: 'description',
@@ -43,7 +49,6 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'createdAt',
     title: 'To\'lov vaqti',
     align: 'center',
-    width: 200,
     render: (value, record) => getFullDateFormat(record?.createdAt),
   },
   {
@@ -51,7 +56,6 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'seller',
     title: 'Sotuvchi',
     align: 'center',
-    width: 200,
     render: (value, record) => <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>,
   },
   {

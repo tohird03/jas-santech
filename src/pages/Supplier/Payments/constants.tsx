@@ -1,10 +1,11 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
 import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { ISupplierPayments } from '@/api/payment-income/types';
 import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
+import { currencyTagUi } from '@/constants/payment';
 
 export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
   {
@@ -27,7 +28,14 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     title: 'Jami to\'lov',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.cash),
+    render: (value, record) => (
+      record?.totalsByCurrency?.map(payment => (
+        <div key={payment?.currency?.id}>
+          {priceFormat(payment?.total)}
+          {currencyTagUi(payment?.currency?.symbol)}
+        </div>
+      ))
+    ),
   },
   {
     key: 'description',

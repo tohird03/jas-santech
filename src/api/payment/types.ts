@@ -11,6 +11,10 @@ export interface IClientsPayments extends IPaymentType {
   staff: ISeller,
   description: string;
   paymentMethods: IPaymentMethodsGet[];
+  totalsByCurrency: {
+    total: number;
+    currency: ICurrency;
+  }[];
 }
 
 export interface IPaymentMethodsGet {
