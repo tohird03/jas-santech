@@ -27,10 +27,10 @@ export interface IReturnedOrder {
     amount: number;
     currency: ICurrency;
   }[];
-  totalPayments: IReturnedOrderPayment[];
+  totalPayments: IReturnedOrderPaymentGet[];
 }
 
-export interface IReturnedOrderPayment {
+export interface IReturnedOrderPaymentGet {
   currencyId: string;
   total: number;
   currency: ICurrency;
