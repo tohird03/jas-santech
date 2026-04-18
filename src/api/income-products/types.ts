@@ -13,12 +13,15 @@ export interface IIncomeOrder {
   products: IIncomeProduct[];
   createdAt: string;
   date: string;
-  totalPayment: number;
+  totalPayments: IIncomeOrderTotalPrice[];
   totalPrices: {
     cost: IIncomeOrderTotalPrice[];
     selling: IIncomeOrderTotalPrice[];
   };
-  debt: number;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
 }
 
 export interface IIncomeOrderTotalPrice {
@@ -29,9 +32,19 @@ export interface IIncomeOrderTotalPrice {
 
 export interface IIncomeProduct {
   id: string,
-  cost: number,
   count: number,
-  price: number,
+  prices: {
+    selling: {
+      price: number;
+      totalPrice: number;
+      currency: ICurrency;
+    };
+    cost: {
+      price: number;
+      totalPrice: number;
+      currency: ICurrency;
+    };
+  },
   wholesale_price: number,
   product: IProducts;
 }
@@ -69,6 +82,14 @@ export interface IUpdateIncomeOrder {
   supplierId?: string;
   date?: string;
   payment?: IIncomeOrderPaymentParams;
+}
+
+export interface IUpdateIncomeProduct {
+  id: string;
+  count: number;
+  price: number;
+  cost: number;
+  product: IProducts;
 }
 
 export interface IIncomeOrderPayment {

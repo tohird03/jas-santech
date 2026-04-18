@@ -48,7 +48,7 @@ export enum Endpoints {
 
   IncomeMany = '/arrival/many',
   IncomeOne = '/arrival/one',
-  AddEditProductToArrival = '/arrival-product-mv/one',
+  ArrivalProductMVOne = '/arrival-product-mv/one',
 
   ReturnedOrderMany = '/returning/many',
   ReturnedOrderOne = '/returning/one',

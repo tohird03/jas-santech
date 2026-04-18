@@ -32,13 +32,13 @@ class IncomeProductsApi extends Instance {
     this.delete(Endpoints.IncomeOne, { params: { id } });
 
   updateIncomeOrderProduct = (params: IIncomeUpdateOrderProduct): Promise<AxiosResponse> =>
-    this.patch(`${Endpoints.AddEditProductToArrival}`, params, { params: { id: params?.id } });
+    this.patch(`${Endpoints.ArrivalProductMVOne}`, params, { params: { id: params?.id } });
 
   orderProductAdd = (params: IIncomeOrderProductAdd): Promise<AxiosResponse> =>
-    this.post(Endpoints.AddEditProductToArrival, params);
+    this.post(Endpoints.ArrivalProductMVOne, params);
 
   deleteOrderProduct = (productId: string): Promise<AxiosResponse> =>
-    this.delete(Endpoints.ProductMv, { params: { id: productId } });
+    this.delete(Endpoints.ArrivalProductMVOne, { params: { id: productId } });
 
   getAllUploadIncomeOrderToExel = (params: IGetIncomeOrdersParams): Promise<any> =>
     this.get(Endpoints.IncomeOrderAllExcel, {

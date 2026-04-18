@@ -766,7 +766,7 @@ export const AddEditModal = observer(() => {
                       </p>
                       <div className={cn('income-order__add-product-info')}>
                         <p className={cn('income-order__add-product-price')}>
-                          {priceFormat(product?.prices?.selling?.price)} {product?.prices?.selling?.currency?.symbol}
+                          {priceFormat(product?.prices?.selling?.price)} {currencyTagUi(product?.prices?.selling?.currency?.symbol)}
                         </p>
                         <p
                           style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
@@ -790,7 +790,7 @@ export const AddEditModal = observer(() => {
           form={form}
           valueName="price"
           currencyName="currencyId"
-          label="Sotib olingan narxi"
+          label="Sotish narxi"
           required
           onKeyDown={handleChangePriceForm}
           currencyOptions={currencyManyData}

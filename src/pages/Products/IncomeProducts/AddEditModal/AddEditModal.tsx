@@ -13,7 +13,14 @@ import dayjs from 'dayjs';
 import styles from '../income-products.scss';
 import { ColumnType } from 'antd/es/table';
 import { incomeProductsApi } from '@/api/income-products';
-import { IAddEditIncomeOrder, IAddIncomeOrderForm, IAddIncomeOrderProducts, IIncomeOrderProductAdd, IIncomeProduct } from '@/api/income-products/types';
+import {
+  IAddEditIncomeOrder,
+  IAddIncomeOrderForm,
+  IAddIncomeOrderProducts,
+  IIncomeOrderProductAdd,
+  IIncomeProduct,
+  IUpdateIncomeProduct,
+} from '@/api/income-products/types';
 import { singleSupplierStore, supplierInfoStore } from '@/stores/supplier';
 import { ISupplierInfo } from '@/api/supplier/types';
 import { currencyTagUi } from '@/constants/payment';
@@ -53,7 +60,7 @@ export const AddEditModal = observer(() => {
   const [loading, setLoading] = useState(false);
   const [searchClients, setSearchClients] = useState<string | null>(null);
   const [searchProducts, setSearchProducts] = useState<string | null>(null);
-  const [isUpdatingProduct, setIsUpdatingProduct] = useState<IIncomeProduct | null>(null);
+  const [isUpdatingProduct, setIsUpdatingProduct] = useState<IUpdateIncomeProduct | null>(null);
   const [isOpenProductSelect, setIsOpenProductSelect] = useState(false);
   const countInputRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<any>(null);
@@ -239,7 +246,11 @@ export const AddEditModal = observer(() => {
 
   // TABLE ACTIONS
   const handleEditProduct = (orderProduct: IIncomeProduct) => {
-    setIsUpdatingProduct(orderProduct);
+    setIsUpdatingProduct({
+      ...orderProduct,
+      price: orderProduct?.prices?.selling?.price,
+      cost: orderProduct?.prices?.selling?.price,
+    });
   };
 
   const handleDeleteProduct = (orderId: string) => {
@@ -328,12 +339,12 @@ export const AddEditModal = observer(() => {
       render: (value, record) => (
         isUpdatingProduct?.id === record?.id ? (
           <InputNumber
-            defaultValue={record?.cost}
+            defaultValue={record?.prices?.cost?.price}
             placeholder="Narxi"
             disabled={isUpdatingProduct?.id !== record?.id}
             onChange={handleChangePrice}
           />
-        ) : <span>{record?.cost}</span>
+        ) : <span>{record?.prices?.cost?.price}</span>
       ),
     },
     {
@@ -344,12 +355,12 @@ export const AddEditModal = observer(() => {
       render: (value, record) => (
         isUpdatingProduct?.id === record?.id ? (
           <InputNumber
-            defaultValue={record?.price}
+            defaultValue={record?.prices?.cost?.price}
             placeholder="Sotish narxi"
             disabled={isUpdatingProduct?.id !== record?.id}
             onChange={handleChangeSellingPrice}
           />
-        ) : <span>{record?.price}</span>
+        ) : <span>{record?.prices?.cost?.price}</span>
       ),
     },
     {
@@ -357,7 +368,12 @@ export const AddEditModal = observer(() => {
       dataIndex: 'totalCost',
       title: 'Jami narxi',
       align: 'center',
-      render: (value, record) => record?.cost * record?.count,
+      render: (value, record) => (
+        <span>
+          {priceFormat(record?.prices?.cost?.totalPrice)}
+          {currencyTagUi(record?.prices?.cost?.currency?.symbol)}
+        </span>
+      ),
     },
     {
       key: 'action',
@@ -628,18 +644,26 @@ export const AddEditModal = observer(() => {
                 label={product?.name}
                 className={cn('income-order__add-product')}
               >
-                <div className={cn('income-order__add-product-option')}>
-                  <p className={cn('income-order__add-product-name')}>
-                    {product?.name}
-                  </p>
-                  <div className={cn('income-order__add-product-info')}>
-                    <p
-                      style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
-                      className={cn('income-order__add-product-count')}
-                    >
-                      {product?.count} dona
+                <div className={cn('order__add-select-option')}>
+                  <div className={cn('income-order__add-product-option')}>
+                    <p className={cn('income-order__add-product-name')}>
+                      {product?.name}
                     </p>
+                    <div className={cn('income-order__add-product-info')}>
+                      <p className={cn('income-order__add-product-price')}>
+                        {priceFormat(product?.prices?.selling?.price)} {currencyTagUi(product?.prices?.selling?.currency?.symbol)}
+                      </p>
+                      <p
+                        style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
+                        className={cn('income-order__add-product-count')}
+                      >
+                        {product?.count} dona
+                      </p>
+                    </div>
                   </div>
+                  <p className={cn('order__add-product-desc')}>
+                    {product?.description}
+                  </p>
                 </div>
               </Select.Option>
             ))}
@@ -695,10 +719,13 @@ export const AddEditModal = observer(() => {
       />
 
       <div>
-        <p style={{ textAlign: 'end', fontSize: '24px', fontWeight: 'bold' }}>Umumiy qiymati: {
-          priceFormat(incomeProductsStore?.incomeOrder?.products?.reduce((prev, current) => prev + (current?.cost * current?.count), 0))
-        }
-        </p>
+        <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+          <p style={{ margin: '0' }}>Umumiy qiymati:</p>
+          <div style={{ textAlign: 'end' }}>
+            {incomeProductsStore?.incomeOrder?.totalPrices?.cost?.map(price =>
+              <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+          </div>
+        </div>
       </div>
     </Modal>
   );

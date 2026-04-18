@@ -14,6 +14,7 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     dataIndex: 'index',
     title: '#',
     align: 'center',
+    width: '120px',
     render: (value, record, index) => index + 1,
   },
   {
@@ -29,9 +30,10 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     dataIndex: 'staff',
     title: 'Qabul qiluvchi',
     align: 'center',
+    width: '120px',
     render: (value, record) => (
       <div>
-        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
       </div>
     ),
   },
@@ -49,60 +51,74 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => (
-      <>
-        {record?.totalPrices?.cost?.map(price =>
-          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
-      </>
-    ),
+    render: (value, record) => {
+      const data = record?.totalPrices?.cost;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'totalPay',
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalPayment),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Naqd to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.cash),
-  },
-  {
-    key: 'card',
-    dataIndex: 'card',
-    title: 'Bank kartasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.card),
-  },
-  {
-    key: 'transfer',
-    dataIndex: 'transfer',
-    title: 'Bank o\'tkazmasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.transfer),
-  },
-  {
-    key: 'other',
-    dataIndex: 'other',
-    title: 'Boshqa usullar bilan to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.other),
+    width: '120px',
+    render: (value, record) => {
+      const data = record?.totalPayments;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'debt',
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.debt),
+    width: '130px',
+    render: (value, record) => {
+      const data = record?.debtByCurrency;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.amount)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'createdAt',
@@ -117,6 +133,7 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     dataIndex: 'action',
     title: 'Action',
     align: 'center',
+    width: '120px',
     render: (value, record) => <Action order={record} />,
   },
 ];
@@ -128,7 +145,7 @@ export const ordersInfoColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Yetkazib beruvchi',
     align: 'center',
     render: (value, record) => (
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
         <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.supplier?.fullname}</p>
         <i>+{record?.supplier?.phone}</i>
       </div>
@@ -140,7 +157,7 @@ export const ordersInfoColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Ma\'sul xodim',
     align: 'center',
     render: (value, record) => (
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
         <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
         <i>+{record?.staff?.phone}</i>
       </div>
@@ -172,52 +189,79 @@ export const ordersInfoColumns: ColumnType<IIncomeOrder>[] = [
 
 export const ordersInfoPaymentColumns: ColumnType<IIncomeOrder>[] = [
   {
+    key: 'totalPrice',
+    dataIndex: 'totalPrice',
+    title: 'Jami narxi',
+    align: 'center',
+    width: '150px',
+    render: (value, record) => {
+      const data = record?.totalPrices?.cost;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
+  },
+  {
     key: 'totalPay',
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.totalPay),
+    width: '120px',
+    render: (value, record) => {
+      const data = record?.totalPayments;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
   {
     key: 'debt',
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.debt),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Naqd to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.cash),
-  },
-  {
-    key: 'card',
-    dataIndex: 'card',
-    title: 'Bank kartasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.card),
-  },
-  {
-    key: 'transfer',
-    dataIndex: 'transfer',
-    title: 'Bank o\'tkazmasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.transfer),
-  },
-  {
-    key: 'other',
-    dataIndex: 'other',
-    title: 'Boshqa usullar bilan to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.payment?.other),
+    width: '130px',
+    render: (value, record) => {
+      const data = record?.debtByCurrency;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.amount)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </>
+      );
+    },
   },
 ];
 
@@ -252,7 +296,12 @@ export const ordersInfoProductsColumns: ColumnType<IIncomeProduct>[] = [
     title: 'Sotib olish narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.cost),
+    render: (value, record) => (
+      <span>
+        {priceFormat(record?.prices?.cost?.totalPrice)}
+        {currencyTagUi(record?.prices?.cost?.currency?.symbol)}
+      </span>
+    ),
   },
   {
     key: 'total',
@@ -260,7 +309,12 @@ export const ordersInfoProductsColumns: ColumnType<IIncomeProduct>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.count * record?.cost),
+    render: (value, record) => (
+      <span>
+        {priceFormat(record?.prices?.cost?.totalPrice)}
+        {currencyTagUi(record?.prices?.cost?.currency?.symbol)}
+      </span>
+    ),
   },
 ];
 
