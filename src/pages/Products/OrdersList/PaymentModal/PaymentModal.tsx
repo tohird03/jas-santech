@@ -259,9 +259,12 @@ export const PaymentModal = observer(() => {
   const clientDebt = ordersStore?.order?.client?.debtByCurrency ?? [];
 
   useEffect(() => {
-    console.log(ordersStore.order);
     form.setFieldsValue({
-      payments: ordersStore?.order?.payment,
+      payments: ordersStore?.order?.payment?.paymentMethods || [{
+        amount: 0,
+        type: PaymentTypes.CASH,
+        currencyId: authStore?.staffInfo?.currency?.id,
+      }],
     });
   }, [ordersStore.order]);
 

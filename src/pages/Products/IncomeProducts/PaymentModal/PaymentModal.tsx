@@ -259,6 +259,16 @@ export const PaymentModal = observer(() => {
 
   const debts = incomeProductsStore?.incomeOrder?.supplier?.debtByCurrency ?? [];
 
+  useEffect(() => {
+    form.setFieldsValue({
+      payments: incomeProductsStore?.incomeOrder?.payment?.paymentMethods || [{
+        amount: 0,
+        type: PaymentTypes.CASH,
+        currencyId: authStore?.staffInfo?.currency?.id,
+      }],
+    });
+  }, [incomeProductsStore.incomeOrder]);
+
   return (
     <Modal
       open={incomeProductsStore.isOpenIncomeOrderPaymentModal}

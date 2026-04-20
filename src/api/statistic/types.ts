@@ -20,7 +20,10 @@ export interface IOrderStatisticChart {
 }
 
 export interface IOrderGraphStatistic {
-  sum: number;
+  sums: {
+    total: number;
+    symbol: 'UZS' | 'USD';
+  }[];
   date: string;
 }
 

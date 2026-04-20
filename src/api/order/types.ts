@@ -1,5 +1,6 @@
 import { ICurrency } from '../auth/types';
 import { IClientsInfo, ISeller } from '../clients';
+import { IAddEditPaymentParams } from '../payment/types';
 import { IProducts } from '../product/types';
 import { IPagination, IPayment, IPaymentType } from '../types';
 
@@ -7,7 +8,6 @@ export interface IOrder {
   id: string;
   client: IClientsInfo;
   staff: ISeller;
-  payment: IPayment;
   products: IOrderProducts[];
   status: IOrderStatus;
   date: string;
@@ -19,6 +19,7 @@ export interface IOrder {
   }[];
   totalPayments: IOrderTotalPrice[];
   totalPrices: IOrderTotalPrice[];
+  payment?: IAddEditPaymentParams;
 }
 
 export interface IOrderTotalPrice {

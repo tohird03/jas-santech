@@ -11,7 +11,7 @@ class ProductsListStore {
   search: string | null = null;
   isOpenAddEditProductModal = false;
   singleProduct: IProducts | null = null;
-  singleProductStory: IGetSingleProducts | null = null;
+  singleProductStory: ISingleProductStory[] | null = null;
   startDate: Date | null = this.#today;
   endDate: Date | null = this.#today;
 
@@ -27,7 +27,7 @@ class ProductsListStore {
   getSingleProductStory = (params: IGetSingleProductParams) =>
     productsApi.getSingleProductStory(params)
       .then(res => {
-        this.setSingleProductStory(res?.data);
+        this.setSingleProductStory(res?.data?.data);
 
         return res;
       })
@@ -40,7 +40,7 @@ class ProductsListStore {
       })
       .catch(addNotification);
 
-  setSingleProductStory = (singleProductStory: IGetSingleProducts) => {
+  setSingleProductStory = (singleProductStory: ISingleProductStory[]) => {
     this.singleProductStory = singleProductStory;
   };
 

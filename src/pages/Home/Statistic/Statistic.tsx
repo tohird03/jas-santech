@@ -17,6 +17,8 @@ import { supplierInfoStore } from '@/stores/supplier';
 import { ISupplierDebtFilter } from '@/api/supplier/types';
 import { homeStore } from '@/stores/home/home';
 import { IOrderGraphStatisticType } from '@/api/statistic/types';
+import { authStore } from '@/stores/auth';
+import { priceFormat } from '@/utils/priceFormat';
 
 const cn = classNames.bind(styles);
 const formatter = (value: number) => <CountUp duration={2} end={value} separator=" " />;
@@ -42,6 +44,29 @@ export const Statistic = observer(() => {
     queryKey: ['getOrdersGraphStatistic', timeRange],
     queryFn: () => homeStore.getOrdersGraphStatistic(timeRange),
   });
+
+  const convertToDefault = (amount: number, from: 'UZS' | 'USD') => {
+    if (from === authStore?.staffInfo?.currency?.symbol) return amount;
+
+    if (authStore?.staffInfo?.currency?.symbol === 'UZS') {
+      // USD → UZS
+      return amount * authStore?.staffInfo?.currency?.exchangeRate!;
+    } else {
+      // UZS → USD
+      return amount / authStore?.staffInfo?.currency?.exchangeRate!;
+    }
+  };
+
+  const chartData: number[] = (ordersGraphStatisticData ?? []).map(item => {
+    const name = '';
+
+    return (item.sums ?? []).reduce((acc, curr) => {
+      const converted = convertToDefault(curr.total, curr.symbol);
+
+      return acc + converted;
+    }, 0);
+  });
+
 
   const chartOptions = {
     options: {
@@ -77,6 +102,9 @@ export const Statistic = observer(() => {
       },
       yaxis: {
         tickAmount: 10,
+        labels: {
+          formatter: (val: number) => priceFormat(val),
+        },
       },
       markers: {
         size: 6,
@@ -106,7 +134,7 @@ export const Statistic = observer(() => {
     series: [
       {
         name: 'Sotuv',
-        data: ordersGraphStatisticData?.map(value => value?.sum || 0) || [],
+        data: chartData,
       },
     ],
   };

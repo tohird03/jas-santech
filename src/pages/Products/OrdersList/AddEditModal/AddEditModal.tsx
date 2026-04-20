@@ -281,10 +281,6 @@ export const AddEditModal = observer(() => {
       setSelectedClient(ordersStore?.order?.client);
 
       form.setFieldsValue({
-        cash: ordersStore.order?.payment?.cash,
-        card: ordersStore.order?.payment?.card,
-        transfer: ordersStore.order?.payment?.transfer,
-        other: ordersStore.order?.payment?.other,
         date: dayjs(ordersStore.order?.date),
         clientId: ordersStore?.order?.client?.id,
       });

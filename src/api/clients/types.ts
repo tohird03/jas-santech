@@ -1,17 +1,17 @@
 import { ICurrency } from '../auth/types';
-import { IOrder } from '../order/types';
-import { IReturnedOrder } from '../returned-order/types';
 import { IPagination, IPayment } from '../types';
+
+export interface IClientDebtByCurrency {
+  amount: number;
+  currency: ICurrency;
+}
 
 // CLIENT
 export interface IClientsInfo {
   id: string;
   fullname: string;
   phone: string;
-  debtByCurrency: {
-    amount: number;
-    currency: ICurrency;
-  }[];
+  debtByCurrency: IClientDebtByCurrency[];
   lastSellingDate: string;
   deedInfo: IClientDeedInfo;
   telegram?: {
@@ -26,9 +26,9 @@ export interface IGetSingleClientParams {
 }
 
 export interface IClientDeedInfo {
-  totalDebit: number;
-  totalCredit: number;
-  debt: number;
+  totalCreditByCurrency: IClientDebtByCurrency[];
+  totalDebitByCurrency: IClientDebtByCurrency[];
+  debtByCurrency: IClientDebtByCurrency[];
   deeds: IClientDeed[];
 }
 

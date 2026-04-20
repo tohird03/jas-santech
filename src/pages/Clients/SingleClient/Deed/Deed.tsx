@@ -13,6 +13,7 @@ import { clientsInfoApi } from '@/api/clients';
 import { addNotification } from '@/utils';
 import dayjs from 'dayjs';
 import { priceFormat } from '@/utils/priceFormat';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -128,10 +129,26 @@ export const Deed = observer(() => {
                 Jami
               </Table.Summary.Cell>
               <Table.Summary.Cell index={2}>
-                <div style={{ textAlign: 'center' }}>{priceFormat(singleClientStore?.activeClient?.deedInfo?.totalDebit)}</div>
+                <div style={{ textAlign: 'center' }}>
+                  {singleClientStore?.activeClient?.deedInfo?.totalDebitByCurrency?.map(debt => (
+                    <div key={debt?.currency?.id}>
+                      {priceFormat(debt?.amount)}
+                      {currencyTagUi(debt?.currency?.symbol)}
+                    </div>
+                  ))
+                  }
+                </div>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={2}>
-                <div style={{ textAlign: 'center' }}>{priceFormat(singleClientStore?.activeClient?.deedInfo?.totalCredit)}</div>
+                <div style={{ textAlign: 'center' }}>
+                  {singleClientStore?.activeClient?.deedInfo?.totalCreditByCurrency?.map(debt => (
+                    <div key={debt?.currency?.id}>
+                      {priceFormat(debt?.amount)}
+                      {currencyTagUi(debt?.currency?.symbol)}
+                    </div>
+                  ))
+                  }
+                </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>
             <Table.Summary.Row>
@@ -140,7 +157,13 @@ export const Deed = observer(() => {
               </Table.Summary.Cell>
               <Table.Summary.Cell colSpan={2} index={2}>
                 <div style={{ textAlign: 'center' }}>
-                  {priceFormat((singleClientStore?.activeClient?.deedInfo?.debt))}
+                  {singleClientStore?.activeClient?.deedInfo?.debtByCurrency?.map(debt => (
+                    <div key={debt?.currency?.id}>
+                      {priceFormat(debt?.amount)}
+                      {currencyTagUi(debt?.currency?.symbol)}
+                    </div>
+                  ))
+                  }
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>

@@ -1,4 +1,5 @@
 import { ICurrency } from "../auth/types";
+import { IAddEditPaymentParams } from "../payment-income/types";
 import { IProducts } from "../product/types"
 import { IStaffs } from "../staffs";
 import { ISupplierInfo } from "../supplier/types";
@@ -9,7 +10,6 @@ export interface IIncomeOrder {
   accepted: boolean,
   supplier: ISupplierInfo,
   staff: IStaffs,
-  payment: IPayment;
   products: IIncomeProduct[];
   createdAt: string;
   date: string;
@@ -22,6 +22,7 @@ export interface IIncomeOrder {
     amount: number;
     currency: ICurrency;
   }[];
+  payment: IAddEditPaymentParams;
 }
 
 export interface IIncomeOrderTotalPrice {
@@ -95,7 +96,7 @@ export interface IUpdateIncomeProduct {
 export interface IIncomeOrderPayment {
   supplier?: ISupplierInfo;
   orderId: string;
-  payment: IPayment | undefined;
+  payment: IAddEditPaymentParams | undefined;
 }
 
 export interface IIncomeOrderPaymentParams {

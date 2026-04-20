@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { Endpoints, umsStages } from '../endpoints';
 import { INetworkConfig, Instance } from '../instance';
 import { IResponse } from '../types';
-import { IAddEditProduct, IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProductTotalCalc, IProducts } from './types';
+import { IAddEditProduct, IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProductTotalCalc, IProducts, ISingleProductStory } from './types';
 
 const config: INetworkConfig = {
   baseURL: Endpoints.Base,
@@ -29,8 +29,8 @@ class ProductsApi extends Instance {
   deleteProduct = (id: string): Promise<AxiosResponse> =>
     this.delete(`${Endpoints.ProductsOne}`, { params: { id } });
 
-  getSingleProductStory = (params: IGetSingleProductParams): Promise<{ data: IGetSingleProducts }> =>
-    this.get(Endpoints.ProductSingleStatus, { params });
+  getSingleProductStory = (params: IGetSingleProductParams): Promise<IResponse<ISingleProductStory[]>> =>
+    this.get(Endpoints.ProductStatistic, { params });
 
   getProductsToExcel = (params: IGetProductsParams): Promise<any> =>
     this.get(Endpoints.GetProductsToExcel, {

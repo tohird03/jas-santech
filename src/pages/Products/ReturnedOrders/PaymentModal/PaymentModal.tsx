@@ -106,7 +106,7 @@ export const PaymentModal = observer(() => {
       payment: orderPaymentData,
     })
       .then(() => {
-        queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+        queryClient.invalidateQueries({ queryKey: ['getReturnedOrders'] });
         if (clientId) {
           singleClientStore.getSingleClient({ id: clientId });
         }
@@ -235,25 +235,12 @@ export const PaymentModal = observer(() => {
     });
   };
 
-  // Q
-
   useEffect(() => {
     form.setFieldsValue({
       uzsChange: settlement.change.uzs > 0 ? settlement.change.uzs : undefined,
       usdChange: settlement.change.usd > 0 ? settlement.change.usd : undefined,
     });
   }, [settlement]);
-
-  // QAYTIM KASSADAN
-  const cashReturn = useMemo(() => {
-    const totalUZS = settlement.change.uzs || 0;
-    const totalUSD = settlement.change.usd || 0;
-
-    return {
-      uzs: Math.max(0, totalUZS - uzsChange),
-      usd: Math.max(0, totalUSD - usdChange),
-    };
-  }, [uzsChange, usdChange, settlement]);
 
   const currencyManyData = useMemo(() => (
     currencyMany?.data.map((currency) => ({
@@ -265,6 +252,16 @@ export const PaymentModal = observer(() => {
   ), [currencyMany]);
 
   const debts = returnedOrdersStore?.singleReturnedOrder?.client?.debtByCurrency ?? [];
+
+  useEffect(() => {
+    form.setFieldsValue({
+      payments: returnedOrdersStore?.singlePayment?.payment?.paymentMethods || [{
+        amount: 0,
+        type: PaymentTypes.CASH,
+        currencyId: authStore?.staffInfo?.currency?.id,
+      }],
+    });
+  }, [returnedOrdersStore.singlePayment]);
 
   return (
     <Modal

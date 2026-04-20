@@ -22,12 +22,12 @@ export interface IReturnedOrder {
   staff: ISeller,
   products: IReturnedOrderProducts[],
   totalPrices: IReturnedOrderTotalPrice[];
-  payment: IReturnedOrderPayment;
   debtByCurrency: {
     amount: number;
     currency: ICurrency;
   }[];
   totalPayments: IReturnedOrderPaymentGet[];
+  payment: IReturnedOrderPaymentParams;
 }
 
 export interface IReturnedOrderPaymentGet {

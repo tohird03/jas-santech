@@ -231,10 +231,6 @@ export const AddEditModal = observer(() => {
       setSelectedSupplier(incomeProductsStore?.incomeOrder?.supplier);
 
       form.setFieldsValue({
-        cash: incomeProductsStore.incomeOrder?.payment?.cash,
-        card: incomeProductsStore.incomeOrder?.payment?.card,
-        transfer: incomeProductsStore.incomeOrder?.payment?.transfer,
-        other: incomeProductsStore.incomeOrder?.payment?.other,
         date: dayjs(incomeProductsStore.incomeOrder?.date),
         supplierId: incomeProductsStore?.incomeOrder?.supplier?.id,
       });

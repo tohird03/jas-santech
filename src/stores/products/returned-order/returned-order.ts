@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { addNotification } from '@/utils';
 import { IGetReturnedOrdersParams, IReturnedOrder, IReturnedOrderPayment } from '@/api/returned-order/types';
 import { returnedOrderApi } from '@/api/returned-order/returned-order';
+import { ISingleReturnedOrderPayment } from './type';
 
 class ReturnedOrdersStore {
   #today = new Date();
@@ -16,7 +17,7 @@ class ReturnedOrdersStore {
   isOpenAddEditReturnedOrderModal = false;
   isOpenPaymentModal = false;
   isOpenShowProductModal = false;
-  singlePayment: IReturnedOrderPayment | null = null;
+  singlePayment: ISingleReturnedOrderPayment | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -72,7 +73,7 @@ class ReturnedOrdersStore {
     this.isOpenPaymentModal = isOpenPaymentModal;
   };
 
-  setSinglePayment = (singlePayment: IReturnedOrderPayment | null) => {
+  setSinglePayment = (singlePayment: ISingleReturnedOrderPayment | null) => {
     this.singlePayment = singlePayment;
   };
 

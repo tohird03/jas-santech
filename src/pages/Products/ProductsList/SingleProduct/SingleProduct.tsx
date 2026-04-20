@@ -86,7 +86,7 @@ export const SingleProduct = observer(() => {
 
       <Table
         columns={singleProductColumns}
-        dataSource={productsListStore?.singleProductStory?.products || []}
+        dataSource={productsListStore?.singleProductStory || []}
         bordered
         summary={(pageData) => (
           <>
@@ -100,7 +100,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total__order')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {productsListStore?.singleProductStory?.totalSellingCount}
+                  {/* {productsListStore?.singleProductStory?.totalSellingCount} */}
                 </div>
               </Table.Summary.Cell>
               <Table.Summary.Cell
@@ -109,7 +109,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total__arrival')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {productsListStore?.singleProductStory?.totalArrivalCount}
+                  {/* {productsListStore?.singleProductStory?.totalArrivalCount} */}
                 </div>
               </Table.Summary.Cell>
               <Table.Summary.Cell
@@ -118,7 +118,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total__returning')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {productsListStore?.singleProductStory?.totalReturningCount}
+                  {/* {productsListStore?.singleProductStory?.totalReturningCount} */}
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>
@@ -132,7 +132,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {productsListStore?.singleProductStory?.actualCount}
+                  {/* {productsListStore?.singleProductStory?.actualCount} */}
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>
