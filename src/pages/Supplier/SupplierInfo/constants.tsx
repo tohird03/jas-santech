@@ -39,7 +39,7 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
     render: (value, record) => (
       record?.debtByCurrency?.length > 0
         ? record?.debtByCurrency?.map(debt => (
-          <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+          <span key={debt?.currency?.id}>{priceFormat(debt?.amount)}{currencyTagUi(debt?.currency?.symbol)}</span>
         )) : 0
     ),
   },

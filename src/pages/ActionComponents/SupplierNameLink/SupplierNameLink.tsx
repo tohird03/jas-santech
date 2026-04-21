@@ -19,7 +19,7 @@ export const SupplierNameLink = ({ supplier }: Props) => {
       <p style={{ margin: 0, fontWeight: 'bold' }}>
         {supplier?.fullname}
       </p>
-      <i>+{supplier?.phone}</i>
+      <i>+{supplier?.phone || 998000000000}</i>
     </div>
   );
 };
