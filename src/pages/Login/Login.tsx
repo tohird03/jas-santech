@@ -108,7 +108,7 @@ c20 28 41 50 45 50 3 0 23 -17 42 -37z"
           </svg> */}
           <img src={JasImg} alt="" />
         </div>
-        <div style={{backgroundImage: `url(${ProductImg})`}} className={cn('login__form-wrapper')}>
+        <div className={cn('login__form-wrapper')}>
           <Form
             form={form}
             onFinish={handleSubmit}
