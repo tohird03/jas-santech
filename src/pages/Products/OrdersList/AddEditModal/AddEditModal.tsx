@@ -273,7 +273,7 @@ export const AddEditModal = observer(() => {
   const supplierOptions = useMemo(() => (
     clientsData?.data?.data.map((supplier) => ({
       value: supplier?.id,
-      label: `${supplier?.fullname}: +${supplier?.phone}`,
+      label: `${supplier?.fullname}: ${supplier?.phone || ''}`,
     }))
   ), [clientsData]);
 
@@ -860,9 +860,9 @@ export const AddEditModal = observer(() => {
         </Form.Item>
         <Form.Item
           label="Chegirma qiymati %"
-          rules={[{ required: true }]}
           name="discount"
           className={cn('form__row')}
+          initialValue={0}
         >
           <InputNumber
             placeholder="Chegirma qiymatini kiriting"

@@ -345,6 +345,14 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
       <span>{priceFormat(record?.prices?.selling?.totalPrice)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
     ),
   },
+  {
+    key: 'description',
+    dataIndex: 'description',
+    title: 'O\'ram haqida ma\'lumot',
+    align: 'center',
+    width: 300,
+    render: (value, record) => <span>{record?.product?.description}</span>,
+  },
 ];
 
 
