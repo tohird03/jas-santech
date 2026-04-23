@@ -81,36 +81,40 @@ export const AddEditModal = observer(() => {
   const handleSubmit = (values: IAddEditProductForm) => {
     setLoading(true);
 
-    const productData = {
-      name: values?.name,
-      count: 0,
-      minAmount: values?.minAmount,
-      description: values?.description,
-      prices: {
-        cost: {
-          price: values?.cost,
-          currencyId: values?.costCurrency,
-        },
-        selling: {
-          price: values?.price,
-          currencyId: values?.priceCurrency,
-        },
-        wholesale: {
-          price: values?.wholesale,
-          currencyId: values?.wholesaleCurrency,
-        },
-      },
-    };
+    const formData = new FormData();
+
+    // 🔥 IMAGE (binary)
+    const file = bannerFileList[0];
+
+    if (file?.originFileObj) {
+      formData.append('image', file.originFileObj);
+    }
+
+    // 🔥 qolgan fieldlar (string bo‘lishi kerak)
+    formData.append('name', values?.name);
+    formData.append('count', '0');
+    formData.append('minAmount', String(values?.minAmount || 0));
+    formData.append('description', values?.description || '');
+
+    formData.append('prices_cost_price', String(values?.cost));
+    formData.append('prices_cost_currencyId', values?.costCurrency);
+
+    formData.append('prices_selling_price', String(values?.price));
+    formData.append('prices_selling_currencyId', values?.priceCurrency);
+
+    formData.append('prices_wholesale_price', String(values?.wholesale));
+    formData.append('prices_wholesale_currencyId', values?.wholesaleCurrency);
 
     if (productsListStore?.singleProduct) {
       updateProduct({
-        ...productData,
         id: productsListStore?.singleProduct?.id!,
-      });
+        data: formData,
+      } as any);
 
       return;
     }
-    addNewProduct(productData);
+
+    addNewProduct(formData as any);
   };
 
   const handleModalClose = () => {

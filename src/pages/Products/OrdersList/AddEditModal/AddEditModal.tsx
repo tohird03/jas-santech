@@ -648,6 +648,8 @@ export const AddEditModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
+  console.log(ordersStore?.order?.client?.debtByCurrency[0]);
+
   return (
     <Modal
       open={ordersStore.isOpenAddEditNewOrderModal}
@@ -656,13 +658,22 @@ export const AddEditModal = observer(() => {
         <div className={cn('order__add-products-header')}>
           <div className={cn('order__add-products-header-left')}>
             {ordersStore?.order?.id ? 'Sotuvni tahrirlash' : 'Yangi sotuv'}
-            <p style={{ margin: 0 }}>{selectedClient &&
-              `Mijoz qarzi:
-        ${ordersStore?.order?.client?.debtByCurrency?.map(debt => (
-          <span key={debt?.currency?.id}>
-            {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
-          </span>
-        ))}`}
+            <p style={{ margin: 0 }}>
+              {selectedClient && (
+                <>
+                  Mijoz qarzi:{' '}
+                  {ordersStore?.order?.client?.debtByCurrency?.length ? (
+                    ordersStore.order.client.debtByCurrency.map(debt => (
+                      <span key={debt?.currency?.id} style={{ marginRight: '8px' }}>
+                        {priceFormat(debt?.amount)}
+                        {currencyTagUi(debt?.currency?.symbol)}
+                      </span>
+                    ))
+                  ) : (
+                    '0'
+                  )}
+                </>
+              )}
             </p>
             {ordersStore?.order?.id && (
               <Button

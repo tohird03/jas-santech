@@ -604,10 +604,13 @@ export const AddEditModal = observer(() => {
       />
 
       <div>
-        <p style={{ textAlign: 'end', fontSize: '24px', fontWeight: 'bold' }}>Umumiy qiymati: {
-          priceFormat(returnedOrdersStore?.singleReturnedOrder?.products?.reduce((prev, current) => prev + (current?.price * current?.count), 0))
-        }
-        </p>
+        <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
+          <p style={{ margin: '0' }}>Umumiy qiymati:</p>
+          <div style={{ textAlign: 'end' }}>
+            {returnedOrdersStore?.singleReturnedOrder?.totalPrices?.map(price =>
+              <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+          </div>
+        </div>
       </div>
     </Modal>
   );

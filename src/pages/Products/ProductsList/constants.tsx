@@ -6,6 +6,8 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import { priceFormat } from '@/utils/priceFormat';
 import { NavLink } from 'react-router-dom';
 import { currencyTagUi } from '@/constants/payment';
+import { Image } from 'antd';
+import { imageUrlWithBase } from '@/utils/image';
 
 export const productsListColumn: ColumnType<IProducts>[] = [
   {
@@ -21,6 +23,19 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     render: (value, record) => <NavLink to={`/products/${record?.id}`}>{record?.name}</NavLink>,
+  },
+  {
+    key: 'image',
+    dataIndex: 'image',
+    title: 'Mahsulot rasmi',
+    align: 'center',
+    render: (value, record) => (
+      <Image
+        width={50}
+        alt="basic"
+        src={imageUrlWithBase(record?.image)}
+      />
+    ),
   },
   {
     key: 'count',
