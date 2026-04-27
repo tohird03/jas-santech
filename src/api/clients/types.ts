@@ -34,7 +34,10 @@ export interface IClientDeedInfo {
 
 export interface IClientDeed {
   type: IClientDeedType;
-  value: number;
+  values: {
+    amount: number;
+    currency: ICurrency;
+  }[];
   date: string;
   description: string;
   action: IClientDeedAction;

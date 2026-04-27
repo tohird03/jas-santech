@@ -2,8 +2,9 @@ import React from 'react';
 import { ColumnType } from 'antd/es/table';
 import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
-import { IClientDeed, IClientDeedAction, IClientDeedType} from '@/api/clients';
+import { IClientDeed, IClientDeedAction, IClientDeedType } from '@/api/clients';
 import { Tag } from 'antd';
+import { currencyTagUi } from '@/constants/payment';
 
 export const deedColumns: ColumnType<IClientDeed>[] = [
   {
@@ -38,7 +39,14 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     className: 'green-col',
     render: (value, record) => (
       record?.type === IClientDeedType.DEBIT
-        ? priceFormat(record?.value)
+        ? (
+          record?.values?.map(debt => (
+            <p style={{margin: 0}} key={debt?.currency?.id}>
+              {priceFormat(debt?.amount)}
+              {currencyTagUi(debt?.currency?.symbol)}
+            </p>
+          ))
+        )
         : null
     ),
   },
@@ -51,7 +59,14 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     className: 'red-col',
     render: (value, record) => (
       record?.type === IClientDeedType.KREDIT
-        ? priceFormat(record?.value)
+        ? (
+          record?.values?.map(debt => (
+            <p style={{margin: 0}} key={debt?.currency?.id}>
+              {priceFormat(debt?.amount)}
+              {currencyTagUi(debt?.currency?.symbol)}
+            </p>
+          ))
+        )
         : null
     ),
   },
