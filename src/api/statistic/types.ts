@@ -1,17 +1,23 @@
-export interface IOrderStatistic {
-  daily: number;
-  weekly: number;
-  monthly: number;
-  yearly: number;
-  client: IUserDebtStatistic;
-  supplier: IUserDebtStatistic;
+import { ICurrency } from '../auth/types';
 
-  weeklyChart: IOrderStatisticChart[];
+export interface IOrderStatistic {
+  dailyByCurrency: IUserStatisticData[];
+  weeklyByCurrency: IUserStatisticData[];
+  monthlyByCurrency: IUserStatisticData[];
+  yearlyByCurrency: IUserStatisticData[];
+  clientDebtByCurrency: IUserDebtStatistic[];
+  supplierDebtByCurrency: IUserDebtStatistic[];
+}
+
+export interface IUserStatisticData {
+  total: number;
+  currency: ICurrency;
 }
 
 export interface IUserDebtStatistic {
   ourDebt: number;
   theirDebt: number;
+  currency: ICurrency;
 }
 
 export interface IOrderStatisticChart {

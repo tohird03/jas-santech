@@ -16,6 +16,7 @@ import { addNotification } from '@/utils';
 import { priceFormat } from '@/utils/priceFormat';
 import { ordersStore } from '@/stores/products';
 import { homeStore } from '@/stores/home/home';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -106,7 +107,13 @@ export const ClientsInfo = observer(() => {
         <Typography.Title level={3}>Mijozlar</Typography.Title>
         <div className={cn('client-info__filter')}>
           <Typography.Title level={3}>
-            Jami qarz: {priceFormat(ordersStatisticData?.client?.theirDebt)}
+            Jami qarz:
+            {ordersStatisticData?.clientDebtByCurrency?.map(clientDebt => (
+              <p key={clientDebt?.currency?.id} className={cn('statistic__top-card-value')}>
+                {priceFormat(clientDebt?.theirDebt)}
+                {currencyTagUi(clientDebt?.currency?.symbol)}
+              </p>
+            ))}
           </Typography.Title>
           <Input
             placeholder="Mijozlarni qidirish"

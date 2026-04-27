@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Chart from 'react-apexcharts';
 import { observer } from 'mobx-react';
 import { Card } from 'antd';
 import classNames from 'classnames';
 import styles from './statistic.scss';
-import { CalendarOutlined} from '@ant-design/icons';
+import { CalendarOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { ordersStore } from '@/stores/products';
 import { getStartAndEndDate, getStartMonthEndDate } from '@/utils/getDateFormat';
@@ -19,6 +19,7 @@ import { homeStore } from '@/stores/home/home';
 import { IOrderGraphStatisticType } from '@/api/statistic/types';
 import { authStore } from '@/stores/auth';
 import { priceFormat } from '@/utils/priceFormat';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 const formatter = (value: number) => <CountUp duration={2} end={value} separator=" " />;
@@ -185,6 +186,43 @@ export const Statistic = observer(() => {
     navigate(ROUTES.supplierInfo);
   };
 
+  const supplierDebt = useMemo(() => {
+    const data = ordersStatisticData?.supplierDebtByCurrency || [];
+
+    const usd = data.find(item => item.currency?.symbol === 'USD');
+    const uzs = data.find(item => item.currency?.symbol === 'UZS');
+
+    return {
+      USD: {
+        ourDebt: usd?.ourDebt || 0,
+        theirDebt: usd?.theirDebt || 0,
+      },
+      UZS: {
+        ourDebt: uzs?.ourDebt || 0,
+        theirDebt: uzs?.theirDebt || 0,
+      },
+    };
+  }, [ordersStatisticData?.supplierDebtByCurrency]);
+
+  const clientDebt = useMemo(() => {
+    const data = ordersStatisticData?.clientDebtByCurrency || [];
+
+    const usd = data.find(item => item.currency?.symbol === 'USD');
+    const uzs = data.find(item => item.currency?.symbol === 'UZS');
+
+    return {
+      USD: {
+        ourDebt: usd?.ourDebt || 0,
+        theirDebt: usd?.theirDebt || 0,
+      },
+      UZS: {
+        ourDebt: uzs?.ourDebt || 0,
+        theirDebt: uzs?.theirDebt || 0,
+      },
+    };
+  }, [ordersStatisticData?.clientDebtByCurrency]);
+
+
   return (
     <div style={{ backgroundColor: '#F5F5F5', padding: '30px' }}>
       <div className={cn('statistic__top-wrapper')}>
@@ -194,23 +232,32 @@ export const Statistic = observer(() => {
             <Card onClick={handleClickTodayOrder} className={cn('statistic__top-card')}>
               <CalendarOutlined style={{ fontSize: '40px', color: '#f18024', marginBottom: 5 }} />
               <p className={cn('statistic__top-card-info')}>Bugun</p>
-              <p className={cn('statistic__top-card-value')}>
-                {formatter(ordersStatisticData?.daily || 0)}
-              </p>
+              {ordersStatisticData?.dailyByCurrency?.map(dailySelling => (
+                <p key={dailySelling?.currency?.id} className={cn('statistic__top-card-value')}>
+                  {priceFormat(dailySelling?.total)}
+                  {currencyTagUi(dailySelling?.currency?.symbol)}
+                </p>
+              ))}
             </Card>
             <Card onClick={handleClickTodayWeek} className={cn('statistic__top-card')}>
               <CalendarOutlined style={{ fontSize: '40px', color: '#f18024', marginBottom: 5 }} />
               <p className={cn('statistic__top-card-info')}>Shu hafta</p>
-              <p className={cn('statistic__top-card-value')}>
-                {formatter(ordersStatisticData?.weekly || 0)}
-              </p>
+              {ordersStatisticData?.weeklyByCurrency?.map(weeklySelling => (
+                <p key={weeklySelling?.currency?.id} className={cn('statistic__top-card-value')}>
+                  {priceFormat(weeklySelling?.total)}
+                  {currencyTagUi(weeklySelling?.currency?.symbol)}
+                </p>
+              ))}
             </Card>
             <Card onClick={handleClickMonth} className={cn('statistic__top-card')}>
               <CalendarOutlined style={{ fontSize: '40px', color: '#f18024', marginBottom: 5 }} />
               <p className={cn('statistic__top-card-info')}>Shu oy</p>
-              <p className={cn('statistic__top-card-value')}>
-                {formatter(ordersStatisticData?.monthly || 0)}
-              </p>
+              {ordersStatisticData?.monthlyByCurrency?.map(monthSelling => (
+                <p key={monthSelling?.currency?.id} className={cn('statistic__top-card-value')}>
+                  {priceFormat(monthSelling?.total)}
+                  {currencyTagUi(monthSelling?.currency?.symbol)}
+                </p>
+              ))}
             </Card>
           </div>
         </div>
@@ -220,14 +267,20 @@ export const Statistic = observer(() => {
             <div className={cn('statistic__debts')}>
               <div>
                 <p className={cn('statistic__top-card-info')}>Bizga qarz</p>
-                <p className={cn('statistic__top-card-value')}>
-                  {formatter(ordersStatisticData?.client?.theirDebt || 0)}
+                <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                  {priceFormat(clientDebt.USD.theirDebt)}{currencyTagUi('USD')}
+                </p>
+                <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                  {priceFormat(clientDebt.UZS.theirDebt)}{currencyTagUi('UZS')}
                 </p>
               </div>
               <div>
                 <p className={cn('statistic__top-card-info')}>Bizning qarz</p>
-                <p className={cn('statistic__top-card-value')}>
-                  {formatter(ordersStatisticData?.client?.ourDebt || 0)}
+                <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                  {priceFormat(clientDebt.USD.ourDebt)}{currencyTagUi('USD')}
+                </p>
+                <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                  {priceFormat(clientDebt.UZS.ourDebt)}{currencyTagUi('UZS')}
                 </p>
               </div>
             </div>
@@ -239,15 +292,23 @@ export const Statistic = observer(() => {
             <div className={cn('statistic__debts')}>
               <div>
                 <p className={cn('statistic__top-card-info')}>Bizning qarz</p>
-                <p className={cn('statistic__top-card-value')}>
-                  {formatter(ordersStatisticData?.supplier?.ourDebt || 0)}
+                <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                  {priceFormat(supplierDebt.USD.ourDebt)}{currencyTagUi('USD')}
+                </p>
+                <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                  {priceFormat(supplierDebt.UZS.ourDebt)}{currencyTagUi('UZS')}
                 </p>
               </div>
               <div>
                 <p className={cn('statistic__top-card-info')}>Bizga qarz</p>
-                <p className={cn('statistic__top-card-value')}>
-                  {formatter(ordersStatisticData?.supplier?.theirDebt || 0)}
-                </p>
+                <div>
+                  <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                    {priceFormat(supplierDebt.USD.theirDebt)}{currencyTagUi('USD')}
+                  </p>
+                  <p className={cn('statistic__top-card-value statistic__top-card-debt')}>
+                    {priceFormat(supplierDebt.UZS.theirDebt)}{currencyTagUi('UZS')}
+                  </p>
+                </div>
               </div>
             </div>
           </Card>

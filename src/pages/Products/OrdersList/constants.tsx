@@ -2,12 +2,13 @@ import React from 'react';
 import { ColumnType } from 'antd/es/table';
 import { Action } from './Action';
 import { IOrder, IOrderProducts, IOrderStatus, ITotalOrderPaymentCalc } from '@/api/order/types';
-import { Tag } from 'antd';
+import { Image, Tag } from 'antd';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { priceFormat } from '@/utils/priceFormat';
 import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
 import { PaymentStatus } from './PaymentStatus';
 import { currencyTagUi } from '@/constants/payment';
+import { imageUrlWithBase } from '@/utils/image';
 
 export const ordersColumns: ColumnType<IOrder>[] = [
   {
@@ -308,6 +309,20 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     align: 'center',
     width: 100,
     render: (value, record, index) => index + 1,
+  },
+  {
+    key: 'image',
+    dataIndex: 'image',
+    title: 'Mahsulot rasmi',
+    align: 'center',
+    width: '150px',
+    render: (value, record) => (
+      <Image
+        width={50}
+        alt="basic"
+        src={imageUrlWithBase(record?.product?.image)}
+      />
+    ),
   },
   {
     key: 'name',
