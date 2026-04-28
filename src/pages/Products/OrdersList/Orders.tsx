@@ -234,6 +234,7 @@ export const Orders = observer(() => {
           cardStyle={{ width: '500px' }}
           className="total-calc"
           loadingLength={1}
+          rowKey="1"
         />
       </div>
 

@@ -2,7 +2,7 @@ import { ordersApi } from '@/api/order';
 import { IOrder } from '@/api/order/types';
 import { addNotification } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Props {
   order: IOrder;
@@ -11,7 +11,7 @@ interface Props {
 export const OrderDescUpdate: React.FC<Props> = ({order}) => {
   const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
-  const [value, setValue] = useState(order?.description);
+  const [value, setValue] = useState('');
 
   const onSave = (text: string) => {
     ordersApi.updateOrder({
@@ -40,6 +40,10 @@ export const OrderDescUpdate: React.FC<Props> = ({order}) => {
     setIsEditing(false);
   };
 
+  useEffect(() => {
+    setValue(order?.description);
+  }, [order?.description]);
+
   return (
     <div style={{ minHeight: '40px' }}>
       {isEditing ? (
@@ -64,7 +68,7 @@ export const OrderDescUpdate: React.FC<Props> = ({order}) => {
             resize: 'none',
             padding: '8px',
             borderRadius: '6px',
-            border: '1px solid #ccc',
+            border: '1px solid grey !important',
           }}
         />
       ) : (
