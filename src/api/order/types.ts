@@ -12,7 +12,7 @@ export interface IOrder {
   status: IOrderStatus;
   date: string;
   articl: number;
-
+  description: string;
   debtByCurrency: {
     amount: number;
     currency: ICurrency;
@@ -79,6 +79,7 @@ export interface IAddOrderProducts {
 export interface IAddOrderModalForm extends IAddOrderProducts {
   clientId: string;
   date: string;
+  description: string;
 }
 
 export interface IAddOrder {
@@ -87,6 +88,7 @@ export interface IAddOrder {
   send: boolean;
   status?: IOrderStatus;
   products: IAddOrderProducts[];
+  description?: string;
 }
 
 export interface IUpdateOrder {
@@ -96,6 +98,7 @@ export interface IUpdateOrder {
   status?: IOrderStatus;
   send: boolean;
   payment?: IOrderPayment;
+  description?: string;
 }
 
 export interface IOrderPayment {

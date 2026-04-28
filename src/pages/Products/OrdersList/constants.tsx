@@ -16,7 +16,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'index',
     title: '#',
     align: 'center',
-    width: '150px',
+    width: '100px',
     render: (value, record, index) => index + 1,
   },
   {
@@ -54,7 +54,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'seller',
     title: 'Sotuvchi',
     align: 'center',
-    width: '150px',
+    width: '100px',
     render: (value, record) => <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>,
   },
   {
@@ -139,6 +139,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     align: 'center',
     width: '150px',
     render: (value, record) => getFullDateFormat(record?.date),
+  },
+  {
+    key: 'description',
+    dataIndex: 'description',
+    title: 'Ma\'lumot',
+    align: 'center',
+    width: '200px',
+    render: (value, record) => record?.description,
   },
   {
     key: 'action',

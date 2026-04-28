@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Checkbox, DatePicker, Form, InputNumber, Modal, Popconfirm, Select, Space, Spin, Tag } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Image, Input, InputNumber, Modal, Popconfirm, Select, Space, Spin, Tag } from 'antd';
 import classNames from 'classnames';
 import { addNotification } from '@/utils';
 import { ordersStore, productsListStore } from '@/stores/products';
@@ -29,6 +29,7 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 import { authStore } from '@/stores/auth';
 import { currencyTagUi } from '@/constants/payment';
+import { imageUrlWithBase } from '@/utils/image';
 
 const cn = classNames.bind(styles);
 
@@ -58,6 +59,7 @@ export const AddEditModal = observer(() => {
   const changeDiscountRef = useRef<any>(null);
   const [selectedClient, setSelectedClient] = useState<IClientsInfo | null>(null);
   const [priceType, setPriceType] = useState<'cost' | 'wholesale' | 'selling'>('selling');
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   // GET DATAS
   const { data: clientsData, isLoading: loadingClients } = useQuery({
@@ -106,6 +108,7 @@ export const AddEditModal = observer(() => {
       id: ordersStore?.order?.id!,
       send: ordersStore.isSendUser,
       clientId: form.getFieldValue('clientId'),
+      description: form.getFieldValue('description'),
     })
       .then(() => {
         queryClient.invalidateQueries({ queryKey: ['getOrders'] });
@@ -189,6 +192,7 @@ export const AddEditModal = observer(() => {
       clientId: values?.clientId,
       date: values?.date,
       send: false,
+      description: values?.description,
       products: [addProducts],
     };
 
@@ -260,6 +264,8 @@ export const AddEditModal = observer(() => {
     if (findProduct) {
       form.setFieldValue('price', findProduct.prices[priceType]?.price);
       form.setFieldValue('currencyId', findProduct.prices[priceType]?.currency?.id);
+
+      setSelectedProduct(findProduct);
     }
 
     setIsOpenProductSelect(false);
@@ -285,6 +291,7 @@ export const AddEditModal = observer(() => {
       form.setFieldsValue({
         date: dayjs(ordersStore.order?.date),
         clientId: ordersStore?.order?.client?.id,
+        description: ordersStore?.order?.description,
       });
 
     } else if (singleClientStore.activeClient?.id) {
@@ -648,8 +655,6 @@ export const AddEditModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
-  console.log(ordersStore?.order?.client?.debtByCurrency[0]);
-
   return (
     <Modal
       open={ordersStore.isOpenAddEditNewOrderModal}
@@ -836,6 +841,19 @@ export const AddEditModal = observer(() => {
             </Select>
           </Form.Item>
           <Button style={{ marginTop: '5px' }} onClick={handleAddProduct} icon={<PlusOutlined />} />
+          {selectedProduct?.image && (
+            <Image
+              src={imageUrlWithBase(selectedProduct.image)}
+              alt="product"
+              style={{
+                width: 50,
+                height: 50,
+                objectFit: 'cover',
+                borderRadius: 8,
+                border: '1px solid #ddd',
+              }}
+            />
+          )}
         </div>
         <PriceWithCurrency
           form={form}
@@ -881,21 +899,34 @@ export const AddEditModal = observer(() => {
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
+
         <Form.Item
-          name="sendUser"
-          className={cn('form__row')}
+          label="Sotuv haqida ma'lumot"
+          name="description"
         >
-          <Checkbox onChange={handleChagneCheckbox}>Mijozga bu sotuv haqida yuborilsinmi?</Checkbox>
+          <Input.TextArea
+            placeholder="Sotuv haqida ma'lumot"
+            rows={4}
+            maxLength={200}
+            showCount
+            autoSize={{ minRows: 2, maxRows: 6 }}
+          />
         </Form.Item>
-        <Button
-          onClick={handleCreateOrUpdateOrder}
-          type="primary"
-          icon={<PlusOutlined />}
-          loading={loading}
-          className={cn('form__row')}
-        >
-          Qo&apos;shish
-        </Button>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Form.Item
+            name="sendUser"
+          >
+            <Checkbox onChange={handleChagneCheckbox}>Mijozga bu sotuv haqida yuborilsinmi?</Checkbox>
+          </Form.Item>
+          <Button
+            onClick={handleCreateOrUpdateOrder}
+            type="primary"
+            icon={<PlusOutlined />}
+            loading={loading}
+          >
+            Qo&apos;shish
+          </Button>
+        </div>
       </Form>
 
       {/* PRODUCTS SHOW LIST */}

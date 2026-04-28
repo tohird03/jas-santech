@@ -61,6 +61,7 @@ export const OrderShowInfoModal = observer(() => {
           pagination={false}
         />
       </div>
+      <p>{ordersStore?.singleOrder?.description}</p>
       <div>
         <Table
           columns={ordersInfoProductsColumns}
