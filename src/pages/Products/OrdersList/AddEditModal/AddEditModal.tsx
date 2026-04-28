@@ -392,6 +392,20 @@ export const AddEditModal = observer(() => {
       render: (value, record, index) => index + 1,
     },
     {
+      key: 'image',
+      dataIndex: 'image',
+      title: 'Mahsulot rasmi',
+      align: 'center',
+      width: '150px',
+      render: (value, record) => (
+        <Image
+          width={50}
+          alt="basic"
+          src={imageUrlWithBase(record?.product?.image)}
+        />
+      ),
+    },
+    {
       key: 'product_name',
       dataIndex: 'product_name',
       title: 'Mahsulot nomi',

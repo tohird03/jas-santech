@@ -9,6 +9,7 @@ import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
 import { PaymentStatus } from './PaymentStatus';
 import { currencyTagUi } from '@/constants/payment';
 import { imageUrlWithBase } from '@/utils/image';
+import { OrderDescUpdate } from './OrderDescUpdate/OrderDescUpdate';
 
 export const ordersColumns: ColumnType<IOrder>[] = [
   {
@@ -146,7 +147,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Ma\'lumot',
     align: 'center',
     width: '200px',
-    render: (value, record) => record?.description,
+    render: (value, record) => <OrderDescUpdate order={record} />,
   },
   {
     key: 'action',
