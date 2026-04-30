@@ -21,13 +21,7 @@ export const mainMenuList: IMenuItems[] = [
     label: 'Bosh sahifa',
     key: ROUTES.home,
     icon: <HomeOutlined />,
-    children: [
-      {
-        label: <><AppstoreAddOutlined /> Statistika</>,
-        key: ROUTES.home,
-        roleKey: EPageAccess.STAT,
-      },
-    ],
+    roleKey: EPageAccess.STAT,
   },
   {
     label: 'Mahsulotlar',

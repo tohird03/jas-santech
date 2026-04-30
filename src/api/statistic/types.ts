@@ -26,9 +26,9 @@ export interface IOrderStatisticChart {
 }
 
 export interface IOrderGraphStatistic {
-  sums: {
+  byCurrency: {
     total: number;
-    symbol: 'UZS' | 'USD';
+    currency: ICurrency;
   }[];
   date: string;
 }

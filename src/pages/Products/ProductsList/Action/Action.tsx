@@ -26,7 +26,7 @@ export const Action: FC<Props> = observer(({product}) => {
     onError: addNotification,
   });
 
-  const handleEditProcess = () => {
+  const handleEditProduct = () => {
     productsListStore.setSingleProduct(product);
     productsListStore.setIsOpenAddEditProductModal(true);
   };
@@ -37,7 +37,7 @@ export const Action: FC<Props> = observer(({product}) => {
 
   return (
     <div style={{display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
-      <Button onClick={handleEditProcess} type="primary" icon={<EditOutlined />} />
+      <Button onClick={handleEditProduct} type="primary" icon={<EditOutlined />} />
       {/* <Popconfirm
         title="Mahsulotni o'chirish"
         description="Rostdan ham bu Mahsulotni o'chirishni xohlaysizmi?"

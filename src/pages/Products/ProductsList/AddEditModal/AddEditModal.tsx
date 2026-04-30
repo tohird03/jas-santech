@@ -92,7 +92,6 @@ export const AddEditModal = observer(() => {
 
     // 🔥 qolgan fieldlar (string bo‘lishi kerak)
     formData.append('name', values?.name);
-    formData.append('count', '0');
     formData.append('minAmount', String(values?.minAmount || 0));
     formData.append('description', values?.description || '');
 
@@ -113,6 +112,8 @@ export const AddEditModal = observer(() => {
 
       return;
     }
+
+    formData.append('count', '0');
 
     addNewProduct(formData as any);
   };
@@ -253,7 +254,6 @@ export const AddEditModal = observer(() => {
             placeholder="Mahsulot haqida ma'lumot"
             style={{ width: '100%' }}
             rows={4}
-            maxLength={100}
             showCount
             autoSize={{ minRows: 2, maxRows: 6 }}
           />

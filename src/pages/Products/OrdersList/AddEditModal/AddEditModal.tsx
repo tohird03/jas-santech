@@ -233,6 +233,7 @@ export const AddEditModal = observer(() => {
     ordersStore.setOrder(null);
     ordersStore.setIsSendUser(false);
     ordersStore.setIsOpenAddEditNewOrderModal(false);
+    productsListStore.setSingleProduct(null);
   };
 
   // SEARCH OPTIONS
@@ -270,6 +271,11 @@ export const AddEditModal = observer(() => {
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();
+  };
+
+  const handleEditProductSelectedProduct = () => {
+    productsListStore.setSingleProduct(selectedProduct);
+    productsListStore.setIsOpenAddEditProductModal(true);
   };
 
   const handleClearClient = () => {
@@ -669,6 +675,18 @@ export const AddEditModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
+  useEffect(() => {
+    if (selectedProduct && productsData?.data?.data) {
+      const updated = productsData.data.data.find(
+        p => p.id === selectedProduct.id
+      );
+
+      if (updated) {
+        setSelectedProduct(updated);
+      }
+    }
+  }, [productsData]);
+
   return (
     <Modal
       open={ordersStore.isOpenAddEditNewOrderModal}
@@ -855,6 +873,7 @@ export const AddEditModal = observer(() => {
             </Select>
           </Form.Item>
           <Button style={{ marginTop: '5px' }} onClick={handleAddProduct} icon={<PlusOutlined />} />
+          <Button style={{ marginTop: '5px' }} onClick={handleEditProductSelectedProduct} icon={<EditOutlined />} />
           {selectedProduct?.image && (
             <Image
               src={imageUrlWithBase(selectedProduct.image)}
@@ -921,7 +940,6 @@ export const AddEditModal = observer(() => {
           <Input.TextArea
             placeholder="Sotuv haqida ma'lumot"
             rows={4}
-            maxLength={200}
             showCount
             autoSize={{ minRows: 2, maxRows: 6 }}
           />

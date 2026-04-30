@@ -61,8 +61,8 @@ export const Statistic = observer(() => {
   const chartData: number[] = (ordersGraphStatisticData ?? []).map(item => {
     const name = '';
 
-    return (item.sums ?? []).reduce((acc, curr) => {
-      const converted = convertToDefault(curr.total, curr.symbol);
+    return (item.byCurrency ?? []).reduce((acc, curr) => {
+      const converted = convertToDefault(curr.total, curr.currency?.symbol);
 
       return acc + converted;
     }, 0);
