@@ -7,7 +7,6 @@ import { addNotification } from '@/utils';
 import { incomeProductsStore, productsListStore } from '@/stores/products';
 import { priceFormat } from '@/utils/priceFormat';
 import { CheckOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { DataTable } from '@/components/Datatable/datatable';
 import { useMediaQuery } from '@/utils/mediaQuery';
 import dayjs from 'dayjs';
 import styles from '../income-products.scss';

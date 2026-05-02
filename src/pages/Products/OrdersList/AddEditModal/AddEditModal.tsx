@@ -670,6 +670,17 @@ export const AddEditModal = observer(() => {
   ), [currencyMany]);
 
   useEffect(() => {
+    if (selectedProduct) {
+      const selectedPrice = selectedProduct?.prices?.[priceType];
+
+      form.setFieldsValue({
+        price: selectedPrice?.price,
+        currencyId: selectedPrice?.currency?.id,
+      });
+    }
+  }, [priceType, selectedProduct]);
+
+  useEffect(() => {
     if (selectedProduct && productsData?.data?.data) {
       const updated = productsData.data.data.find(
         p => p.id === selectedProduct.id
@@ -774,9 +785,8 @@ export const AddEditModal = observer(() => {
         className="order__add-products-form"
         onKeyPress={handleKeyPress}
       >
-        <div className={cn('form__row')} style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={cn('form__row')} style={{ display: 'flex' }}>
           <Form.Item
-            label="Mijoz"
             rules={[{ required: true }]}
             name="clientId"
             style={{ flex: 1, width: '100%' }}
@@ -829,10 +839,9 @@ export const AddEditModal = observer(() => {
               ))}
             </Select>
           </Form.Item>
-          <Button style={{ marginTop: '5px' }} onClick={handleAddClient} icon={<PlusOutlined />} />
+          <Button onClick={handleAddClient} icon={<PlusOutlined />} />
         </div>
         <Form.Item
-          label="Sotish sanasi"
           name="date"
           initialValue={dayjs()}
           className={cn('form__row')}
@@ -844,9 +853,8 @@ export const AddEditModal = observer(() => {
             onChange={handleChaneOrderDate}
           />
         </Form.Item>
-        <div className={cn('form__row')} style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={cn('form__row')} style={{ display: 'flex' }}>
           <Form.Item
-            label="Mahsulot"
             rules={[{ required: true }]}
             name="productId"
             style={{ flex: 1, width: '100%' }}
@@ -855,8 +863,8 @@ export const AddEditModal = observer(() => {
                 <span>
                   Oxirgi sotuv:{' '}
                   {priceFormat(selectedProduct.lastSellingPrice || 0)}
-                  {currencyTagUi(selectedProduct?.prices?.selling?.currency?.symbol)} x {' '}
-                  {selectedProduct.lastSellingCount} dona |{' '}
+                  {currencyTagUi(selectedProduct?.prices?.selling?.currency?.symbol)}x{' '}
+                  {selectedProduct.lastSellingCount} dona | {' '}
                   {getFullDateFormat(selectedProduct.lastSellingDate)}
                 </span>
               ) : ''
@@ -886,9 +894,14 @@ export const AddEditModal = observer(() => {
                 >
                   <div className={cn('order__add-select-option')}>
                     <div className={cn('income-order__add-product-option')}>
-                      <p className={cn('income-order__add-product-name')}>
-                        {product?.name}
-                      </p>
+                      <div>
+                        <p className={cn('income-order__add-product-name')}>
+                          {product?.name}
+                        </p>
+                        <p className={cn('order__add-product-desc')}>
+                          {product?.description}
+                        </p>
+                      </div>
                       <div className={cn('income-order__add-product-info')}>
                         <p className={cn('income-order__add-product-price')}>
                           {priceFormat(product?.prices?.selling?.price)} {currencyTagUi(product?.prices?.selling?.currency?.symbol)}
@@ -901,16 +914,13 @@ export const AddEditModal = observer(() => {
                         </p>
                       </div>
                     </div>
-                    <p className={cn('order__add-product-desc')}>
-                      {product?.description}
-                    </p>
                   </div>
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Button style={{ marginTop: '5px' }} onClick={handleAddProduct} icon={<PlusOutlined />} />
-          <Button style={{ marginTop: '5px' }} onClick={handleEditProductSelectedProduct} icon={<EditOutlined />} />
+          <Button onClick={handleAddProduct} icon={<PlusOutlined />} />
+          <Button onClick={handleEditProductSelectedProduct} icon={<EditOutlined />} />
           {selectedProduct?.image && (
             <Image
               src={imageUrlWithBase(selectedProduct.image)}
@@ -926,7 +936,6 @@ export const AddEditModal = observer(() => {
           )}
         </div>
         <Form.Item
-          label="Sotuv haqida ma'lumot"
           name="description"
         >
           <Input.TextArea
@@ -941,7 +950,7 @@ export const AddEditModal = observer(() => {
             form={form}
             valueName="price"
             currencyName="currencyId"
-            label="Sotish narxi"
+            label=""
             required
             onKeyDown={handleChangePriceForm}
             currencyOptions={currencyManyData}
@@ -984,7 +993,7 @@ export const AddEditModal = observer(() => {
           />
         </Form.Item>
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-          <div style={{fontSize: '18px', fontWeight: '700px', marginTop: '-10px', marginBottom: '10px', width: '300px' }}>
+          <div style={{ fontSize: '18px', fontWeight: '700px', marginTop: '-10px', marginBottom: '10px', width: '300px' }}>
             Umumiy narx: {priceFormat(totalPrice)}{' '}
             {currencyTagUi(currencyManyData.find(c => c.value === form.getFieldValue('currencyId'))?.code!)}
           </div>
