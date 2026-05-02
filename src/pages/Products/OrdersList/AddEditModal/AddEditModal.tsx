@@ -692,14 +692,15 @@ export const AddEditModal = observer(() => {
     }
   }, [productsData]);
 
-  const priceValue = Form.useWatch('price', form);
-  const countValue = Form.useWatch('count', form);
+  const price = Form.useWatch('price', form);
+  const count = Form.useWatch('count', form);
+  const discount = Form.useWatch('discount', form) || 0;
 
   const totalPrice = useMemo(() => {
-    if (!priceValue || !countValue) return 0;
+    if (!price || !count) return 0;
 
-    return priceValue * countValue;
-  }, [priceValue, countValue]);
+    return price * count * (100 - discount) / 100;
+  }, [price, count, discount]);
 
   return (
     <Modal

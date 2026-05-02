@@ -14,11 +14,14 @@ import { addNotification } from '@/utils';
 import { staffsApi } from '@/api/staffs';
 import { priceFormat } from '@/utils/priceFormat';
 import { clientsPaymentApi } from '@/api/payment/payment';
+import { useParams } from 'react-router-dom';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
 export const ClientsPayments = observer(() => {
   const [downloadLoading, setDownLoadLoading] = useState(false);
+  const { clientId } = useParams();
 
   const { data: paymentsData, isLoading: loading } = useQuery({
     queryKey: [
@@ -29,6 +32,7 @@ export const ClientsPayments = observer(() => {
       paymentsStore.startDate,
       paymentsStore.endDate,
       paymentsStore.sellerId,
+      clientId,
     ],
     queryFn: () =>
       paymentsStore.getClientsPayments({
@@ -38,6 +42,7 @@ export const ClientsPayments = observer(() => {
         startDate: paymentsStore?.startDate!,
         endDate: paymentsStore?.endDate!,
         staffId: paymentsStore.sellerId!,
+        clientId: clientId!,
       }),
   });
 
@@ -193,22 +198,15 @@ export const ClientsPayments = observer(() => {
             <Table.Summary.Cell colSpan={2} index={1} />
             <Table.Summary.Cell index={2}>
               <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(paymentsData?.data?.calc?.totalCash)}
-              </div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(paymentsData?.data?.calc?.totalCard)}
-              </div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(paymentsData?.data?.calc?.totalTransfer)}
-              </div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(paymentsData?.data?.calc?.totalOther)}
+                Jami:
+                {
+                  paymentsData?.data?.calcByCurrency?.map(payment => (
+                    <span key={payment?.currency?.id}>
+                      {priceFormat(payment?.total)}
+                      {currencyTagUi(payment?.currency?.symbol)}
+                    </span>
+                  ))
+                }
               </div>
             </Table.Summary.Cell>
           </Table.Summary.Row>

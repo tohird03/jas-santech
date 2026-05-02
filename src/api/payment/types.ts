@@ -11,10 +11,12 @@ export interface IClientsPayments extends IPaymentType {
   staff: ISeller,
   description: string;
   paymentMethods: IPaymentMethodsGet[];
-  totalsByCurrency: {
-    total: number;
-    currency: ICurrency;
-  }[];
+  totalsByCurrency: IClientTotalPayments[];
+}
+
+export interface IClientTotalPayments {
+  total: number;
+  currency: ICurrency;
 }
 
 export interface IPaymentMethodsGet {
@@ -27,7 +29,7 @@ export interface IGetClientsPaymentsParams extends IPagination {
   search?: string;
   startDate?: Date;
   endDate?: Date;
-  userId?: string;
+  clientId?: string;
   staffId?: string;
 }
 
@@ -53,12 +55,4 @@ export interface IAddEditPaymentForm {
   usdChange: number;
   uzsCash: number;
   usdCash: number;
-}
-
-export interface ITotalPayment {
-  totalPay: number,
-  totalCard: number,
-  totalCash: number,
-  totalTransfer: number,
-  totalOther: number,
 }

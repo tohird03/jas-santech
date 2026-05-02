@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { Endpoints, umsStages } from '../endpoints';
 import { INetworkConfig, Instance } from '../instance';
 import { IResponse } from '../types';
-import { IAddEditPaymentParams, IClientsPayments, IGetClientsPaymentsParams, ITotalPayment } from './types';
+import { IAddEditPaymentParams, IClientTotalPayments, IClientsPayments, IGetClientsPaymentsParams } from './types';
 
 const config: INetworkConfig = {
   baseURL: Endpoints.Base,
@@ -14,7 +14,7 @@ class ClientsPaymentApi extends Instance {
     super(config);
   }
 
-  getPayments = (params: IGetClientsPaymentsParams): Promise<IResponse<IClientsPayments[], ITotalPayment>> =>
+  getPayments = (params: IGetClientsPaymentsParams): Promise<IResponse<IClientsPayments[], IClientTotalPayments>> =>
     this.get(Endpoints.ClientsPaymentsMany, { params });
 
   addPayment = (params: IAddEditPaymentParams): Promise<AxiosResponse> =>
