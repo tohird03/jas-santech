@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Modal, notification } from 'antd';
+import { Button, Modal, Table, notification } from 'antd';
 import { observer } from 'mobx-react';
 import { incomeProductsStore } from '@/stores/products';
 import { DataTable } from '@/components/Datatable/datatable';
@@ -62,10 +62,9 @@ export const OrderShowInfoModal = observer(() => {
         />
       </div>
       <div>
-        <DataTable
+        <Table
           columns={ordersInfoProductsColumns}
-          data={incomeProductsStore?.singleIncomeOrder?.products || []}
-          isMobile={isMobile}
+          dataSource={incomeProductsStore?.singleIncomeOrder?.products || []}
           pagination={false}
         />
       </div>

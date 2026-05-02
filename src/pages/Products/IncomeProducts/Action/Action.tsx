@@ -18,12 +18,6 @@ export const Action: FC<Props> = observer(({ order }) => {
   const queryClient = useQueryClient();
   const [downloadLoading, setDownLoadLoading] = useState(false);
 
-  const { isCloseDay } = authStore;
-
-  const today = new Date().toISOString().split('T')[0];
-  const checkDate = order?.date?.split('T')[0]?.split(' ')[0];
-  const isToday = checkDate === today && !isCloseDay;
-
   const { mutate: deleteIncomeProducts } =
     useMutation({
       mutationKey: ['deleteIncomeProducts'],
@@ -77,23 +71,17 @@ export const Action: FC<Props> = observer(({ order }) => {
         icon={<DownloadOutlined />}
         loading={downloadLoading}
       />
-      {isToday && (
-        <>
-          <Button onClick={handleEditProcess} type="primary" icon={<EditOutlined />} />
-          <Popconfirm
-            title="Mahsulotni o'chirish"
-            description="Rostdan ham bu mahsulotni o'chirishni xohlaysizmi?"
-            onConfirm={handleDelete}
-            okText="Ha"
-            okButtonProps={{ style: { background: 'red' } }}
-            cancelText="Yo'q"
-          >
-            <Button type="primary" icon={<DeleteOutlined />} danger />
-          </Popconfirm>
-        </>
-      )
-
-      }
+      <Button onClick={handleEditProcess} type="primary" icon={<EditOutlined />} />
+      <Popconfirm
+        title="Mahsulotni o'chirish"
+        description="Rostdan ham bu mahsulotni o'chirishni xohlaysizmi?"
+        onConfirm={handleDelete}
+        okText="Ha"
+        okButtonProps={{ style: { background: 'red' } }}
+        cancelText="Yo'q"
+      >
+        <Button type="primary" icon={<DeleteOutlined />} danger />
+      </Popconfirm>
     </div>
   );
 });

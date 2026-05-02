@@ -24,6 +24,8 @@ export interface IProducts {
   image: string,
   lastSellingDate: string;
   description: string;
+  lastSellingPrice: number,
+  lastSellingCount: number;
 }
 
 export interface IProductPrice {

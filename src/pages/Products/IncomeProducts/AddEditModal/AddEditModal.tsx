@@ -11,7 +11,7 @@ import { DataTable } from '@/components/Datatable/datatable';
 import { useMediaQuery } from '@/utils/mediaQuery';
 import dayjs from 'dayjs';
 import styles from '../income-products.scss';
-import { ColumnType } from 'antd/es/table';
+import Table, { ColumnType } from 'antd/es/table';
 import { incomeProductsApi } from '@/api/income-products';
 import {
   IAddEditIncomeOrder,
@@ -705,12 +705,11 @@ export const AddEditModal = observer(() => {
         </Button>
       </Form>
 
-      <DataTable
+      <Table
         columns={addOrderProductsColumns}
-        data={incomeProductsStore?.incomeOrder?.products || []}
-        isMobile={isMobile}
+        dataSource={incomeProductsStore?.incomeOrder?.products || []}
         pagination={false}
-        scroll={{ y: 300 }}
+        scroll={{ x: 500 }}
         rowClassName={rowClassName}
       />
 
