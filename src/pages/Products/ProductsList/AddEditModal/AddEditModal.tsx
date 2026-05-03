@@ -92,6 +92,7 @@ export const AddEditModal = observer(() => {
 
     // 🔥 qolgan fieldlar (string bo‘lishi kerak)
     formData.append('name', values?.name);
+    formData.append('count', String(values?.count));
     formData.append('minAmount', String(values?.minAmount || 0));
     formData.append('description', values?.description || '');
 
@@ -112,8 +113,6 @@ export const AddEditModal = observer(() => {
 
       return;
     }
-
-    formData.append('count', '0');
 
     addNewProduct(formData as any);
   };
@@ -141,6 +140,7 @@ export const AddEditModal = observer(() => {
       form.setFieldsValue({
         ...productsListStore.singleProduct,
         cost: productsListStore?.singleProduct?.prices?.cost?.price,
+        count: productsListStore?.singleProduct?.count,
         price: productsListStore?.singleProduct?.prices?.selling?.price,
         wholesale: productsListStore?.singleProduct?.prices?.wholesale?.price,
         costCurrency: productsListStore?.singleProduct?.prices?.cost?.currency?.id,
@@ -208,6 +208,17 @@ export const AddEditModal = observer(() => {
           name="name"
         >
           <Input placeholder="Mahsulot nomi" />
+        </Form.Item>
+        <Form.Item
+          label="Mahsulot soni"
+          rules={[{ required: true }]}
+          name="count"
+        >
+          <InputNumber
+            placeholder="Qoldiq mahsulot"
+            style={{ width: '100%' }}
+            formatter={(value) => priceFormat(value!)}
+          />
         </Form.Item>
         <Form.Item
           label="Ogohlantiruvchi qoldiq"
