@@ -7,6 +7,7 @@ import { ICurrency } from "../auth/types";
 
 export interface IGetProductsParams extends IPagination {
   search?: string;
+  clientId?: string;
 }
 
 
@@ -24,8 +25,11 @@ export interface IProducts {
   image: string,
   lastSellingDate: string;
   description: string;
-  lastSellingPrice: number,
-  lastSellingCount: number;
+  lastSelling: {
+    date: string,
+    price: number,
+    count: number,
+  }
 }
 
 export interface IProductPrice {

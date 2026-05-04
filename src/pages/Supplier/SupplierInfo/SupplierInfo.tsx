@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { DataTable } from '@/components/Datatable/datatable';
 import { getPaginationParams } from '@/utils/getPaginationParams';
 import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
+import { AddEditSupplierModal } from './AddEditModal';
 import styles from './supplier-info.scss';
 import { supplierColumns, supplierDebtFilter } from './constants';
 import { supplierInfoStore } from '@/stores/supplier';
@@ -156,7 +156,7 @@ export const SupplierInfo = observer(() => {
         rowClassName={rowClassName}
       />
 
-      {supplierInfoStore.isOpenAddEditSupplierModal && <AddEditModal />}
+      {supplierInfoStore.isOpenAddEditSupplierModal && <AddEditSupplierModal />}
     </main>
   );
 });

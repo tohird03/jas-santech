@@ -74,12 +74,13 @@ export const AddEditModal = observer(() => {
   });
 
   const { data: productsData, isLoading: loadingProducts } = useQuery({
-    queryKey: ['getProducts', searchProducts],
+    queryKey: ['getProducts', searchProducts, selectedClient?.id],
     queryFn: () =>
       productsListStore.getProducts({
         pageNumber: 1,
         pageSize: 15,
         search: searchProducts!,
+        clientId: selectedClient?.id,
       }),
   });
 
@@ -285,7 +286,7 @@ export const AddEditModal = observer(() => {
 
   useEffect(() => {
     if (ordersStore.singleOrder && ordersStore?.order) {
-      setSearchClients(ordersStore?.order?.client?.phone);
+      setSearchClients(ordersStore?.order?.client?.fullname);
       setSelectedClient(ordersStore?.order?.client);
 
       form.setFieldsValue({
@@ -295,7 +296,8 @@ export const AddEditModal = observer(() => {
       });
 
     } else if (singleClientStore.activeClient?.id) {
-      setSearchClients(singleClientStore.activeClient?.phone);
+      setSelectedClient(singleClientStore.activeClient);
+      setSearchClients(singleClientStore.activeClient?.fullname);
       form.setFieldValue('clientId', singleClientStore.activeClient?.id);
     }
   }, [ordersStore.order, singleClientStore.activeClient]);
@@ -860,13 +862,13 @@ export const AddEditModal = observer(() => {
             name="productId"
             style={{ flex: 1, width: '100%' }}
             help={
-              selectedProduct ? (
+              selectedProduct?.lastSelling ? (
                 <span>
                   Oxirgi sotuv:{' '}
-                  {priceFormat(selectedProduct.lastSellingPrice || 0)}
+                  {priceFormat(selectedProduct.lastSelling?.price || 0)}
                   {currencyTagUi(selectedProduct?.prices?.selling?.currency?.symbol)}x{' '}
-                  {selectedProduct.lastSellingCount} dona | {' '}
-                  {getFullDateFormat(selectedProduct.lastSellingDate)}
+                  {selectedProduct.lastSelling?.count} dona | {' '}
+                  {getFullDateFormat(selectedProduct.lastSelling?.date)}
                 </span>
               ) : ''
             }

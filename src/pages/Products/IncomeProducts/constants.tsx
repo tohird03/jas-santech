@@ -7,6 +7,7 @@ import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
 import { PaymentStatus } from './PaymentStatus';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { currencyTagUi } from '@/constants/payment';
+import { OrderDescUpdate } from './OrderDescUpdate/OrderDescUpdate';
 
 export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
   {
@@ -121,12 +122,20 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     },
   },
   {
+    key: 'description',
+    dataIndex: 'description',
+    title: 'Ma\'lumot',
+    align: 'center',
+    width: '200px',
+    render: (value, record) => <OrderDescUpdate order={record} />,
+  },
+  {
     key: 'createdAt',
     dataIndex: 'createdAt',
     title: 'Tushurilgan vaqti',
     align: 'center',
     width: '150px',
-    render: (value, record) => getFullDateFormat(record?.createdAt),
+    render: (value, record) => getFullDateFormat(record?.date),
   },
   {
     key: 'action',

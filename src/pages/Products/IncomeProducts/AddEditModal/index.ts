@@ -1,1 +1,1 @@
-export {AddEditModal} from './AddEditModal';
+export {AddEditIncomeOrderModal} from './AddEditModal';

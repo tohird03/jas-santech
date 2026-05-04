@@ -13,6 +13,7 @@ export interface IIncomeOrder {
   products: IIncomeProduct[];
   createdAt: string;
   date: string;
+  description: string;
   totalPayments: IIncomeOrderTotalPrice[];
   totalPrices: {
     cost: IIncomeOrderTotalPrice[];
@@ -70,12 +71,14 @@ export interface IAddIncomeOrderProducts {
 export interface IAddIncomeOrderForm extends IAddIncomeOrderProducts {
   supplierId: string;
   date: string;
+  description?: string;
 }
 
 export interface IAddEditIncomeOrder {
   supplierId: string;
   products: IAddIncomeOrderProducts[];
   date: string;
+  description?: string;
 }
 
 export interface IUpdateIncomeOrder {
@@ -83,6 +86,7 @@ export interface IUpdateIncomeOrder {
   supplierId?: string;
   date?: string;
   payment?: IIncomeOrderPaymentParams;
+  description?: string;
 }
 
 export interface IUpdateIncomeProduct {

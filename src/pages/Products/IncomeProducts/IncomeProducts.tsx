@@ -7,16 +7,19 @@ import classNames from 'classnames';
 import { DataTable } from '@/components/Datatable/datatable';
 import { getPaginationParams } from '@/utils/getPaginationParams';
 import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
+import { AddEditIncomeOrderModal } from './AddEditModal';
 import styles from './income-products.scss';
 import { incomeOrdersColumns, incomeOrdersTotalCalc } from './constants';
-import { incomeProductsStore } from '@/stores/products';
+import { incomeProductsStore, productsListStore } from '@/stores/products';
 import { OrderShowInfoModal } from './OrderShowInfoModal';
 import { PaymentModal } from './PaymentModal';
 import { useParams } from 'react-router-dom';
 import { addNotification } from '@/utils';
 import dayjs from 'dayjs';
 import { incomeProductsApi } from '@/api/income-products';
+import { supplierInfoStore } from '@/stores/supplier';
+import { AddEditSupplierModal } from '@/pages/Supplier/SupplierInfo/AddEditModal';
+import { AddEditModal } from '../ProductsList/AddEditModal';
 
 const cn = classNames.bind(styles);
 
@@ -175,9 +178,11 @@ export const IncomeProducts = observer(() => {
         />
       </div>
 
-      {incomeProductsStore.isOpenAddEditIncomeProductsModal && <AddEditModal />}
+      {incomeProductsStore.isOpenAddEditIncomeProductsModal && <AddEditIncomeOrderModal />}
       {incomeProductsStore.isOpenShowIncomeOrderModal && <OrderShowInfoModal />}
       {incomeProductsStore.isOpenIncomeOrderPaymentModal && <PaymentModal />}
+      {supplierInfoStore.isOpenAddEditSupplierModal && <AddEditSupplierModal />}
+      {productsListStore.isOpenAddEditProductModal && <AddEditModal />}
     </main>
   );
 });

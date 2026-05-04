@@ -9,7 +9,7 @@ import { supplierInfoStore } from '@/stores/supplier';
 import { supplierInfoApi } from '@/api/supplier/supplier';
 import { IAddEditSupplier } from '@/api/supplier/types';
 
-export const AddEditModal = observer(() => {
+export const AddEditSupplierModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
