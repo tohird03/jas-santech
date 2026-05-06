@@ -356,7 +356,10 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     align: 'center',
     width: '150px',
     render: (value, record) => (
-      <span>{priceFormat(record?.prices?.selling?.price)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
+      <span>
+        {priceFormat(record?.prices?.selling?.price * (100 - record?.prices?.selling?.discount) / 100)}
+        {currencyTagUi(record?.prices?.selling?.currency?.symbol)}
+      </span>
     ),
   },
   {

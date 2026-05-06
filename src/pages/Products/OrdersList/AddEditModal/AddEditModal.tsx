@@ -493,7 +493,7 @@ export const AddEditModal = observer(() => {
       align: 'center',
       render: (value, record) => (
         <span>
-          {record?.prices?.selling?.price * (100 - record?.prices?.selling?.discount) / 100}
+          {priceFormat(record?.prices?.selling?.price * (100 - record?.prices?.selling?.discount) / 100)}
           {currencyTagUi(record?.prices?.selling?.currency?.symbol)}
         </span>
       ),
@@ -716,8 +716,8 @@ export const AddEditModal = observer(() => {
               {selectedClient && (
                 <>
                   Mijoz qarzi:{' '}
-                  {ordersStore?.order?.client?.debtByCurrency?.length ? (
-                    ordersStore.order.client.debtByCurrency.map(debt => (
+                  {selectedClient?.debtByCurrency?.length ? (
+                    selectedClient.debtByCurrency.map(debt => (
                       <span key={debt?.currency?.id} style={{ marginRight: '8px' }}>
                         {priceFormat(debt?.amount)}
                         {currencyTagUi(debt?.currency?.symbol)}

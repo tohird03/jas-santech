@@ -63,7 +63,7 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
                 <Text style={{ ...styles.tableCell, maxWidth: '35px' }} />
                 <Text style={{ ...styles.tableCell, maxWidth: '45px' }}>{product?.count}</Text>
                 <Text style={{ ...styles.tableCell, ...styles.tablePriceCol }}>
-                  {priceFormat(product?.prices?.selling?.price)} {(product?.prices?.selling?.currency?.symbol)}
+                  {priceFormat(product?.prices?.selling?.price * (100 - product?.prices?.selling?.discount) / 100)} {(product?.prices?.selling?.currency?.symbol)}
                 </Text>
                 <Text style={{ ...styles.tableCell, ...styles.tablePriceCol }}>
                   {priceFormat(product?.prices?.selling?.totalPrice)} {(product?.prices?.selling?.currency?.symbol)}
