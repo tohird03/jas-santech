@@ -138,11 +138,7 @@ export interface IUpdateOrderProduct {
 }
 
 export interface ITotalOrderPaymentCalc {
-  totalPrice: number | null;
-  totalPayment: number | null;
-  totalCardPayment: number | null;
-  totalCashPayment: number | null;
-  totalOtherPayment: number | null;
-  totalTransferPayment: number | null;
-  totalDebt: number | null;
+  totalPrices: IOrderTotalPrice[];
+  totalPayments: IOrderTotalPrice[];
+  totalDebts: IOrderTotalPrice[];
 }

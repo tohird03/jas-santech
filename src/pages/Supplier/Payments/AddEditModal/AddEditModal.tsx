@@ -15,9 +15,6 @@ import { IAddEditPaymentForm, IAddEditPaymentParams } from '@/api/payment-income
 import { incomePaymentApi } from '@/api/payment-income';
 import { addNotification } from '@/utils';
 
-const filterOption = (input: string, option?: { label: string, value: string }) =>
-  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
@@ -370,9 +367,8 @@ export const AddEditModal = observer(() => {
               showSearch
               placeholder="Yetkazib beruvchi"
               loading={loadingClients}
-              optionFilterProp="children"
               notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
-              filterOption={filterOption}
+              filterOption={false}
               onSearch={handleSearchSupplier}
               onClear={handleClearClient}
               onChange={(value) => {

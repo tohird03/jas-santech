@@ -647,9 +647,8 @@ export const AddEditIncomeOrderModal = observer(() => {
               ref={clientRef}
               placeholder="Yetkazib beruvchi"
               loading={loadingClients}
-              optionFilterProp="children"
               notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
-              filterOption={filterOption}
+              filterOption={false}
               onSearch={handleSearchSupplier}
               onClear={handleClearClient}
               allowClear

@@ -488,9 +488,8 @@ export const AddEditModal = observer(() => {
             showSearch
             placeholder="Mijoz"
             loading={loadingClients}
-            optionFilterProp="children"
             notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
-            filterOption={filterOption}
+            filterOption={false}
             onSearch={handleSearchClients}
             onClear={handleClearClient}
             options={clientsOptions}

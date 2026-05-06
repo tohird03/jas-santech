@@ -390,7 +390,24 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalPrice),
+    render: (value, record) => {
+      const data = record?.totalPrices;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <div style={{textAlign: 'end'}}>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </div>
+      );
+    },
   },
   {
     key: 'totalPay',
@@ -398,7 +415,24 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     title: 'Jami to\'lov',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalPayment),
+    render: (value, record) => {
+      const data = record?.totalPayments;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <div style={{textAlign: 'end'}}>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </div>
+      );
+    },
   },
   {
     key: 'debt',
@@ -406,7 +440,24 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     title: 'Jami - Qarzga',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalDebt),
+    render: (value, record) => {
+      const data = record?.totalDebts;
+
+      if (!data || data.length === 0) {
+        return <div>0</div>;
+      }
+
+      return (
+        <div style={{textAlign: 'end'}}>
+          {data.map(price => (
+            <div key={price?.currency?.id}>
+              {priceFormat(price?.total)}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ))}
+        </div>
+      );
+    },
   },
 ];
 
