@@ -77,22 +77,43 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
           <View style={styles.totalCalcTextWrapper}>
             <Text style={styles.totalCalcText}>Жами сумма:</Text>
             <View style={styles.totalCalcPriceText}>
-              {order?.totalPrices?.map(price =>
-                <Text key={price?.currencyId}>{priceFormat(price?.total)} {(price?.currency?.symbol)}</Text>)}
+              {order?.totalPrices?.length ? (
+                order.totalPrices.map(price => (
+                  <Text key={price?.currencyId}>
+                    {priceFormat(price?.total)} {price?.currency?.symbol}
+                  </Text>
+                ))
+              ) : (
+                <Text>0</Text>
+              )}
             </View>
           </View>
           <View style={styles.totalCalcTextWrapper}>
             <Text style={styles.totalCalcText}>Тулов килинди:</Text>
             <View style={styles.totalCalcPriceText}>
-              {order?.totalPayments?.map(price =>
-                <Text key={price?.currencyId}>{priceFormat(price?.total)} {(price?.currency?.symbol)}</Text>)}
+              {order?.totalPayments?.length ? (
+                order.totalPayments.map(price => (
+                  <Text key={price?.currencyId}>
+                    {priceFormat(price?.total)} {price?.currency?.symbol}
+                  </Text>
+                ))
+              ) : (
+                <Text>0</Text>
+              )}
             </View>
           </View>
           <View style={styles.totalCalcTextWrapper}>
-            <Text style={styles.totalCalcText}>Тулов килинди:</Text>
+            <Text style={styles.totalCalcText}>Мижоз карзи:</Text>
             <View style={styles.totalCalcPriceText}>
-              {order?.client?.debtByCurrency?.map(price =>
-                <Text key={price?.currency?.id}>{priceFormat(price?.amount)} {(price?.currency?.symbol)}</Text>)}
+              {order?.client?.debtByCurrency?.length ? (
+                order.client.debtByCurrency.map(price => (
+                  <Text key={price?.currency?.id}>
+                    {priceFormat(price?.amount)} {price?.currency?.symbol}
+                  </Text>
+                ))
+              ) : (
+                <Text>0</Text>
+              )}
             </View>
           </View>
         </View>
