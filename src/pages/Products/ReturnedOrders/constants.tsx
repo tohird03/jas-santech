@@ -117,7 +117,7 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     title: 'Qaytarilgan sanasi',
     align: 'center',
     width: '150px',
-    render: (value, record) => getFullDateFormat(record?.returnedDate),
+    render: (value, record) => getFullDateFormat(record?.date),
   },
   {
     key: 'action',
