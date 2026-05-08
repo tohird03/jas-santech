@@ -318,6 +318,7 @@ export const PaymentModal = observer(() => {
           justifyContent: 'space-between',
           padding: '30px',
         }}
+        className="order__payment-wrapper"
       >
         <Form
           form={form}

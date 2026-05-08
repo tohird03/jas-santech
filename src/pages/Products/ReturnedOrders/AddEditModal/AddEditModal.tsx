@@ -406,7 +406,7 @@ export const AddEditModal = observer(() => {
   const clientsOptions = useMemo(() => (
     clientsData?.data?.data.map((supplier) => ({
       value: supplier?.id,
-      label: `${supplier?.fullname}: +${supplier?.phone}`,
+      label: `${supplier?.fullname}: ${supplier?.phone || ''}`,
     }))
   ), [clientsData]);
 
@@ -553,9 +553,11 @@ export const AddEditModal = observer(() => {
                       </p>
                     </div>
                   </div>
-                  <p className={cn('order__add-product-desc')}>
-                    {product?.description}
-                  </p>
+                  {product?.description && (
+                    <p className={cn('order__add-product-desc')}>
+                      {product?.description}
+                    </p>
+                  )}
                 </div>
               </Select.Option>
             ))}

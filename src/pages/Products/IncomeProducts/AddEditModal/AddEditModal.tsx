@@ -667,7 +667,7 @@ export const AddEditIncomeOrderModal = observer(() => {
                 <Select.Option key={supplier.id} value={supplier.id}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ fontWeight: 600 }}>
+                      <div className={cn('income-order__add-product-name')} style={{ fontWeight: 600 }}>
                         {supplier.fullname}
                       </div>
                       <div style={{ fontSize: 12, color: '#999' }}>
@@ -749,9 +749,11 @@ export const AddEditIncomeOrderModal = observer(() => {
                         </p>
                       </div>
                     </div>
-                    <p className={cn('order__add-product-desc')}>
-                      {product?.description}
-                    </p>
+                    {product?.description && (
+                      <p className={cn('order__add-product-desc')}>
+                        {product?.description}
+                      </p>
+                    )}
                   </div>
                 </Select.Option>
               ))}

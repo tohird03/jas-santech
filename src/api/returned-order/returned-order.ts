@@ -61,10 +61,9 @@ class ReturnedOrderApi extends Instance {
 
   deleteReturnedOrder = (id: string): Promise<AxiosResponse> =>
     this.delete(Endpoints.ReturnedOrderOne, { params: { id, method: 'hard' } });
-  // XATO
 
   deleteProductFromReturnedOrder = (id: string): Promise<AxiosResponse> =>
-    this.delete(`${Endpoints.returnedProduct}/${id}`);
+    this.delete(Endpoints.AddEditProductToReturning, { params: { id, method: 'hard' } });
 
 }
 
