@@ -61,7 +61,7 @@ export const PaymentModal = observer(() => {
     // KASSADAN BERISH
     if (values.uzsChange > 0) {
       changeMethods.push({
-        type: 'cash',
+        type: 'balance',
         amount: values.uzsChange,
         currencyId: currencyMany.data.find(c => c.symbol === 'UZS')!.id,
       });
@@ -69,16 +69,16 @@ export const PaymentModal = observer(() => {
 
     if (values.usdChange > 0) {
       changeMethods.push({
-        type: 'cash',
+        type: 'balance',
         amount: values.usdChange,
         currencyId: currencyMany.data.find(c => c.symbol === 'USD')!.id,
       });
     }
 
-    // MIJOZ HISOBIDAN AYIRISH
+    // Kassadan ayirish AYIRISH
     if (values.uzsCash > 0) {
       changeMethods.push({
-        type: 'balance',
+        type: 'cash',
         amount: values.uzsCash,
         currencyId: currencyMany.data.find(c => c.symbol === 'UZS')!.id,
       });
@@ -86,7 +86,7 @@ export const PaymentModal = observer(() => {
 
     if (values.usdCash > 0) {
       changeMethods.push({
-        type: 'balance',
+        type: 'cash',
         amount: values.usdCash,
         currencyId: currencyMany.data.find(c => c.symbol === 'USD')!.id,
       });
@@ -441,7 +441,7 @@ export const PaymentModal = observer(() => {
           <div>
             {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
               <div style={{ marginTop: 20 }}>
-                <h3>Kassadan</h3>
+                <h3>Yetkazib beruvchi hisobidan ayirish</h3>
 
                 {settlement.change.uzs > 0 && (
                   <Form.Item
@@ -474,7 +474,7 @@ export const PaymentModal = observer(() => {
             )}
 
             {uzsChange < settlement.change.uzs && (
-              <Form.Item name="uzsCash" label="Mijoz hisobidan ayirish UZS">
+              <Form.Item name="uzsCash" label="Kassadan ayirish ayirish UZS">
                 <InputNumber
                   style={{ width: '100%' }}
                   min={0}
@@ -486,7 +486,7 @@ export const PaymentModal = observer(() => {
             )}
 
             {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
-              <Form.Item name="usdCash" label="Mijoz hisobidan ayirish USD">
+              <Form.Item name="usdCash" label="Kassadan ayirish ayirish USD">
                 <InputNumber
                   style={{ width: '100%' }}
                   min={0}

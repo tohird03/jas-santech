@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { addNotification } from '@/utils';
 import { priceFormat } from '@/utils/priceFormat';
 import { supplierInfoApi } from '@/api/supplier/supplier';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
@@ -128,12 +129,24 @@ export const Deed = observer(() => {
               </Table.Summary.Cell>
               <Table.Summary.Cell index={2}>
                 <div style={{ textAlign: 'center' }}>
-                  {priceFormat(singleSupplierStore?.activeSupplier?.deedInfo?.totalDebit)}
+                  {singleSupplierStore?.activeSupplier?.deedInfo?.totalDebitByCurrency?.map(debt => (
+                    <div key={debt?.currency?.id}>
+                      {priceFormat(debt?.amount)}
+                      {currencyTagUi(debt?.currency?.symbol)}
+                    </div>
+                  ))
+                  }
                 </div>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={2}>
                 <div style={{ textAlign: 'center' }}>
-                  {priceFormat(singleSupplierStore?.activeSupplier?.deedInfo?.totalCredit)}
+                  {singleSupplierStore?.activeSupplier?.deedInfo?.totalCreditByCurrency?.map(debt => (
+                    <div key={debt?.currency?.id}>
+                      {priceFormat(debt?.amount)}
+                      {currencyTagUi(debt?.currency?.symbol)}
+                    </div>
+                  ))
+                  }
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>
@@ -143,7 +156,13 @@ export const Deed = observer(() => {
               </Table.Summary.Cell>
               <Table.Summary.Cell colSpan={2} index={2}>
                 <div style={{ textAlign: 'center' }}>
-                  {priceFormat(singleSupplierStore?.activeSupplier?.deedInfo?.debt)}
+                  {singleSupplierStore?.activeSupplier?.deedInfo?.debtByCurrency?.map(debt => (
+                    <div key={debt?.currency?.id}>
+                      {priceFormat(debt?.amount)}
+                      {currencyTagUi(debt?.currency?.symbol)}
+                    </div>
+                  ))
+                  }
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>

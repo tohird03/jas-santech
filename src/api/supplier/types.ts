@@ -1,6 +1,11 @@
 import { ICurrency } from '../auth/types';
 import { IPagination } from '../types';
 
+export interface ISupplierDebtByCurrency {
+  amount: number;
+  currency: ICurrency;
+}
+
 export interface IGetSupplierInfoParams extends IPagination {
   search?: string;
   debtValue?: number;
@@ -38,15 +43,18 @@ export interface IAddEditSupplier {
 }
 
 export interface ISupplierDeedInfo {
-  totalDebit: number;
-  totalCredit: number;
-  debt: number;
+  totalCreditByCurrency: ISupplierDebtByCurrency[];
+  totalDebitByCurrency: ISupplierDebtByCurrency[];
+  debtByCurrency: ISupplierDebtByCurrency[];
   deeds: ISupplierDeed[];
 }
 
 export interface ISupplierDeed {
   type: ISupplierDeedType;
-  value: number;
+  values: {
+    amount: number;
+    currency: ICurrency;
+  }[];
   date: string;
   description: string;
   action: ISupplierDeedAction;

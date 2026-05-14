@@ -4,6 +4,7 @@ import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { ISupplierDeed, ISupplierDeedAction, ISupplierDeedType } from '@/api/supplier/types';
 import { Tag } from 'antd';
+import { currencyTagUi } from '@/constants/payment';
 
 export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
@@ -38,7 +39,14 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
     className: 'green-col',
     render: (value, record) => (
       record?.type === ISupplierDeedType.DEBIT
-        ? priceFormat(record?.value)
+        ? (
+          record?.values?.map(debt => (
+            <p style={{margin: 0}} key={debt?.currency?.id}>
+              {priceFormat(debt?.amount)}
+              {currencyTagUi(debt?.currency?.symbol)}
+            </p>
+          ))
+        )
         : null
     ),
   },
@@ -51,7 +59,14 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
     className: 'red-col',
     render: (value, record) => (
       record?.type === ISupplierDeedType.KREDIT
-        ? priceFormat(record?.value)
+        ? (
+          record?.values?.map(debt => (
+            <p style={{margin: 0}} key={debt?.currency?.id}>
+              {priceFormat(debt?.amount)}
+              {currencyTagUi(debt?.currency?.symbol)}
+            </p>
+          ))
+        )
         : null
     ),
   },
