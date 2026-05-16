@@ -284,6 +284,30 @@ export const AddEditModal = observer(() => {
     setSearchClients(null);
   };
 
+  // Modal ochilganda formni va local state larni tozalash
+  useEffect(() => {
+    if (ordersStore.isOpenAddEditNewOrderModal) {
+      // Agar yangi sotuv bo'lsa (tahrirlash emas), formni tozalash
+      if (!ordersStore.singleOrder && !ordersStore.order) {
+        form.resetFields();
+        setSearchClients(null);
+        setSearchProducts(null);
+        setSelectedClient(null);
+        setSelectedProduct(null);
+        setIsUpdatingProduct(null);
+        setIsOpenProductSelect(false);
+        setPriceType('selling');
+        
+        // Agar aktiv mijoz bo'lsa, uni o'rnatish
+        if (singleClientStore.activeClient?.id) {
+          setSelectedClient(singleClientStore.activeClient);
+          setSearchClients(singleClientStore.activeClient?.fullname);
+          form.setFieldValue('clientId', singleClientStore.activeClient?.id);
+        }
+      }
+    }
+  }, [ordersStore.isOpenAddEditNewOrderModal]);
+
   useEffect(() => {
     if (ordersStore.singleOrder && ordersStore?.order) {
       setSearchClients(ordersStore?.order?.client?.fullname);
