@@ -34,14 +34,6 @@ import { IProducts } from '@/api/product/types';
 
 const cn = classNames.bind(styles);
 
-const filterOption = (input: string, option?: { label: string, value: string }) => {
-  if (!input) return true;
-  const formattedInput = input.trim().toLowerCase();
-  const formattedLabel = option?.label?.toLowerCase() || '';
-
-  return formattedLabel.includes(formattedInput);
-};
-
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
@@ -283,6 +275,30 @@ export const AddEditModal = observer(() => {
   const handleClearClient = () => {
     setSearchClients(null);
   };
+
+  // Modal ochilganda formni va local state larni tozalash
+  useEffect(() => {
+    if (ordersStore.isOpenAddEditNewOrderModal) {
+      // Agar yangi sotuv bo'lsa (tahrirlash emas), formni tozalash
+      if (!ordersStore.singleOrder && !ordersStore.order) {
+        form.resetFields();
+        setSearchClients(null);
+        setSearchProducts(null);
+        setSelectedClient(null);
+        setSelectedProduct(null);
+        setIsUpdatingProduct(null);
+        setIsOpenProductSelect(false);
+        setPriceType('selling');
+
+        // Agar aktiv mijoz bo'lsa, uni o'rnatish
+        if (singleClientStore.activeClient?.id) {
+          setSelectedClient(singleClientStore.activeClient);
+          setSearchClients(singleClientStore.activeClient?.fullname);
+          form.setFieldValue('clientId', singleClientStore.activeClient?.id);
+        }
+      }
+    }
+  }, [ordersStore.isOpenAddEditNewOrderModal]);
 
   useEffect(() => {
     if (ordersStore.singleOrder && ordersStore?.order) {

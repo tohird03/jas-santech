@@ -23,6 +23,9 @@ import { returnedOrderApi } from '@/api/returned-order/returned-order';
 import { currencyTagUi } from '@/constants/payment';
 import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 import { authStore } from '@/stores/auth';
+import { IProducts } from '@/api/product/types';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { IClientsInfo } from '@/api/clients';
 
 const cn = classNames.bind(styles);
 
@@ -41,6 +44,8 @@ export const AddEditModal = observer(() => {
   const [searchProducts, setSearchProducts] = useState<string | null>(null);
   const [isUpdatingProduct, setIsUpdatingProduct] = useState<IOrderProductUpdate | null>(null);
   const [isOpenProductSelect, setIsOpenProductSelect] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<IClientsInfo | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<IProducts | null>(null);
   const countInputRef = useRef<HTMLInputElement>(null);
 
   const { data: currencyMany } = useQuery({
@@ -61,12 +66,13 @@ export const AddEditModal = observer(() => {
   });
 
   const { data: productsData, isLoading: loadingProducts } = useQuery({
-    queryKey: ['getProducts', searchProducts],
+    queryKey: ['getProducts', searchProducts, selectedClient],
     queryFn: () =>
       productsListStore.getProducts({
         pageNumber: 1,
         pageSize: 15,
         search: searchProducts!,
+        clientId: selectedClient?.id,
       }),
   });
 
@@ -158,9 +164,12 @@ export const AddEditModal = observer(() => {
     setSearchProducts(value);
   };
 
-  const handleChangeClientSelect = () => {
+  const handleChangeClientSelect = (client: IClientsInfo) => {
+    setSelectedClient(client);
+
     setIsOpenProductSelect(true);
   };
+
 
   const handleFocusToProduct = () => {
     setIsOpenProductSelect(true);
@@ -169,7 +178,11 @@ export const AddEditModal = observer(() => {
   const handleChangeProduct = (productId: string) => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
-    form.setFieldValue('price', findProduct?.prices?.selling?.price);
+    if (findProduct) {
+      form.setFieldValue('price', findProduct?.prices?.selling?.price);
+
+      setSelectedProduct(findProduct);
+    }
 
     setIsOpenProductSelect(false);
     countInputRef.current?.focus();
@@ -483,6 +496,7 @@ export const AddEditModal = observer(() => {
           label="Mijoz"
           rules={[{ required: true }]}
           name="clientId"
+          help={selectedClient?.lastSellingDate ? `Oxirgi sotuv: ${getFullDateFormat(selectedClient?.lastSellingDate)}` : ''}
         >
           <Select
             showSearch
@@ -493,7 +507,13 @@ export const AddEditModal = observer(() => {
             onSearch={handleSearchClients}
             onClear={handleClearClient}
             options={clientsOptions}
-            onChange={handleChangeClientSelect}
+            onChange={(value) => {
+              const client = clientsData?.data?.data?.find((client) => client.id === value);
+
+              if (client) {
+                handleChangeClientSelect(client);
+              }
+            }}
             onSelect={(value) => handleSelectChange(value, 'clientId')}
             allowClear
           />
@@ -514,6 +534,17 @@ export const AddEditModal = observer(() => {
           label="Mahsulot"
           rules={[{ required: true }]}
           name="productId"
+          help={
+            selectedProduct?.lastSelling ? (
+              <span>
+                Oxirgi sotuv:{' '}
+                {priceFormat(selectedProduct.lastSelling?.price || 0)}
+                {currencyTagUi(selectedProduct?.prices?.selling?.currency?.symbol)}x{' '}
+                {selectedProduct.lastSelling?.count} dona | {' '}
+                {getFullDateFormat(selectedProduct.lastSelling?.date)}
+              </span>
+            ) : ''
+          }
         >
           <Select
             showSearch
