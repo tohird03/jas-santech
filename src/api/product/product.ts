@@ -2,7 +2,9 @@ import { AxiosResponse } from 'axios';
 import { Endpoints, umsStages } from '../endpoints';
 import { INetworkConfig, Instance } from '../instance';
 import { IResponse } from '../types';
-import { IAddEditProduct, IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProductTotalCalc, IProducts, ISingleProductStory } from './types';
+import {
+  IAddEditProduct,
+  IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProductTotalCalc, IProducts, ISingleProductStory, ISingleProductStoryCount } from './types';
 
 const config: INetworkConfig = {
   baseURL: Endpoints.Base,
@@ -36,6 +38,9 @@ class ProductsApi extends Instance {
 
   getSingleProductStory = (params: IGetSingleProductParams): Promise<IResponse<ISingleProductStory[]>> =>
     this.get(Endpoints.ProductStatistic, { params });
+
+  getSingleProductStoryCounts = (params: IGetSingleProductParams): Promise<{data: ISingleProductStoryCount[]}> =>
+    this.get(Endpoints.ProductStatisticCounts, { params });
 
   getProductsToExcel = (params: IGetProductsParams): Promise<any> =>
     this.get(Endpoints.GetProductsToExcel, {

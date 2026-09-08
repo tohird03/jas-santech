@@ -108,3 +108,10 @@ export interface ISingleProductStory {
   returning: IReturnedOrder;
   createdAt: string;
 }
+
+export interface ISingleProductStoryCount extends IProducts {
+  totalSellingCount: number;
+  totalArrivalCount: number;
+  totalReturningCount: number;
+  actualCount: number;
+}

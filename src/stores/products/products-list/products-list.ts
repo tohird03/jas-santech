@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { addNotification } from '@/utils';
-import { IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProducts, ISingleProductStory } from '@/api/product/types';
+import { IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProducts, ISingleProductStory, ISingleProductStoryCount } from '@/api/product/types';
 import { productsApi } from '@/api/product/product';
 
 class ProductsListStore {
@@ -12,8 +12,10 @@ class ProductsListStore {
   isOpenAddEditProductModal = false;
   singleProduct: IProducts | null = null;
   singleProductStory: ISingleProductStory[] | null = null;
+  singleProductStoryCount: ISingleProductStoryCount | null = null;
   startDate: Date | null = this.#today;
   endDate: Date | null = this.#today;
+  iOrderProductId: null | string = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -33,6 +35,24 @@ class ProductsListStore {
       })
       .catch(addNotification);
 
+  getSingleProductsCount = (params: IGetSingleProductParams) =>
+    productsApi.getSingleProductStoryCounts(params)
+      .then(res => {
+        this.setSingleProductStoryCount(res?.data[0]);
+
+        return res;
+      })
+      .catch(addNotification);
+
+  getSingleProductStoryCount = (params: IGetSingleProductParams) =>
+    productsApi.getSingleProductStory(params)
+      .then(res => {
+        this.setSingleProductStory(res?.data?.data);
+
+        return res;
+      })
+      .catch(addNotification);
+
   getSingleProducts = (productId: string) =>
     productsApi.getSingleProducts(productId)
       .then(res => {
@@ -42,6 +62,10 @@ class ProductsListStore {
 
   setSingleProductStory = (singleProductStory: ISingleProductStory[]) => {
     this.singleProductStory = singleProductStory;
+  };
+
+  setSingleProductStoryCount = (singleProductStoryCount: ISingleProductStoryCount) => {
+    this.singleProductStoryCount = singleProductStoryCount;
   };
 
   setPageNumber = (pageNumber: number) => {
@@ -70,6 +94,10 @@ class ProductsListStore {
 
   setEndDate = (endDate: Date | null) => {
     this.endDate = endDate;
+  };
+
+  setIOrderProductId = (iOrderProductId: string | null) => {
+    this.iOrderProductId = iOrderProductId;
   };
 
   reset() {

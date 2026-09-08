@@ -15,7 +15,6 @@ import styles from './login.scss';
 import 'react-phone-input-2/lib/style.css';
 // @ts-ignore
 import PhoneInput from 'react-phone-input-2';
-import ProductImg from '/public/images/sas-product.jpg';
 import JasImg from '/public/images/jas-logo.jpg';
 
 const cn = classNames.bind(styles);

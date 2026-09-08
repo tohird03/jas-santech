@@ -10,6 +10,7 @@ import { PaymentStatus } from './PaymentStatus';
 import { currencyTagUi } from '@/constants/payment';
 import { imageUrlWithBase } from '@/utils/image';
 import { OrderDescUpdate } from './OrderDescUpdate/OrderDescUpdate';
+import { ActionShowProduct } from './OrderShowInfoModal/Action';
 
 export const ordersColumns: ColumnType<IOrder>[] = [
   {
@@ -380,6 +381,14 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     width: 300,
     render: (value, record) => <span>{record?.product?.description}</span>,
   },
+  // {
+  //   key: 'action',
+  //   dataIndex: 'action',
+  //   title: 'Tahrirlash',
+  //   align: 'center',
+  //   width: 300,
+  //   render: (value, record) => <ActionShowProduct product={record} />,
+  // },
 ];
 
 

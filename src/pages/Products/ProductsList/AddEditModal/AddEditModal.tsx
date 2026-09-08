@@ -27,6 +27,12 @@ export const AddEditModal = observer(() => {
       authStore.getCurrencyMany(),
   });
 
+  // const { data: getSingleProduct } = useQuery({
+  //   queryKey: ['getSingleProduct'],
+  //   queryFn: (productId) =>
+  //     productsApi.getSingleProducts(productId),
+  // });
+
   const { mutate: addNewProduct } =
     useMutation({
       mutationKey: ['addNewProduct'],
@@ -149,6 +155,12 @@ export const AddEditModal = observer(() => {
       });
     }
   }, [productsListStore.singleProduct]);
+
+  useEffect(() => {
+    if (productsListStore.iOrderProductId) {
+      const name = '';
+    }
+  }, [productsListStore.iOrderProductId]);
 
   return (
     <Modal

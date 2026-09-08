@@ -3,7 +3,7 @@ import { ISeller } from "../clients";
 import { IPagination } from "../types";
 
 export interface IGetStaffsPaymentsParams extends IPagination {
-  userId?: string;
+  employeeId?: string;
   startDate?: Date;
   endDate?: Date;
 }

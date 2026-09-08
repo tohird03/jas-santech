@@ -1,0 +1,1 @@
+export {ActionShowProduct} from './Action';

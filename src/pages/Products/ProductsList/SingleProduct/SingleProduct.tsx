@@ -32,7 +32,11 @@ export const SingleProduct = observer(() => {
     if (productId) {
       setLoading(true);
 
-      productsListStore.getSingleProducts(productId);
+      productsListStore.getSingleProductsCount({
+        productId,
+        startDate: productsListStore?.startDate!,
+        endDate: productsListStore?.endDate!,
+      });
 
       productsListStore.getSingleProductStory({
         productId,
@@ -57,13 +61,13 @@ export const SingleProduct = observer(() => {
             className={cn('single-product__name')}
             level={3}
           >
-            {productsListStore?.singleProduct?.name}
+            {productsListStore?.singleProductStoryCount?.name}
           </Typography.Title>
           <Typography.Title
             className={cn('single-product__name')}
             level={4}
           >
-            Qoldig&apos;i: {productsListStore?.singleProduct?.count}
+            Qoldig&apos;i: {productsListStore?.singleProductStoryCount?.count}
           </Typography.Title>
         </div>
         <div>
@@ -100,7 +104,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total__order')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {/* {productsListStore?.singleProductStory?.totalSellingCount} */}
+                  {productsListStore?.singleProductStoryCount?.totalSellingCount}
                 </div>
               </Table.Summary.Cell>
               <Table.Summary.Cell
@@ -109,7 +113,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total__arrival')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {/* {productsListStore?.singleProductStory?.totalArrivalCount} */}
+                  {productsListStore?.singleProductStoryCount?.totalArrivalCount}
                 </div>
               </Table.Summary.Cell>
               <Table.Summary.Cell
@@ -118,7 +122,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total__returning')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {/* {productsListStore?.singleProductStory?.totalReturningCount} */}
+                  {productsListStore?.singleProductStoryCount?.totalReturningCount}
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>
@@ -132,7 +136,7 @@ export const SingleProduct = observer(() => {
                 className={cn('total')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                  {/* {productsListStore?.singleProductStory?.actualCount} */}
+                  {productsListStore?.singleProductStoryCount?.actualCount}
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>
