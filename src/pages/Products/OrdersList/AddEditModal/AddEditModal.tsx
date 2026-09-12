@@ -497,9 +497,13 @@ export const AddEditModal = observer(() => {
             }}
           />
         ) : (
-          <span onDoubleClick={handleDoubleClickChangeProduct?.bind(null, record, changeDiscountRef)}>
+          <Tag
+            style={{ fontSize: '20px', fontWeight: 'bold' }}
+            color="orange"
+            onDoubleClick={handleDoubleClickChangeProduct?.bind(null, record, changeDiscountRef)}
+          >
             {record?.prices?.selling?.discount}%
-          </span>
+          </Tag>
         )),
     },
     {
