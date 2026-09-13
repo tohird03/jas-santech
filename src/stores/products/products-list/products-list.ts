@@ -15,7 +15,7 @@ class ProductsListStore {
   singleProductStoryCount: ISingleProductStoryCount | null = null;
   startDate: Date | null = this.#today;
   endDate: Date | null = this.#today;
-  iOrderProductId: null | string = null;
+  productId: null | string = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -96,8 +96,8 @@ class ProductsListStore {
     this.endDate = endDate;
   };
 
-  setIOrderProductId = (iOrderProductId: string | null) => {
-    this.iOrderProductId = iOrderProductId;
+  setProductId = (productId: string | null) => {
+    this.productId = productId;
   };
 
   reset() {

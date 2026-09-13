@@ -178,12 +178,12 @@ export const OrderStatusColor: Record<IOrderStatus, string> = {
 
 export const ordersInfoColumns: ColumnType<IOrder>[] = [
   {
-    key: 'articl',
-    dataIndex: 'articl',
+    key: 'publicId',
+    dataIndex: 'publicId',
     title: 'Sotuv raqami',
     align: 'center',
     width: '150px',
-    render: (value, record) => record?.articl,
+    render: (value, record) => record?.publicId,
   },
   {
     key: 'client',
@@ -381,14 +381,14 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     width: 300,
     render: (value, record) => <span>{record?.product?.description}</span>,
   },
-  // {
-  //   key: 'action',
-  //   dataIndex: 'action',
-  //   title: 'Tahrirlash',
-  //   align: 'center',
-  //   width: 300,
-  //   render: (value, record) => <ActionShowProduct product={record} />,
-  // },
+  {
+    key: 'action',
+    dataIndex: 'action',
+    title: 'Tahrirlash',
+    align: 'center',
+    width: 300,
+    render: (value, record) => <ActionShowProduct product={record} />,
+  },
 ];
 
 

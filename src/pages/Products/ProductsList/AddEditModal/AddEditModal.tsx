@@ -27,11 +27,10 @@ export const AddEditModal = observer(() => {
       authStore.getCurrencyMany(),
   });
 
-  // const { data: getSingleProduct } = useQuery({
-  //   queryKey: ['getSingleProduct'],
-  //   queryFn: (productId) =>
-  //     productsApi.getSingleProducts(productId),
-  // });
+  const { data: getSingleProductData } = useQuery({
+    queryKey: ['getSingleProduct', productsListStore.productId],
+    queryFn: () => productsApi.getSingleProducts(productsListStore.productId!),
+  });
 
   const { mutate: addNewProduct } =
     useMutation({
@@ -39,6 +38,7 @@ export const AddEditModal = observer(() => {
       mutationFn: (params: IAddEditProduct) => productsApi.addNewProduct(params),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['getProducts'] });
+        addNotification('Maxsulot tahrirlandi!');
         handleModalClose();
       },
       onError: addNotification,
@@ -53,6 +53,7 @@ export const AddEditModal = observer(() => {
       mutationFn: ({ id, formData }: { id: string, formData: FormData }) => productsApi.updateProduct(id, formData),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['getProducts'] });
+        queryClient.invalidateQueries({ queryKey: ['getSingleOrder'] });
         handleModalClose();
       },
       onError: addNotification,
@@ -111,9 +112,9 @@ export const AddEditModal = observer(() => {
     formData.append('prices_wholesale_price', String(values?.wholesale));
     formData.append('prices_wholesale_currencyId', values?.wholesaleCurrency);
 
-    if (productsListStore?.singleProduct) {
+    if (productsListStore?.productId) {
       updateProduct({
-        id: productsListStore?.singleProduct?.id!,
+        id: productsListStore?.productId!,
         formData,
       } as any);
 
@@ -125,6 +126,7 @@ export const AddEditModal = observer(() => {
 
   const handleModalClose = () => {
     productsListStore.setSingleProduct(null);
+    productsListStore.setProductId(null);
     productsListStore.setIsOpenAddEditProductModal(false);
   };
 
@@ -142,25 +144,35 @@ export const AddEditModal = observer(() => {
   ), [currencyMany]);
 
   useEffect(() => {
-    if (productsListStore.singleProduct) {
-      form.setFieldsValue({
-        ...productsListStore.singleProduct,
-        cost: productsListStore?.singleProduct?.prices?.cost?.price,
-        count: productsListStore?.singleProduct?.count,
-        price: productsListStore?.singleProduct?.prices?.selling?.price,
-        wholesale: productsListStore?.singleProduct?.prices?.wholesale?.price,
-        costCurrency: productsListStore?.singleProduct?.prices?.cost?.currency?.id,
-        priceCurrency: productsListStore?.singleProduct?.prices?.selling?.currency?.id,
-        wholesaleCurrency: productsListStore?.singleProduct?.prices?.wholesale?.currency?.id,
-      });
-    }
-  }, [productsListStore.singleProduct]);
+    if (getSingleProductData) {
+      const product = getSingleProductData.data;
 
-  useEffect(() => {
-    if (productsListStore.iOrderProductId) {
-      const name = '';
+      form.setFieldsValue({
+        name: product.name,
+        description: product.description,
+        cost: product.prices?.cost?.price,
+        count: product.count,
+        minAmount: product.minAmount,
+        price: product.prices?.selling?.price,
+        wholesale: product.prices?.wholesale?.price,
+        costCurrency: product.prices?.cost?.currency?.id,
+        priceCurrency: product.prices?.selling?.currency?.id,
+        wholesaleCurrency: product.prices?.wholesale?.currency?.id,
+      });
+
+      // Eski rasmni Upload ichiga chiqarish
+      if (product.image) {
+        setBannerFileList([
+          {
+            uid: '-1',
+            name: product.image,
+            status: 'done',
+            url: `https://195-88-87-113.jas-santech.nip.io/uploads/${product.image}`,
+          },
+        ]);
+      }
     }
-  }, [productsListStore.iOrderProductId]);
+  }, [getSingleProductData]);
 
   return (
     <Modal

@@ -11,7 +11,7 @@ export interface IOrder {
   products: IOrderProducts[];
   status: IOrderStatus;
   date: string;
-  articl: number;
+  publicId: number;
   description: string;
   debtByCurrency: {
     amount: number;

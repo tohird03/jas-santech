@@ -17,7 +17,7 @@ export const ActionShowProduct: FC<Props> = observer(({product}) => {
 
   const handleEditProduct = () => {
     // productsListStore.setSingleProduct(product?.product);
-    productsListStore.setIOrderProductId(product?.product?.id);
+    productsListStore.setProductId(product?.product?.id);
     productsListStore.setIsOpenAddEditProductModal(true);
   };
 

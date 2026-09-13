@@ -7,11 +7,25 @@ import { ordersInfoColumns, ordersInfoPaymentColumns, ordersInfoProductsColumns 
 import styles from '../orders.scss';
 import classNames from 'classnames';
 import { useMediaQuery } from '@/utils/mediaQuery';
+import { useQuery } from '@tanstack/react-query';
+import { ordersApi } from '@/api/order';
 
 const cn = classNames.bind(styles);
 
 export const OrderShowInfoModal = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
+
+  const singleOrderId = ordersStore.singleOrder?.id;
+
+  const {
+    data: singleOrderData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['getSingleOrder', singleOrderId],
+
+    queryFn: () => ordersApi.getSingleOrder(singleOrderId!),
+  });
 
   const handleModalClose = () => {
     ordersStore.setSingleOrder(null);
@@ -19,14 +33,15 @@ export const OrderShowInfoModal = observer(() => {
   };
 
   useEffect(() => {
-    if (!ordersStore?.singleOrder) {
+    if (isError) {
       notification.error({
         message: 'Bu sotuv topilmadi!',
         placement: 'topRight',
       });
+
       handleModalClose();
     }
-  }, [ordersStore?.singleOrder]);
+  }, [isError]);
 
   return (
     <Modal
@@ -50,22 +65,22 @@ export const OrderShowInfoModal = observer(() => {
       <div className={cn('order__show-header')}>
         <DataTable
           columns={ordersInfoColumns}
-          data={[ordersStore?.singleOrder]}
+          data={singleOrderData?.data ? [singleOrderData.data] : []}
           isMobile
           pagination={false}
         />
         <DataTable
           columns={ordersInfoPaymentColumns}
-          data={[ordersStore?.singleOrder]}
+          data={singleOrderData?.data ? [singleOrderData.data] : []}
           isMobile
           pagination={false}
         />
       </div>
-      <p>{ordersStore?.singleOrder?.description}</p>
+      <p>{singleOrderData?.data?.description}</p>
       <div>
         <Table
           columns={ordersInfoProductsColumns}
-          dataSource={ordersStore?.singleOrder?.products || []}
+          dataSource={singleOrderData?.data?.products || []}
           pagination={false}
         />
       </div>

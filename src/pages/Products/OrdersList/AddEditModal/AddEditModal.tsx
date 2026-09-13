@@ -269,6 +269,7 @@ export const AddEditModal = observer(() => {
 
   const handleEditProductSelectedProduct = () => {
     productsListStore.setSingleProduct(selectedProduct);
+    productsListStore.setProductId(selectedProduct?.id!);
     productsListStore.setIsOpenAddEditProductModal(true);
   };
 
@@ -496,15 +497,24 @@ export const AddEditModal = observer(() => {
               }
             }}
           />
+        ) : record?.prices?.selling?.discount === 0 ? (
+          <span>
+            0%
+          </span>
         ) : (
           <Tag
             style={{ fontSize: '20px', fontWeight: 'bold' }}
             color="orange"
-            onDoubleClick={handleDoubleClickChangeProduct?.bind(null, record, changeDiscountRef)}
+            onDoubleClick={handleDoubleClickChangeProduct?.bind(
+              null,
+              record,
+              changeDiscountRef
+            )}
           >
             {record?.prices?.selling?.discount}%
           </Tag>
-        )),
+        )
+      ),
     },
     {
       key: 'totalCost',
