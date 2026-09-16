@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import { useMediaQuery } from '@/utils/mediaQuery';
 import { useQuery } from '@tanstack/react-query';
 import { ordersApi } from '@/api/order';
+import { DeletedOrderProduct } from '../AddEditModal/DeletedOrderProducts';
 
 const cn = classNames.bind(styles);
 
@@ -84,6 +85,8 @@ export const OrderShowInfoModal = observer(() => {
           pagination={false}
         />
       </div>
+
+      <DeletedOrderProduct />
     </Modal>
   );
 });

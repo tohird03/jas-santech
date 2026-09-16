@@ -13,6 +13,7 @@ export interface IOrder {
   date: string;
   publicId: number;
   description: string;
+  deletedProducts: IOrderProducts[];
   debtByCurrency: {
     amount: number;
     currency: ICurrency;

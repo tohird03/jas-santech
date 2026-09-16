@@ -31,6 +31,7 @@ import { authStore } from '@/stores/auth';
 import { currencyTagUi } from '@/constants/payment';
 import { imageUrlWithBase } from '@/utils/image';
 import { IProducts } from '@/api/product/types';
+import { DeletedOrderProduct } from './DeletedOrderProducts';
 
 const cn = classNames.bind(styles);
 
@@ -1064,6 +1065,8 @@ export const AddEditModal = observer(() => {
           </div>
         </div>
       </div>
+
+      <DeletedOrderProduct />
     </Modal>
   );
 });

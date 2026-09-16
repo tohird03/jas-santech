@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { addNotification } from '@/utils';
-import { IAddOrder, IAddOrderProducts, IGetOrdersParams, IOrder, IOrderStatus } from '@/api/order/types';
+import { IAddOrder, IAddOrderProducts, IGetOrdersParams, IOrder, IOrderProducts, IOrderStatus } from '@/api/order/types';
 import { ordersApi } from '@/api/order';
 import dayjs from 'dayjs';
 import { IOrderPayment } from './types';
@@ -22,6 +22,7 @@ class OrdersStore {
   startDate: Date | null = this.#today;
   endDate: Date | null = this.#today;
   isSendUser = false;
+  deletedProducts: IOrderProducts[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -40,6 +41,7 @@ class OrdersStore {
     ordersApi.getSingleOrder(orderId)
       .then(res => {
         this.setOrder(res?.data);
+        this.setSingleOrder(res?.data);
 
         return res;
       })
@@ -95,6 +97,10 @@ class OrdersStore {
 
   setSingleOrder = (singleOrder: IOrder | null) => {
     this.singleOrder = singleOrder;
+  };
+
+  setDeletedProducts = (deletedProducts: IOrderProducts[]) => {
+    this.deletedProducts = deletedProducts;
   };
 
   reset() {
