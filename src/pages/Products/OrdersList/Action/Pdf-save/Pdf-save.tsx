@@ -5,7 +5,10 @@ import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import LogoImg from '@/assets/img/jas-logo.jpg';
 import CheckmarkIcon from '@/assets/img/check-mark.png';
+import TelegramQr from '@/assets/img/telegram.jpg'; // Telegram/kanal QR kodi rasmi
+import Insta from '@/assets/img/insta.png'; // Instagram QR kodi rasmi
 import { phoneFormat } from '@/utils/phoneFormat';
+import { imageUrlWithBase } from '@/utils/image';
 
 Font.register({
   family: 'NotoSans',
@@ -27,52 +30,128 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
   <Document ref={ref}>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
-        <View style={styles.topData}>
-          <View style={styles.titleInfo}>
-            <View style={styles.title}>
-              <Text style={styles.titleSpan}>Дата продажа:</Text>
-              <Text style={styles.titleSpanData}>{getFullDateFormat(order?.date)}</Text>
-            </View>
-            <View style={styles.title}>
-              <Text style={styles.titleSpan}>Харидор:</Text>
-              <Text style={styles.titleSpanData}>{order?.client?.fullname}    {phoneFormat(order?.client?.phone?.slice(3))}</Text>
-            </View>
+        {/* HEADER: QR chap | Do'kon nomi + telefonlar | QR o'ng */}
+        <View style={styles.headerRow}>
+          <View style={styles.qrBox}>
+            <Image style={styles.qrImage} src={Insta} />
           </View>
-          <View>
-            <Image style={styles.logoImage} src={LogoImg} />
+
+          <View style={styles.headerCenter}>
+            <Text style={styles.shopName}>JASUR G BLOK 8-DO&lsquo;KON</Text>
+            <Text style={styles.shopPhones}>
+              Jasur 91-773-22-99  Dilshod 91-733-22-99  Axror 97-950-86-83
+            </Text>
+          </View>
+
+          <View style={styles.qrBox}>
+            <Image style={styles.qrImage} src={TelegramQr} />
+          </View>
+        </View>
+
+        {/* Xaridor ma'lumotlari */}
+        <View style={styles.buyerInfo}>
+          <View style={styles.buyerRow}>
+            <Text style={styles.buyerLabel}>Xaridor:</Text>
+            <Text style={styles.buyerValue}>
+              {order?.client?.fullname}
+            </Text>
+          </View>
+          <View style={styles.buyerRow}>
+            <Text style={styles.buyerLabel}>Telefon raqami:</Text>
+            <Text style={styles.buyerValue}>
+              {phoneFormat(order?.client?.phone?.slice(3))}
+            </Text>
+          </View>
+          <View style={styles.buyerRow}>
+            <Text style={styles.buyerLabel}>Sotuv vaqti:</Text>
+            <Text style={styles.buyerValue}>
+              {getFullDateFormat(order?.date)}
+            </Text>
           </View>
         </View>
 
         {/* Jadval */}
         <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={{ ...styles.tableHeaderCell, maxWidth: '30px' }}>№</Text>
-            <Text style={{ ...styles.tableHeaderCell, maxWidth: '250', minWidth: '250' }}>Махсулот номи</Text>
-            <Text style={{ ...styles.tableHeaderCell, maxWidth: '35px' }}>
+          {/* HEADER */}
+          <View style={styles.tableHeader} wrap={false}>
+            <View style={{ ...styles.tableCellWrap, maxWidth: 30, minWidth: 30 }}>
+              <Text style={styles.tableHeaderText}>№</Text>
+            </View>
+            <View style={{ ...styles.tableCellWrap, maxWidth: 60, minWidth: 60 }}>
+              <Text style={styles.tableHeaderText}>Расм</Text>
+            </View>
+            <View style={{ ...styles.tableCellWrap, maxWidth: 250, minWidth: 250 }}>
+              <Text style={styles.tableHeaderText}>Махсулот номи</Text>
+            </View>
+            <View style={{ ...styles.tableCellWrap, maxWidth: 35, minWidth: 35 }}>
               <Image src={CheckmarkIcon} style={{ width: 10, height: 10 }} />
-            </Text>
-            <Text style={{ ...styles.tableHeaderCell, maxWidth: '45px' }}>Сони</Text>
-            <Text style={{ ...styles.tableHeaderCell }}>Нархи</Text>
-            <Text style={{ ...styles.tableHeaderCell }}>Суммаси</Text>
+            </View>
+            <View style={{ ...styles.tableCellWrap, maxWidth: 45, minWidth: 45 }}>
+              <Text style={styles.tableHeaderText}>Сони</Text>
+            </View>
+            <View style={styles.tableCellWrap}>
+              <Text style={styles.tableHeaderText}>Нархи</Text>
+            </View>
+            <View style={{ ...styles.tableCellWrap, borderRightWidth: 0 }}>
+              <Text style={styles.tableHeaderText}>Суммаси</Text>
+            </View>
           </View>
+
+          {/* ROWS */}
           {
             order?.products?.map((product, index) => (
-              <View key={product?.id} style={styles.tableRow}>
-                <Text style={{ ...styles.tableCell, maxWidth: '30px' }}>{index + 1}</Text>
-                <Text style={{ ...styles.tableCell, maxWidth: '250px', minWidth: '250px', textAlign: 'left' }}>{product?.product?.name}</Text>
-                <Text style={{ ...styles.tableCell, maxWidth: '35px' }} />
-                <Text style={{ ...styles.tableCell, maxWidth: '45px' }}>{product?.count}</Text>
-                <Text style={{ ...styles.tableCell, ...styles.tablePriceCol }}>
-                  {priceFormat(product?.prices?.selling?.price * (100 - product?.prices?.selling?.discount) / 100)}
-                  {(product?.prices?.selling?.currency?.symbol)}
-                </Text>
-                <Text style={{ ...styles.tableCell, ...styles.tablePriceCol }}>
-                  {priceFormat(product?.prices?.selling?.totalPrice)} {(product?.prices?.selling?.currency?.symbol)}
-                </Text>
+              <View key={product?.id} style={styles.tableRow} wrap={false}>
+                {/* № */}
+                <View style={{ ...styles.tableCellWrap, maxWidth: 30, minWidth: 30 }}>
+                  <Text style={styles.tableCellText}>{index + 1}</Text>
+                </View>
+
+                {/* PRODUCT IMAGE */}
+                <View style={{ ...styles.tableCellWrap, maxWidth: 60, minWidth: 60 }}>
+                  {product?.product?.image ? (
+                    <Image
+                      src={imageUrlWithBase(product.product.image)}
+                      style={styles.productImage}
+                    />
+                  ) : (
+                    <Text style={styles.tableCellText}>-</Text>
+                  )}
+                </View>
+
+                {/* NOMI */}
+                <View style={{ ...styles.tableCellWrap, maxWidth: 250, minWidth: 250 }}>
+                  <Text style={{ ...styles.tableCellText, textAlign: 'left' }}>
+                    {product?.product?.name}
+                  </Text>
+                </View>
+
+                {/* CHECK ustuni (bo'sh) */}
+                <View style={{ ...styles.tableCellWrap, maxWidth: 35, minWidth: 35 }} />
+
+                {/* SONI */}
+                <View style={{ ...styles.tableCellWrap, maxWidth: 45, minWidth: 45 }}>
+                  <Text style={styles.tableCellText}>{product?.count}</Text>
+                </View>
+
+                {/* NARXI */}
+                <View style={styles.tableCellWrap}>
+                  <Text style={{ ...styles.tableCellText, textAlign: 'right' }}>
+                    {priceFormat(product?.prices?.selling?.price * (100 - product?.prices?.selling?.discount) / 100)}
+                    {(product?.prices?.selling?.currency?.symbol)}
+                  </Text>
+                </View>
+
+                {/* SUMMASI */}
+                <View style={{ ...styles.tableCellWrap, borderRightWidth: 0 }}>
+                  <Text style={{ ...styles.tableCellText, textAlign: 'right' }}>
+                    {priceFormat(product?.prices?.selling?.totalPrice)} {(product?.prices?.selling?.currency?.symbol)}
+                  </Text>
+                </View>
               </View>
             ))
           }
         </View>
+
         <View>
           <View style={styles.totalCalcTextWrapper}>
             <Text style={styles.totalCalcText}>Жами сумма:</Text>
@@ -122,6 +201,7 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
   </Document>
 ));
 
+
 // PDF uchun stil
 const styles = StyleSheet.create({
   page: {
@@ -144,6 +224,66 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: -40,
   },
+
+  // === YANGI HEADER: QR chap | markazda nomi/telefon | QR o'ng ===
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 12,
+  },
+  qrBox: {
+    width: 70,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrImage: {
+    width: 70,
+    height: 70,
+    objectFit: 'contain',
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shopName: {
+    fontSize: 16,
+    fontFamily: 'NotoSansBold',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  shopPhones: {
+    fontSize: 10,
+    fontFamily: 'NotoSans',
+    textAlign: 'center',
+  },
+  buyerInfo: {
+    borderTopWidth: 1,
+    borderColor: 'black',
+    paddingTop: 8,
+    marginBottom: 8,
+  },
+  buyerRow: {
+    flexDirection: 'row',
+    marginBottom: 3,
+  },
+  buyerLabel: {
+    fontSize: 11,
+    fontFamily: 'NotoSansBold',
+    fontWeight: 'bold',
+    marginRight: 6,
+    width: 110,
+  },
+  buyerValue: {
+    fontSize: 11,
+    fontFamily: 'NotoSans',
+  },
+  // === /YANGI HEADER ===
+
   titleInfo: {
     marginBottom: -30,
   },
@@ -178,38 +318,55 @@ const styles = StyleSheet.create({
   },
   table: {
     width: '100%',
-    borderWidth: 1,
-    borderColor: 'black',
     marginBottom: 10,
     marginTop: 20,
   },
   tableHeader: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
+    borderWidth: 1,
     borderColor: 'black',
   },
-  tableHeaderCell: {
-    flex: 1,
+  tableHeaderText: {
     textAlign: 'center',
     fontFamily: 'NotoSansBold',
     fontSize: 10,
-    padding: 3,
-    borderRightWidth: 1,
-    borderColor: 'black',
     fontWeight: 800,
+    paddingHorizontal: 3,
+    paddingVertical: 4,
   },
+
+  // === MUHIM QISM ===
+  // Har bir katak endi View (tableCellWrap), u flex:1 va borderni oladi —
+  // shuning uchun stretch bilan butun qator balandligini egallaydi.
+  // Ichidagi Text esa faqat matnni ko'rsatadi, o'zi flex/border olmaydi,
+  // shu sababli hech qachon kichrayib qolmaydi.
   tableRow: {
     flexDirection: 'row',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: 'black',
+    minHeight: 44, // barcha qatorlar bir xil minimal balandlikda
   },
-  tableCell: {
+  tableCellWrap: {
     flex: 1,
-    textAlign: 'center',
-    padding: 3,
     borderRightWidth: 1,
     borderColor: 'black',
+    alignItems: 'center', // View uchun bu xavfsiz — ichidagi elementni gorizontal markazlaydi
+    justifyContent: 'center', // vertikal markazlash
+  },
+  tableCellText: {
+    textAlign: 'center',
     fontSize: 9,
+    paddingHorizontal: 3,
+    paddingVertical: 4,
+  },
+  // === /MUHIM QISM ===
+
+  productImage: {
+    width: 40,
+    height: 40,
+    objectFit: 'contain',
   },
   tablePriceCol: {
     textAlign: 'right',
