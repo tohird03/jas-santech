@@ -231,7 +231,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: 12,
   },
   qrBox: {
     width: 70,
@@ -262,10 +261,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buyerInfo: {
-    borderTopWidth: 1,
-    borderColor: 'black',
     paddingTop: 8,
-    marginBottom: 8,
   },
   buyerRow: {
     flexDirection: 'row',
