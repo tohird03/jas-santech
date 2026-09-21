@@ -64,15 +64,16 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         render: (value, record) => {
           if (record?.type !== 'selling') return null;
 
-          return (
-            <div>
-              {record?.prices?.map((price) => (
-                <div key={price.id}>
-                  {price.price?.toLocaleString()} {currencyTagUi(price?.currency?.symbol)}
-                </div>
-              ))}
-            </div>
+          const price = record?.prices?.find(
+            (item) => item.type === 'selling'
           );
+
+          return price ? (
+            <div>
+              {price.price?.toLocaleString()}{' '}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ) : null;
         },
         onHeaderCell: () => ({
           style: {
@@ -149,15 +150,16 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         render: (value, record) => {
           if (record?.type !== 'arrival') return null;
 
-          return (
-            <div>
-              {record?.prices?.map((price) => (
-                <div key={price.id}>
-                  {price.price?.toLocaleString()} {currencyTagUi(price?.currency?.symbol)}
-                </div>
-              ))}
-            </div>
+          const price = record?.prices?.find(
+            (item) => item.type === 'cost'
           );
+
+          return price ? (
+            <div>
+              {price.price?.toLocaleString()}{' '}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ) : null;
         },
         onHeaderCell: () => ({
           style: {
@@ -234,15 +236,16 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         render: (value, record) => {
           if (record?.type !== 'returning') return null;
 
-          return (
-            <div>
-              {record?.prices?.map((price) => (
-                <div key={price.id}>
-                  {price.price?.toLocaleString()} {currencyTagUi(price?.currency?.symbol)}
-                </div>
-              ))}
-            </div>
+          const price = record?.prices?.find(
+            (item) => item.type === 'selling'
           );
+
+          return price ? (
+            <div>
+              {price.price?.toLocaleString()}{' '}
+              {currencyTagUi(price?.currency?.symbol)}
+            </div>
+          ) : null;
         },
         onHeaderCell: () => ({
           style: {
