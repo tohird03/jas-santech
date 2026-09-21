@@ -1,6 +1,8 @@
 import { ColumnsType } from 'antd/es/table';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { ISingleProductStory } from '@/api/product/types';
+import { currencyTagUi } from '@/constants/payment';
+import React from 'react';
 
 export const singleProductColumns: ColumnsType<ISingleProductStory> = [
   {
@@ -45,6 +47,33 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         width: 50,
         className: 'product-story__count',
         render: (value, record) => record?.type === 'selling' ? record?.count : null,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BFF5C0',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Narx',
+        key: 'price',
+        dataIndex: 'price',
+        width: 100,
+        className: 'product-story__count',
+        render: (value, record) => {
+          if (record?.type !== 'selling') return null;
+
+          return (
+            <div>
+              {record?.prices?.map((price) => (
+                <div key={price.id}>
+                  {price.price?.toLocaleString()} {currencyTagUi(price?.currency?.symbol)}
+                </div>
+              ))}
+            </div>
+          );
+        },
         onHeaderCell: () => ({
           style: {
             backgroundColor: '#BFF5C0',
@@ -102,7 +131,34 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         dataIndex: 'productCount',
         width: 50,
         className: 'product-story__count',
-        render: (value, record) => record?.type === 'arrival' ? record?.count: null,
+        render: (value, record) => record?.type === 'arrival' ? record?.count : null,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Narx',
+        key: 'price',
+        dataIndex: 'price',
+        width: 100,
+        className: 'product-story__count',
+        render: (value, record) => {
+          if (record?.type !== 'arrival') return null;
+
+          return (
+            <div>
+              {record?.prices?.map((price) => (
+                <div key={price.id}>
+                  {price.price?.toLocaleString()} {currencyTagUi(price?.currency?.symbol)}
+                </div>
+              ))}
+            </div>
+          );
+        },
         onHeaderCell: () => ({
           style: {
             backgroundColor: '#BEE6FF',
@@ -161,6 +217,33 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         width: 50,
         className: 'product-story__count',
         render: (value, record) => record?.type === 'returning' ? record?.count : null,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#FFBDBD',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Narx',
+        key: 'price',
+        dataIndex: 'price',
+        width: 100,
+        className: 'product-story__count',
+        render: (value, record) => {
+          if (record?.type !== 'returning') return null;
+
+          return (
+            <div>
+              {record?.prices?.map((price) => (
+                <div key={price.id}>
+                  {price.price?.toLocaleString()} {currencyTagUi(price?.currency?.symbol)}
+                </div>
+              ))}
+            </div>
+          );
+        },
         onHeaderCell: () => ({
           style: {
             backgroundColor: '#FFBDBD',

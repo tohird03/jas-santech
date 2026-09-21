@@ -107,6 +107,7 @@ export interface ISingleProductStory {
   arrival: IIncomeOrder;
   returning: IReturnedOrder;
   createdAt: string;
+  prices: IProductPrice[];
 }
 
 export interface ISingleProductStoryCount extends IProducts {

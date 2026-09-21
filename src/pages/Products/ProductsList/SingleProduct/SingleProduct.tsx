@@ -99,7 +99,7 @@ export const SingleProduct = observer(() => {
                 Jami
               </Table.Summary.Cell>
               <Table.Summary.Cell
-                colSpan={3}
+                colSpan={4}
                 index={1}
                 className={cn('total__order')}
               >
@@ -109,7 +109,7 @@ export const SingleProduct = observer(() => {
               </Table.Summary.Cell>
               <Table.Summary.Cell
                 index={2}
-                colSpan={3}
+                colSpan={4}
                 className={cn('total__arrival')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
@@ -118,7 +118,7 @@ export const SingleProduct = observer(() => {
               </Table.Summary.Cell>
               <Table.Summary.Cell
                 index={3}
-                colSpan={3}
+                colSpan={4}
                 className={cn('total__returning')}
               >
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
@@ -131,7 +131,7 @@ export const SingleProduct = observer(() => {
                 Umumiy qoldiq
               </Table.Summary.Cell>
               <Table.Summary.Cell
-                colSpan={9}
+                colSpan={12}
                 index={2}
                 className={cn('total')}
               >
