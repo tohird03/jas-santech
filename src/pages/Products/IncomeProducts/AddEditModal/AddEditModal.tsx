@@ -496,6 +496,7 @@ export const AddEditIncomeOrderModal = observer(() => {
 
   const handleEditProductSelectedProduct = () => {
     productsListStore.setSingleProduct(selectedProduct);
+    productsListStore.setProductId(selectedProduct?.id!);
     productsListStore.setIsOpenAddEditProductModal(true);
   };
 
