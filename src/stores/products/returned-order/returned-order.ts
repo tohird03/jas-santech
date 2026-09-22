@@ -7,6 +7,7 @@ import { ISingleReturnedOrderPayment } from './type';
 class ReturnedOrdersStore {
   #today = new Date();
 
+  returnedOrderId: string | null = null;
   pageNumber = 1;
   pageSize = 10;
   accepted: string | null = null;
@@ -36,6 +37,10 @@ class ReturnedOrdersStore {
         return res;
       })
       .catch(addNotification);
+
+  setReturnedOrderId = (returnedOrderId: string | null) => {
+    this.returnedOrderId = returnedOrderId;
+  };
 
   setPageNumber = (pageNumber: number) => {
     this.pageNumber = pageNumber;

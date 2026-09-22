@@ -7,7 +7,7 @@ import { ordersInfoProductsColumns } from '../constants';
 
 export const DeletedOrderProduct = observer(() => {
   const deletedProducts =
-    ordersStore?.singleOrder?.deletedProducts || [];
+    ordersStore?.order?.deletedProducts || [];
 
   return (
     <Table

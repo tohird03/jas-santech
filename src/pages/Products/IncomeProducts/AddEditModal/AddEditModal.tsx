@@ -97,6 +97,16 @@ export const AddEditIncomeOrderModal = observer(() => {
       authStore.getCurrencyMany(),
   });
 
+  const {
+    data: singleIncomeOrder,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['getSingleIncomeOrder', incomeProductsStore?.incomeOrderId],
+
+    queryFn: () => incomeProductsApi.getSingleIncomeOrder(incomeProductsStore?.incomeOrderId!),
+  });
+
   const handleOpenPaymentModal = () => {
     if (incomeProductsStore?.incomeOrder?.id) {
       incomeProductsStore.setIncomeOrderPayment({
@@ -213,6 +223,7 @@ export const AddEditIncomeOrderModal = observer(() => {
 
   const handleModalClose = () => {
     incomeProductsStore.setsingleIncomeOrder(null);
+    incomeProductsStore.setIncomeOrderId(null);
     incomeProductsStore.setIncomeOrder(null);
     incomeProductsStore.setIsOpenAddEditIncomeProductsModal(false);
   };
@@ -253,21 +264,39 @@ export const AddEditIncomeOrderModal = observer(() => {
   ), [supplierData]);
 
   useEffect(() => {
-    if (incomeProductsStore.singleIncomeOrder && incomeProductsStore?.incomeOrder) {
-      setSearchClients(incomeProductsStore?.incomeOrder?.supplier?.fullname);
-      setSelectedSupplier(incomeProductsStore?.incomeOrder?.supplier);
+    if (singleIncomeOrder?.data) {
+      const incomeOrder = singleIncomeOrder.data;
+
+      incomeProductsStore.setsingleIncomeOrder(incomeOrder);
+      incomeProductsStore.setIncomeOrder(incomeOrder);
+
+      setSearchClients(incomeOrder?.supplier?.fullname);
+      setSelectedSupplier(incomeOrder?.supplier);
 
       form.setFieldsValue({
-        date: dayjs(incomeProductsStore.incomeOrder?.date),
-        supplierId: incomeProductsStore?.incomeOrder?.supplier?.id,
-        description: incomeProductsStore?.incomeOrder?.description,
+        date: incomeOrder?.date
+          ? dayjs(incomeOrder.date)
+          : dayjs(),
+        supplierId: incomeOrder?.supplier?.id,
+        description: incomeOrder?.description,
       });
-    } else if (singleSupplierStore.activeSupplier?.id) {
+
+      return;
+    }
+
+    if (singleSupplierStore.activeSupplier?.id) {
       setSelectedSupplier(singleSupplierStore.activeSupplier);
       setSearchClients(singleSupplierStore.activeSupplier?.fullname);
-      form.setFieldValue('supplierId', singleSupplierStore.activeSupplier?.id);
+
+      form.setFieldValue(
+        'supplierId',
+        singleSupplierStore.activeSupplier.id
+      );
     }
-  }, [incomeProductsStore.incomeOrder, singleSupplierStore.activeSupplier]);
+  }, [
+    singleIncomeOrder,
+    singleSupplierStore.activeSupplier,
+  ]);
 
   // TABLE ACTIONS
   const handleEditProduct = (orderProduct: IIncomeProduct) => {

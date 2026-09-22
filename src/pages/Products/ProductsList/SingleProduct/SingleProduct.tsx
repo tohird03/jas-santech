@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
-import { productsListStore } from '@/stores/products';
+import { incomeProductsStore, ordersStore, productsListStore, returnedOrdersStore } from '@/stores/products';
 import { DatePicker, DatePickerProps, Table, Typography } from 'antd';
 import { singleProductColumns } from './constants';
 import classNames from 'classnames/bind';
 import { styles } from './single-product.scss';
 import dayjs from 'dayjs';
+import { AddEditModal } from '../../OrdersList/AddEditModal';
+import { AddEditReturnedOrderModal } from '../../ReturnedOrders/AddEditModal';
+import { AddEditIncomeOrderModal } from '../../IncomeProducts/AddEditModal';
 
 const cn = classNames.bind(styles);
 
@@ -146,6 +149,9 @@ export const SingleProduct = observer(() => {
         loading={loading}
       />
 
+      { ordersStore.isOpenAddEditNewOrderModal && <AddEditModal />}
+      { returnedOrdersStore.isOpenAddEditReturnedOrderModal && <AddEditReturnedOrderModal />}
+      { incomeProductsStore.isOpenAddEditIncomeProductsModal && <AddEditIncomeOrderModal />}
     </div>
   );
 });

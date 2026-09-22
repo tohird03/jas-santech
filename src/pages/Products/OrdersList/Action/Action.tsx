@@ -82,6 +82,7 @@ export const Action: FC<Props> = observer(({ orders }) => {
   };
 
   const handleEditOrder = () => {
+    ordersStore.setOrderId(orders?.id);
     ordersStore.setSingleOrder(orders);
     ordersStore.setOrder(orders);
     ordersStore.setIsOpenAddEditNewOrderModal(true);

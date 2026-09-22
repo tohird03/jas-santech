@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { DataTable } from '@/components/Datatable/datatable';
 import { getPaginationParams } from '@/utils/getPaginationParams';
 import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
+import { AddEditReturnedOrderModal } from './AddEditModal';
 import styles from './returned-orders.scss';
 import { returnedOrdersColumns } from './constants';
 import { returnedOrdersStore } from '@/stores/products';
@@ -157,7 +157,7 @@ export const ReturnedOrders = observer(() => {
         }}
       />
 
-      {returnedOrdersStore.isOpenAddEditReturnedOrderModal && <AddEditModal />}
+      {returnedOrdersStore.isOpenAddEditReturnedOrderModal && <AddEditReturnedOrderModal />}
       {returnedOrdersStore.isOpenPaymentModal && <PaymentModal />}
       {returnedOrdersStore.isOpenShowProductModal && <ReturnedOrderShowInfoModal />}
     </main>

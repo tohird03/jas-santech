@@ -34,6 +34,7 @@ export const Action: FC<Props> = observer(({ order }) => {
   };
 
   const handleEditProcess = () => {
+    incomeProductsStore.setIncomeOrderId(order?.id);
     incomeProductsStore.setsingleIncomeOrder(order);
     incomeProductsStore.setIncomeOrder(order);
     incomeProductsStore.setIsOpenAddEditIncomeProductsModal(true);

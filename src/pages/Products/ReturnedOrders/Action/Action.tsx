@@ -35,6 +35,7 @@ export const Action: FC<Props> = observer(({ returnedOrder }) => {
     });
 
   const handleEditReturnedOrder = () => {
+    returnedOrdersStore.setReturnedOrderId(returnedOrder?.id);
     returnedOrdersStore.setSingleReturnedOrder(returnedOrder);
     returnedOrdersStore.setIsOpenAddEditReturnedOrderModal(true);
   };

@@ -7,6 +7,7 @@ import { IOrderPayment } from '../orders-list/types';
 class IncomeProductsStore {
   #today = new Date();
 
+  incomeOrderId: string | null = null;
   pageNumber = 1;
   pageSize = 10;
   search: string | null = null;
@@ -36,6 +37,10 @@ class IncomeProductsStore {
         return res;
       })
       .catch(addNotification);
+
+  setIncomeOrderId = (incomeOrderId: string | null) => {
+    this.incomeOrderId = incomeOrderId;
+  };
 
   setPageNumber = (pageNumber: number) => {
     this.pageNumber = pageNumber;

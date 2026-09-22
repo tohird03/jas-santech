@@ -35,7 +35,7 @@ const filterOption = (input: string, option?: { label: string, value: string }) 
 const countColor = (count: number, min_amount: number): string =>
   count < 0 ? 'red' : count < min_amount ? 'orange' : 'green';
 
-export const AddEditModal = observer(() => {
+export const AddEditReturnedOrderModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const isMobile = useMediaQuery('(max-width: 800px)');
@@ -74,6 +74,16 @@ export const AddEditModal = observer(() => {
         search: searchProducts!,
         clientId: selectedClient?.id,
       }),
+  });
+
+  const {
+    data: singleReturnedOrder,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['getSingleReturnedOrder', returnedOrdersStore?.returnedOrderId],
+
+    queryFn: () => returnedOrderApi.getSingleReturnedOrder(returnedOrdersStore?.returnedOrderId!),
   });
 
   const handleOpenPaymentModal = () => {
@@ -151,6 +161,7 @@ export const AddEditModal = observer(() => {
   };
 
   const handleModalClose = () => {
+    returnedOrdersStore.setReturnedOrderId(null);
     returnedOrdersStore.setSingleReturnedOrder(null);
     returnedOrdersStore.setIsOpenAddEditReturnedOrderModal(false);
   };
@@ -424,15 +435,22 @@ export const AddEditModal = observer(() => {
   ), [clientsData]);
 
   useEffect(() => {
-    if (returnedOrdersStore?.singleReturnedOrder) {
-      setSearchClients(returnedOrdersStore?.singleReturnedOrder?.client?.phone);
+    if (singleReturnedOrder) {
+      const returnedOrder = singleReturnedOrder.data;
+
+      returnedOrdersStore.setSingleReturnedOrder(returnedOrder);
+
+      setSearchClients(returnedOrder?.client?.phone);
+      setSelectedClient(returnedOrder?.client);
 
       form.setFieldsValue({
-        // sellingDate: dayjs(returnedOrdersStore?.singleReturnedOrder?.sellingDate),
-        clientId: returnedOrdersStore?.singleReturnedOrder?.client?.id,
+        clientId: returnedOrder?.client?.id,
+        date: returnedOrder?.date
+          ? dayjs(returnedOrder.date)
+          : dayjs(),
       });
     }
-  }, [returnedOrdersStore?.singleReturnedOrder]);
+  }, [singleReturnedOrder]);
 
   const rowClassName = (record: IOrderProducts) => {
     if (returnedOrdersStore?.singleReturnedOrder?.products) {

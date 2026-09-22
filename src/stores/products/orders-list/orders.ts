@@ -9,6 +9,7 @@ class OrdersStore {
   #today = new Date();
 
   order: IOrder | null = null;
+  orderId: string | null = null;
   orderPayment: IOrderPayment | null = null;
   pageNumber = 1;
   pageSize = 100;
@@ -49,6 +50,10 @@ class OrdersStore {
 
   setOrder = (order: IOrder | null) => {
     this.order = order;
+  };
+
+  setOrderId = (orderId: string | null) => {
+    this.orderId = orderId;
   };
 
   setOrderPayment = (orderPayment: IOrderPayment | null) => {

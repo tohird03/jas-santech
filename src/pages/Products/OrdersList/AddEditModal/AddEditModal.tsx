@@ -66,6 +66,16 @@ export const AddEditModal = observer(() => {
       }),
   });
 
+  const {
+    data: singleOrderData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['getSingleOrder', ordersStore?.orderId],
+
+    queryFn: () => ordersApi.getSingleOrder(ordersStore?.orderId!),
+  });
+
   const { data: productsData, isLoading: loadingProducts } = useQuery({
     queryKey: ['getProducts', searchProducts, selectedClient?.id],
     queryFn: () =>
@@ -225,6 +235,7 @@ export const AddEditModal = observer(() => {
     }
     queryClient.invalidateQueries({ queryKey: ['getOrders'] });
     ordersStore.setSingleOrder(null);
+    ordersStore.setOrderId(null);
     ordersStore.setOrder(null);
     ordersStore.setIsSendUser(false);
     ordersStore.setIsOpenAddEditNewOrderModal(false);
@@ -303,14 +314,18 @@ export const AddEditModal = observer(() => {
   }, [ordersStore.isOpenAddEditNewOrderModal]);
 
   useEffect(() => {
-    if (ordersStore.singleOrder && ordersStore?.order) {
-      setSearchClients(ordersStore?.order?.client?.fullname);
-      setSelectedClient(ordersStore?.order?.client);
+    if (singleOrderData) {
+      const order = singleOrderData?.data;
+
+      ordersStore.setOrder(order);
+
+      setSearchClients(order?.client?.fullname);
+      setSelectedClient(order?.client);
 
       form.setFieldsValue({
-        date: dayjs(ordersStore.order?.date),
-        clientId: ordersStore?.order?.client?.id,
-        description: ordersStore?.order?.description,
+        date: dayjs(order?.date),
+        clientId: order?.client?.id,
+        description: order?.description,
       });
 
     } else if (singleClientStore.activeClient?.id) {
@@ -318,7 +333,7 @@ export const AddEditModal = observer(() => {
       setSearchClients(singleClientStore.activeClient?.fullname);
       form.setFieldValue('clientId', singleClientStore.activeClient?.id);
     }
-  }, [ordersStore.order, singleClientStore.activeClient]);
+  }, [singleOrderData, singleClientStore.activeClient]);
 
   const countColor = (count: number, min_amount: number): string =>
     count < 0 ? 'red' : count < min_amount ? 'orange' : 'green';
@@ -848,7 +863,7 @@ export const AddEditModal = observer(() => {
             >
               {clientsData?.data?.data.map((client) => (
                 <Select.Option key={client.id} value={client.id}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                     <div>
                       <div style={{ fontWeight: 600 }}>
                         {client.fullname}

@@ -3,6 +3,7 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import { ISingleProductStory } from '@/api/product/types';
 import { currencyTagUi } from '@/constants/payment';
 import React from 'react';
+import { ProductStoryClientName } from './ProductStoryName/ProductStoryName';
 
 export const singleProductColumns: ColumnsType<ISingleProductStory> = [
   {
@@ -31,7 +32,12 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         key: 'client',
         dataIndex: 'client',
         width: 150,
-        render: (value, record) => record?.type === 'selling' ? record?.selling?.client?.fullname : null,
+        render: (value, record) => (
+          <ProductStoryClientName
+            client={record}
+            type="selling"
+          />
+        ),
         onHeaderCell: () => ({
           style: {
             backgroundColor: '#BFF5C0',
@@ -117,7 +123,12 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         key: 'client',
         dataIndex: 'client',
         width: 150,
-        render: (value, record) => record?.type === 'arrival' ? record?.arrival?.supplier?.fullname : null,
+        render: (value, record) => (
+          <ProductStoryClientName
+            client={record}
+            type="arrival"
+          />
+        ),
         onHeaderCell: () => ({
           style: {
             backgroundColor: '#BEE6FF',
@@ -203,7 +214,12 @@ export const singleProductColumns: ColumnsType<ISingleProductStory> = [
         key: 'client',
         dataIndex: 'client',
         width: 150,
-        render: (value, record) => record?.type === 'returning' ? record?.returning?.client?.fullname : null,
+        render: (value, record) => (
+          <ProductStoryClientName
+            client={record}
+            type="returning"
+          />
+        ),
         onHeaderCell: () => ({
           style: {
             backgroundColor: '#FFBDBD',
