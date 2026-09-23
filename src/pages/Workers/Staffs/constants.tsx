@@ -3,6 +3,7 @@ import {ColumnType} from 'antd/es/table';
 import {EPageAccess, IStaffs} from '@/api/staffs';
 import {Action} from './Action';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
+import { ActiveStatus } from './AvtiveStatus/ActiveStatus';
 
 export const staffsColumns: ColumnType<IStaffs>[] = [
   {
@@ -25,6 +26,13 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     title: 'Telefon raqami',
     align: 'center',
     render: (value, record) => `+${formatPhoneNumber(record?.phone)}`,
+  },
+  {
+    key: 'action',
+    dataIndex: 'action',
+    title: 'Faolligi',
+    align: 'center',
+    render: (value, record) => <ActiveStatus staff={record} />,
   },
   {
     key: 'action',

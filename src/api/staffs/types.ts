@@ -6,6 +6,7 @@ export interface IStaffs {
   phone: string;
   actions: IStaffPer[];
   pages: EPageAccess[];
+  isActive: boolean;
 }
 
 export interface IGetStaffsParams extends IPagination {
@@ -31,6 +32,7 @@ export interface IUpdateStaff {
   pagesToConnect?: EPageAccess[];
   pagesToDisconnect?: EPageAccess[];
   currencyId?: string;
+  isActive?: boolean;
 }
 
 export enum EPageAccess {
