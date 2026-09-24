@@ -48,6 +48,11 @@ export const mainMenuList: IMenuItems[] = [
         key: ROUTES.productsReturnedOrder,
         roleKey: EPageAccess.RETURNING,
       },
+      {
+        label: <><AppstoreAddOutlined /> Skladlar</>,
+        key: ROUTES.warehouse,
+        roleKey: EPageAccess.PRODUCT,
+      },
     ],
   },
   {

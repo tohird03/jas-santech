@@ -5,7 +5,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Checkbox, Popconfirm } from 'antd';
 
 import { IStaffs, staffsApi } from '@/api/staffs';
-import { staffsStore } from '@/stores/workers';
 import { addNotification } from '@/utils';
 
 type Props = {

@@ -3,7 +3,7 @@ import {profileStore} from './profile';
 import {clientsInfoStore, paymentsStore, singleClientStore} from './clients';
 import {staffsStore, currencyStore} from './workers';
 import {supplierInfoStore, supplierPaymentsStore, singleSupplierStore} from './supplier';
-import {productsListStore, incomeProductsStore, ordersStore, returnedOrdersStore} from './products';
+import {productsListStore, incomeProductsStore, ordersStore, returnedOrdersStore, warehouseStore} from './products';
 
 export const stores = {
   authStore,
@@ -20,6 +20,7 @@ export const stores = {
   incomeProductsStore,
   ordersStore,
   returnedOrdersStore,
+  warehouseStore,
 };
 
 export const resetStores = () => {
@@ -37,4 +38,5 @@ export const resetStores = () => {
   incomeProductsStore.reset();
   ordersStore.reset();
   returnedOrdersStore.reset();
+  warehouseStore.reset();
 };

@@ -25,6 +25,7 @@ export const ROUTES = {
   // PRODUCTS
   products: '/products',
   productsList: '/products/list',
+  warehouse: 'products/warehouse',
   productsIncome: '/products/income',
   productsOrder: '/products/order',
   productsReturnedOrder: '/products/returned-order',

@@ -56,6 +56,9 @@ export enum Endpoints {
   AddEditProductToReturning = '/returning-product-mv/one',
   ProductMv = '/product-mv/one',
 
+  WarehouseMany = '/product-category/many',
+  WarehouseOne = '/product-category/one',
+
   OrderStatistic = '/statistics/selling/total',
   OrderGraphStatistic = '/statistics/selling/period',
 

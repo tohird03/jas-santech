@@ -21,6 +21,7 @@ import {
   Statistic,
   SupplierInfo,
   SupplierPayments,
+  Warehouse,
 } from './lazy';
 import {ProtectedRoutes} from './ProtectedRoutes';
 import {PublicRoutes} from './PublicRoutes';
@@ -108,6 +109,10 @@ export const Router = ({isAuth}: Props) => useRoutes([
           {
             element: <Suspense fallback={<Loading />}><SingleProduct /></Suspense>,
             path: ROUTES.singleProduct,
+          },
+          {
+            element: <Suspense fallback={<Loading />}><Warehouse /></Suspense>,
+            path: ROUTES.warehouse,
           },
           // SETTING ROUTES
           {
