@@ -85,6 +85,13 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     render: (value, record) => `${record?.minAmount} dona`,
   },
   {
+    key: 'category',
+    dataIndex: 'category',
+    title: 'Skladi',
+    align: 'center',
+    render: (value, record) => record?.category?.name,
+  },
+  {
     key: 'description',
     dataIndex: 'description',
     title: 'O\'ram haqida ma\'lumot',

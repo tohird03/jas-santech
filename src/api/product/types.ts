@@ -4,6 +4,7 @@ import { IOrder } from "../order/types";
 import { IIncomeOrder } from "../income-products/types";
 import { IReturnedOrder } from "../returned-order/types";
 import { ICurrency } from "../auth/types";
+import { IProductWarehouse } from "../warehouse/types";
 
 export interface IGetProductsParams extends IPagination {
   search?: string;
@@ -25,6 +26,7 @@ export interface IProducts {
   image: string,
   lastSellingDate: string;
   description: string;
+  category: IProductWarehouse;
   lastSelling: {
     date: string,
     price: number,
@@ -61,6 +63,7 @@ export interface IAddEditProductForm {
   count: number,
   minAmount: number,
   description: string,
+  categoryId: string;
   cost: number,
   costCurrency: string,
   price: number,

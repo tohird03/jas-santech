@@ -74,25 +74,38 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
         <View style={styles.table}>
           {/* HEADER */}
           <View style={styles.tableHeader} wrap={false}>
-            <View style={{ ...styles.tableCellWrap, maxWidth: 30, minWidth: 30 }}>
+            <View style={[styles.tableCellWrap, styles.colNumber]}>
               <Text style={styles.tableHeaderText}>№</Text>
             </View>
-            <View style={{ ...styles.tableCellWrap, maxWidth: 60, minWidth: 60 }}>
+
+            <View style={[styles.tableCellWrap, styles.colImage]}>
               <Text style={styles.tableHeaderText}>Расм</Text>
             </View>
-            <View style={{ ...styles.tableCellWrap, maxWidth: 250, minWidth: 250 }}>
+
+            <View style={[styles.tableCellWrap, styles.colCategory]}>
+              <Text style={styles.tableHeaderText}>Склад</Text>
+            </View>
+
+            <View style={[styles.tableCellWrap, styles.colName]}>
               <Text style={styles.tableHeaderText}>Махсулот номи</Text>
             </View>
-            <View style={{ ...styles.tableCellWrap, maxWidth: 35, minWidth: 35 }}>
-              <Image src={CheckmarkIcon} style={{ width: 10, height: 10 }} />
+
+            <View style={[styles.tableCellWrap, styles.colCheck]}>
+              <Image
+                src={CheckmarkIcon}
+                style={{ width: 10, height: 10 }}
+              />
             </View>
-            <View style={{ ...styles.tableCellWrap, maxWidth: 45, minWidth: 45 }}>
+
+            <View style={[styles.tableCellWrap, styles.colCount]}>
               <Text style={styles.tableHeaderText}>Сони</Text>
             </View>
-            <View style={styles.tableCellWrap}>
+
+            <View style={[styles.tableCellWrap, styles.colPrice]}>
               <Text style={styles.tableHeaderText}>Нархи</Text>
             </View>
-            <View style={{ ...styles.tableCellWrap, borderRightWidth: 0 }}>
+
+            <View style={[styles.tableCellWrap, styles.colTotal, { borderRightWidth: 0 }]}>
               <Text style={styles.tableHeaderText}>Суммаси</Text>
             </View>
           </View>
@@ -102,12 +115,14 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
             order?.products?.map((product, index) => (
               <View key={product?.id} style={styles.tableRow} wrap={false}>
                 {/* № */}
-                <View style={{ ...styles.tableCellWrap, maxWidth: 30, minWidth: 30 }}>
-                  <Text style={styles.tableCellText}>{index + 1}</Text>
+                <View style={[styles.tableCellWrap, styles.colNumber]}>
+                  <Text style={styles.tableCellText}>
+                    {index + 1}
+                  </Text>
                 </View>
 
-                {/* PRODUCT IMAGE */}
-                <View style={{ ...styles.tableCellWrap, maxWidth: 60, minWidth: 60 }}>
+                {/* RASM */}
+                <View style={[styles.tableCellWrap, styles.colImage]}>
                   {product?.product?.image ? (
                     <Image
                       src={imageUrlWithBase(product.product.image)}
@@ -118,33 +133,51 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
                   )}
                 </View>
 
-                {/* NOMI */}
-                <View style={{ ...styles.tableCellWrap, maxWidth: 250, minWidth: 250 }}>
-                  <Text style={{ ...styles.tableCellText, textAlign: 'left' }}>
+                {/* SKLAD / CATEGORY */}
+                <View style={[styles.tableCellWrap, styles.colCategory]}>
+                  <Text style={styles.tableCellTextLeft}>
+                    {product?.product?.category?.name}
+                  </Text>
+                </View>
+
+                {/* PRODUCT NAME */}
+                <View style={[styles.tableCellWrap, styles.colName]}>
+                  <Text style={styles.tableCellTextLeft}>
                     {product?.product?.name}
                   </Text>
                 </View>
 
-                {/* CHECK ustuni (bo'sh) */}
-                <View style={{ ...styles.tableCellWrap, maxWidth: 35, minWidth: 35 }} />
+                {/* CHECK */}
+                <View style={[styles.tableCellWrap, styles.colCheck]} />
 
                 {/* SONI */}
-                <View style={{ ...styles.tableCellWrap, maxWidth: 45, minWidth: 45 }}>
-                  <Text style={styles.tableCellText}>{product?.count}</Text>
+                <View style={[styles.tableCellWrap, styles.colCount]}>
+                  <Text style={styles.tableCellText}>
+                    {product?.count}
+                  </Text>
                 </View>
 
                 {/* NARXI */}
-                <View style={styles.tableCellWrap}>
-                  <Text style={{ ...styles.tableCellText, textAlign: 'right' }}>
-                    {priceFormat(product?.prices?.selling?.price * (100 - product?.prices?.selling?.discount) / 100)}
-                    {(product?.prices?.selling?.currency?.symbol)}
+                <View style={[styles.tableCellWrap, styles.colPrice]}>
+                  <Text style={styles.tableCellTextRight}>
+                    {priceFormat(
+                      product?.prices?.selling?.price *
+                      (100 - product?.prices?.selling?.discount) /
+                      100
+                    )}
                   </Text>
                 </View>
 
                 {/* SUMMASI */}
-                <View style={{ ...styles.tableCellWrap, borderRightWidth: 0 }}>
-                  <Text style={{ ...styles.tableCellText, textAlign: 'right' }}>
-                    {priceFormat(product?.prices?.selling?.totalPrice)} {(product?.prices?.selling?.currency?.symbol)}
+                <View
+                  style={[
+                    styles.tableCellWrap,
+                    styles.colTotal,
+                    { borderRightWidth: 0 },
+                  ]}
+                >
+                  <Text style={styles.tableCellTextRight}>
+                    {priceFormat(product?.prices?.selling?.totalPrice)}
                   </Text>
                 </View>
               </View>
@@ -225,6 +258,107 @@ const styles = StyleSheet.create({
     marginTop: -40,
   },
 
+  table: {
+    width: '100%',
+    marginBottom: 10,
+    marginTop: 20,
+  },
+
+  tableHeader: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+
+  tableHeaderText: {
+    textAlign: 'center',
+    fontFamily: 'NotoSansBold',
+    fontSize: 9,
+    fontWeight: 800,
+    paddingHorizontal: 2,
+    paddingVertical: 4,
+  },
+
+  tableRow: {
+    flexDirection: 'row',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    minHeight: 28,
+  },
+
+  tableCellWrap: {
+    borderRightWidth: 1,
+    borderColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  /* ===== COLUMNS ===== */
+
+  colNumber: {
+    width: 28,
+  },
+
+  colCategory: {
+    width: 65,
+  },
+
+  colName: {
+    flex: 1,
+    textAlign: 'left',
+  },
+
+  colCheck: {
+    width: 30,
+  },
+
+  colCount: {
+    width: 40,
+  },
+
+  colPrice: {
+    width: 75,
+  },
+
+  colTotal: {
+    width: 80,
+  },
+
+  /* ===== TEXT ===== */
+
+  tableCellText: {
+    textAlign: 'center',
+    fontSize: 8,
+    paddingHorizontal: 3,
+    paddingVertical: 3,
+  },
+
+  tableCellTextLeft: {
+    textAlign: 'left',
+    width: '100%',
+    fontSize: 8,
+    paddingHorizontal: 3,
+    paddingVertical: 3,
+  },
+  tableCellTextRight: {
+    textAlign: 'right',
+    fontSize: 8,
+    paddingHorizontal: 3,
+    paddingVertical: 3,
+  },
+
+  colImage: {
+    width: 28,
+  },
+
+  productImage: {
+    width: 28,
+    height: 28,
+    objectFit: 'contain',
+  },
+
   // === YANGI HEADER: QR chap | markazda nomi/telefon | QR o'ng ===
   headerRow: {
     flexDirection: 'row',
@@ -277,6 +411,8 @@ const styles = StyleSheet.create({
   buyerValue: {
     fontSize: 11,
     fontFamily: 'NotoSans',
+    flex: 1,
+    paddingRight: 25,
   },
   // === /YANGI HEADER ===
 
@@ -311,58 +447,6 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 12,
     marginBottom: 20,
-  },
-  table: {
-    width: '100%',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-  tableHeaderText: {
-    textAlign: 'center',
-    fontFamily: 'NotoSansBold',
-    fontSize: 10,
-    fontWeight: 800,
-    paddingHorizontal: 3,
-    paddingVertical: 4,
-  },
-
-  // === MUHIM QISM ===
-  // Har bir katak endi View (tableCellWrap), u flex:1 va borderni oladi —
-  // shuning uchun stretch bilan butun qator balandligini egallaydi.
-  // Ichidagi Text esa faqat matnni ko'rsatadi, o'zi flex/border olmaydi,
-  // shu sababli hech qachon kichrayib qolmaydi.
-  tableRow: {
-    flexDirection: 'row',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: 'black',
-    minHeight: 44, // barcha qatorlar bir xil minimal balandlikda
-  },
-  tableCellWrap: {
-    flex: 1,
-    borderRightWidth: 1,
-    borderColor: 'black',
-    alignItems: 'center', // View uchun bu xavfsiz — ichidagi elementni gorizontal markazlaydi
-    justifyContent: 'center', // vertikal markazlash
-  },
-  tableCellText: {
-    textAlign: 'center',
-    fontSize: 9,
-    paddingHorizontal: 3,
-    paddingVertical: 4,
-  },
-  // === /MUHIM QISM ===
-
-  productImage: {
-    width: 40,
-    height: 40,
-    objectFit: 'contain',
   },
   tablePriceCol: {
     textAlign: 'right',

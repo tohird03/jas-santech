@@ -12,6 +12,7 @@ import { RcFile } from 'antd/es/upload';
 import { PlusOutlined } from '@ant-design/icons';
 import { UPLOAD_ACCEPT } from '@/constants/img';
 import { authStore } from '@/stores/auth';
+import { warehouseApi } from '@/api/warehouse';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
@@ -30,6 +31,11 @@ export const AddEditModal = observer(() => {
   const { data: getSingleProductData } = useQuery({
     queryKey: ['getSingleProduct', productsListStore.productId],
     queryFn: () => productsApi.getSingleProducts(productsListStore.productId!),
+  });
+
+  const { data: warehousesData, isLoading: warehousesLoading } = useQuery({
+    queryKey: ['getWarehouses'],
+    queryFn: () => warehouseApi.getWarehouses(),
   });
 
   const { mutate: addNewProduct } =
@@ -102,6 +108,7 @@ export const AddEditModal = observer(() => {
     formData.append('count', String(values?.count));
     formData.append('minAmount', String(values?.minAmount || 0));
     formData.append('description', values?.description || '');
+    formData.append('categoryId', values.categoryId);
 
     formData.append('prices_cost_price', String(values?.cost));
     formData.append('prices_cost_currencyId', values?.costCurrency);
@@ -143,6 +150,15 @@ export const AddEditModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
+  const warehouseOptions = useMemo(
+    () =>
+      warehousesData?.data?.data?.map((warehouse) => ({
+        value: warehouse.id,
+        label: warehouse.name,
+      })) || [],
+    [warehousesData]
+  );
+
   useEffect(() => {
     if (getSingleProductData) {
       const product = getSingleProductData.data;
@@ -154,6 +170,7 @@ export const AddEditModal = observer(() => {
         count: product.count,
         minAmount: product.minAmount,
         price: product.prices?.selling?.price,
+        categoryId: product.category?.id,
         wholesale: product.prices?.wholesale?.price,
         costCurrency: product.prices?.cost?.currency?.id,
         priceCurrency: product.prices?.selling?.currency?.id,
@@ -280,6 +297,19 @@ export const AddEditModal = observer(() => {
           required
           currencyOptions={currencyManyData}
         />
+
+        <Form.Item
+          label="Sklad"
+          name="categoryId"
+          rules={[{ required: true, message: 'Omborni tanlang' }]}
+        >
+          <Select
+            placeholder="Skladni tanlang"
+            loading={warehousesLoading}
+            options={warehouseOptions}
+            allowClear
+          />
+        </Form.Item>
 
         <Form.Item
           label="Mahsulot haqida ma'lumot"
