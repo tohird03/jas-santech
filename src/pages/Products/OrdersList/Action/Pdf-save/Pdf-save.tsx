@@ -111,8 +111,17 @@ export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
           </View>
 
           {/* ROWS */}
-          {
-            order?.products?.map((product, index) => (
+          {[...(order?.products || [])]
+            .sort((a, b) => {
+              const categoryA = a?.product?.category?.name;
+              const categoryB = b?.product?.category?.name;
+
+              if (!categoryA && !categoryB) return 0;
+              if (!categoryA) return 1;
+              if (!categoryB) return -1;
+
+              return categoryA.localeCompare(categoryB);
+            })?.map((product, index) => (
               <View key={product?.id} style={styles.tableRow} wrap={false}>
                 {/* № */}
                 <View style={[styles.tableCellWrap, styles.colNumber]}>

@@ -108,7 +108,11 @@ export const AddEditModal = observer(() => {
     formData.append('count', String(values?.count));
     formData.append('minAmount', String(values?.minAmount || 0));
     formData.append('description', values?.description || '');
-    formData.append('categoryId', values.categoryId);
+
+    formData.append(
+      'categoryId',
+      values.categoryId || 'null'
+    );
 
     formData.append('prices_cost_price', String(values?.cost));
     formData.append('prices_cost_currencyId', values?.costCurrency);
@@ -301,7 +305,6 @@ export const AddEditModal = observer(() => {
         <Form.Item
           label="Sklad"
           name="categoryId"
-          rules={[{ required: true, message: 'Omborni tanlang' }]}
         >
           <Select
             placeholder="Skladni tanlang"
