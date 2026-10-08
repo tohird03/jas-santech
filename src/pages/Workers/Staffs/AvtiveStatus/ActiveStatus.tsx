@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react';
-import { EditOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Checkbox, Popconfirm } from 'antd';
+import { Popconfirm, Switch } from 'antd';
 
 import { IStaffs, staffsApi } from '@/api/staffs';
 import { addNotification } from '@/utils';
@@ -44,29 +43,20 @@ export const ActiveStatus: FC<Props> = observer(({ staff }) => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '10px',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+    <Popconfirm
+      title={
+        staff.isActive
+          ? 'Xodimni faolsizlantirmoqchimisiz?'
+          : 'Xodimni faollashtirmoqchimisiz?'
+      }
+      onConfirm={() => handleActiveChange(!staff.isActive)}
+      okText="Ha"
+      cancelText="Yo‘q"
     >
-      <Popconfirm
-        title={
-          staff.isActive
-            ? 'Xodimni faolsizlantirmoqchimisiz?'
-            : 'Xodimni faollashtirmoqchimisiz?'
-        }
-        onConfirm={() => handleActiveChange(!staff.isActive)}
-        okText="Ha"
-        cancelText="Yo‘q"
-      >
-        <Checkbox
-          checked={staff.isActive}
-          disabled={isPending}
-        />
-      </Popconfirm>
-    </div>
+      <Switch
+        checked={staff.isActive}
+        loading={isPending}
+      />
+    </Popconfirm>
   );
 });

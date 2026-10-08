@@ -9,6 +9,13 @@ import { currencyTagUi } from '@/constants/payment';
 import { Image } from 'antd';
 import { imageUrlWithBase } from '@/utils/image';
 
+const unitTitle = (label: string) => (
+  <span className="unit-head">
+    {label}
+    <span className="unit-head__unit">dona</span>
+  </span>
+);
+
 export const productsListColumn: ColumnType<IProducts>[] = [
   {
     key: 'index',
@@ -22,17 +29,27 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     dataIndex: 'name',
     title: 'Mahsulot nomi',
     align: 'center',
-    render: (value, record) => <NavLink to={`/products/${record?.id}`}>{record?.name}</NavLink>,
+    render: (value, record) => (
+      <div className="person-link" style={{ cursor: 'default' }}>
+        <NavLink to={`/products/${record?.id}`} className="person-link__name">
+          {record?.name}
+        </NavLink>
+        {record?.description ? <p className="person-link__phone">{record.description}</p> : null}
+      </div>
+    ),
   },
   {
     key: 'image',
     dataIndex: 'image',
     title: 'Mahsulot rasmi',
     align: 'center',
+    width: 72,
     render: (value, record) => (
       <Image
-        width={50}
+        width={32}
+        height={32}
         alt="basic"
+        style={{ objectFit: 'cover', borderRadius: 4 }}
         src={imageUrlWithBase(record?.image)}
       />
     ),
@@ -40,15 +57,17 @@ export const productsListColumn: ColumnType<IProducts>[] = [
   {
     key: 'count',
     dataIndex: 'count',
-    title: 'Qoldiq',
+    title: unitTitle('Qoldiq'),
     align: 'center',
-    render: (value, record) => `${record?.count} dona`,
+    width: 100,
+    render: (value, record) => record?.count,
   },
   {
     key: 'cost',
     dataIndex: 'cost',
     title: 'Sotib olingan narxi',
     align: 'center',
+    width: 120,
     render: (value, record) => (
       <span>
         {priceFormat(record?.prices?.cost?.price)} {currencyTagUi(record?.prices?.cost?.currency?.symbol)}
@@ -60,6 +79,7 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     dataIndex: 'wholePrice',
     title: 'Ulgurji narxi',
     align: 'center',
+    width: 120,
     render: (value, record) => (
       <span>
         {priceFormat(record?.prices?.wholesale?.price)} {currencyTagUi(record?.prices?.wholesale?.currency?.symbol)}
@@ -71,6 +91,7 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     dataIndex: 'selling_price',
     title: 'Sotilish narxi',
     align: 'center',
+    width: 120,
     render: (value, record) => (
       <span>
         {priceFormat(record?.prices?.selling?.price)} {currencyTagUi(record?.prices?.selling?.currency?.symbol)}
@@ -80,9 +101,10 @@ export const productsListColumn: ColumnType<IProducts>[] = [
   {
     key: 'min_amount',
     dataIndex: 'min_amount',
-    title: 'Ogohlantirish',
+    title: unitTitle('Ogohlantirish'),
     align: 'center',
-    render: (value, record) => `${record?.minAmount} dona`,
+    width: 100,
+    render: (value, record) => record?.minAmount,
   },
   {
     key: 'category',
@@ -90,14 +112,6 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Skladi',
     align: 'center',
     render: (value, record) => record?.category?.name,
-  },
-  {
-    key: 'description',
-    dataIndex: 'description',
-    title: 'O\'ram haqida ma\'lumot',
-    align: 'center',
-    width: 300,
-    render: (value, record) => <span>{record?.description}</span>,
   },
   {
     key: 'createdAt',
@@ -116,7 +130,7 @@ export const productsListColumn: ColumnType<IProducts>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     render: (value, record) => <Action product={record} />,
   },

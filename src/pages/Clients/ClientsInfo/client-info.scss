@@ -6,8 +6,28 @@
 }
 .client-info__filter {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 30px;
+
+  .ant-input-number-group-wrapper {
+    flex: 0 0 auto;
+    width: 460px;
+  }
+}
+.client-info__title {
+  margin: 0 !important;
+  flex: 0 0 auto;
+}
+
+.client-info__debt {
+  margin: 0 !important;
+  font-size: 18px !important;
+  line-height: 1.35 !important;
+  white-space: nowrap;
+
+  span {
+    margin-left: 12px;
+  }
 }
 .client-info__search {
   width: 250px;
@@ -25,5 +45,8 @@
   }
   .client-info__search {
     width: 100%;
+  }
+  .client-info__debt {
+    white-space: normal;
   }
 }

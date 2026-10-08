@@ -20,21 +20,22 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'client',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    render: (value, record) => <SupplierNameLink supplier={record?.supplier} />,
+    render: (value, record) => <SupplierNameLink supplier={record?.supplier} plain />,
   },
   {
     key: 'totalPayment',
     dataIndex: 'totalPayment',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '150px',
     render: (value, record) => (
-      record?.totalsByCurrency?.map(payment => (
-        <div key={payment?.currency?.id}>
-          {priceFormat(payment?.total)}
-          {currencyTagUi(payment?.currency?.symbol)}
-        </div>
-      ))
+      <span className="currency-row">
+        {record?.totalsByCurrency?.map(payment => (
+          <span className="currency-item" key={payment?.currency?.id}>
+            {priceFormat(payment?.total)}
+            {currencyTagUi(payment?.currency?.symbol)}
+          </span>
+        ))}
+      </span>
     ),
   },
   {
@@ -54,7 +55,7 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     render: (value, record) => <Action supplierPayment={record} />,
   },

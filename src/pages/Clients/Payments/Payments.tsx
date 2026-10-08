@@ -175,7 +175,7 @@ export const ClientsPayments = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Exelda Yuklash
+              Excelga yuklash
             </Button>
           </Tooltip>
         </div>
@@ -197,18 +197,16 @@ export const ClientsPayments = observer(() => {
           <Table.Summary.Row>
             <Table.Summary.Cell colSpan={2} index={1} />
             <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami:
-                {
-                  paymentsData?.data?.calcByCurrency?.map(payment => (
-                    <span key={payment?.currency?.id}>
-                      {priceFormat(payment?.total)}
-                      {currencyTagUi(payment?.currency?.symbol)}
-                    </span>
-                  ))
-                }
+              <div className="currency-row" style={{ fontWeight: 'bold' }}>
+                {paymentsData?.data?.calcByCurrency?.map(payment => (
+                  <span className="currency-item" key={payment?.currency?.id}>
+                    {priceFormat(payment?.total)}
+                    {currencyTagUi(payment?.currency?.symbol)}
+                  </span>
+                ))}
               </div>
             </Table.Summary.Cell>
+            <Table.Summary.Cell index={3} colSpan={4} />
           </Table.Summary.Row>
         )}
       />

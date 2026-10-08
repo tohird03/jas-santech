@@ -1,13 +1,16 @@
 .clients-payments__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 20px;
 }
 .clients-payments__filter {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
 }
 .clients-payments__search {
   width: 250px;

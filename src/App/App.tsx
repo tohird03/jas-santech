@@ -9,6 +9,7 @@ import {Loading} from '@/components';
 import {Router} from '@/router';
 import {stores, useStores} from '@/stores';
 import {Theme as AntdTheme} from '@/styles/theme';
+import {uzLocale} from '@/styles/theme/locale';
 import {useBootstrap} from './useBootstrap';
 
 const queryClient = new QueryClient();
@@ -26,7 +27,7 @@ export const App: FC = observer(() => {
       client={queryClient}
     >
       <Provider {...stores}>
-        <ConfigProvider csp={{nonce: 'woodline'}} theme={AntdTheme}>
+        <ConfigProvider csp={{nonce: 'woodline'}} theme={AntdTheme} locale={uzLocale}>
           <HashRouter>
             <Router isAuth={authStore.isAuth} />
           </HashRouter>

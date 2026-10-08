@@ -71,6 +71,7 @@ export interface IGetClientsInfoParams extends IPagination {
   search?: string;
   debtValue?: number;
   debtType?: IClientDebtFilter;
+  pagination?: boolean;
 }
 
 export enum IClientDebtFilter {

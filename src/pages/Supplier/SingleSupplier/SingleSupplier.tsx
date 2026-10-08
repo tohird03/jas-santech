@@ -43,7 +43,7 @@ export const SingleSupplier = observer(() => {
         />
 
         <Typography.Title
-          className={cn('single-client__title')}
+          className={cn('single-supplier__title')}
           level={3}
         >
           Yetkazib beruvchiga qarz: {

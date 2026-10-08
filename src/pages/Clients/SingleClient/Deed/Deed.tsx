@@ -105,7 +105,7 @@ export const Deed = observer(() => {
             icon={<DownloadOutlined />}
             loading={downloadLoadingDeed}
           >
-            Exelda Yuklash
+            Excelga yuklash
           </Button>
           <Button
             onClick={handleDownloadExcelDeedProducts}

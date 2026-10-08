@@ -3,7 +3,11 @@
   padding: 24px;
   margin: 24px;
   position: relative;
-  overflow-y: auto;
+  box-sizing: border-box;
+  height: calc(100vh - 112px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .tablet__content {

@@ -58,7 +58,7 @@ class StaffsPayments {
 
   reset = () => {
     this.pageNumber = 1;
-    this.pageSize = 10;
+    this.pageSize = 20;
     this.search = null;
     this.isOpenAddEditStaffPaymentsModal = false;
   };

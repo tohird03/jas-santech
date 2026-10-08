@@ -153,7 +153,7 @@ export const StaffsPayments = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Exelda Yuklash
+              Excelga yuklash
             </Button>
           </Tooltip>
           <Button
@@ -178,19 +178,23 @@ export const StaffsPayments = observer(() => {
           onChange: handlePageChange,
           ...getPaginationParams(staffPaymentsData?.data?.totalCount),
         }}
+        tableLayout="fixed"
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell colSpan={2} index={1} />
+            <Table.Summary.Cell index={0} />
+            <Table.Summary.Cell index={1} align="center">
+              <span className={cn('staff-payment__name')}>Jami</span>
+            </Table.Summary.Cell>
             <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
-                  <span key={total?.currency?.id}>
+              <div className="currency-row" style={{ fontWeight: 600 }}>
+                {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
+                  <span className="currency-item" key={total?.currency?.id}>
                     {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
                   </span>
                 ))}
               </div>
             </Table.Summary.Cell>
-            <Table.Summary.Cell colSpan={3} index={1} />
+            <Table.Summary.Cell index={3} colSpan={3} />
           </Table.Summary.Row>
         )}
       />

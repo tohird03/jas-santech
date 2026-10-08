@@ -1,9 +1,9 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
 import {EPageAccess, IStaffs} from '@/api/staffs';
-import {Action} from './Action';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
-import { ActiveStatus } from './AvtiveStatus/ActiveStatus';
+import {Action} from './Action';
+import {ActiveStatus} from './AvtiveStatus/ActiveStatus';
 
 export const staffsColumns: ColumnType<IStaffs>[] = [
   {
@@ -37,7 +37,7 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     render: (value, record) => <Action staff={record} />,
   },
@@ -56,4 +56,6 @@ export const EPageAccessLabel: Record<EPageAccess, string> = {
   [EPageAccess.SUPPLIERPAYMENT]: 'Yetkazib beruvchilarga to\'lovlar',
   [EPageAccess.STUFF]: 'Xodimlar',
   [EPageAccess.STUFFPAYMENT]: 'Xodimlarga to\'lovlar',
+  [EPageAccess.CHAT]: 'Chat',
+  [EPageAccess.REMINDER]: 'Eslatmalar',
 };

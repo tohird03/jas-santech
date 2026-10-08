@@ -1,34 +1,33 @@
-.product-list__head {
+.reminder-page__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-}
-
-.product-list__filter {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   gap: 16px;
 }
 
-.product-list__search {
-  width: 250px;
+.reminder-page__filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reminder-page__client {
+  width: 280px;
 }
 
 @media only screen and (max-width: 800px) {
-  .product-list__head {
+  .reminder-page__head {
     flex-direction: column;
+    align-items: stretch;
   }
 
-  .product-list__filter {
-    display: flex;
+  .reminder-page__filter {
     flex-direction: column;
-    gap: 15px !important;
-    width: 100%;
+    align-items: stretch;
   }
 
-  .product-list__search {
+  .reminder-page__client {
     width: 100%;
   }
 }

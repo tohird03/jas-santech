@@ -1,4 +1,4 @@
-import { TStage } from './types';
+import {TStage} from './types';
 export const stage = process.env.REACT_APP_STAGE || 'dev';
 
 export enum Endpoints {
@@ -116,6 +116,16 @@ export enum Endpoints {
   // RETURNED ORDER
   returnedOrder = '/returned-order',
   returnedProduct = '/returned-product',
+
+  // CHAT
+  ChatMany = '/chat/many',
+  ChatInbox = '/chat/inbox',
+  ChatOne = '/chat/one',
+  ChatFile = '/chat/file',
+
+  // REMINDER
+  ReminderMany = '/reminder/many',
+  ReminderOne = '/reminder/one',
 }
 
 const config: Record<string, TStage> = {

@@ -58,6 +58,12 @@ const currencyColors = {
   UZS: '#2563EB',
 };
 
+export const CurrencyAmountZero = () => (
+  <span className="currency-row">
+    <span className="currency-item currency-item--zero">0</span>
+  </span>
+);
+
 export const currencyTagUi = (currencySymb: 'UZS' | 'USD', fontSizes = '12px') => (
   <p
     style={{

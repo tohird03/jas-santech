@@ -12,9 +12,9 @@ import {
   TeamOutlined,
   UsergroupAddOutlined,
 } from '@ant-design/icons';
+import {EPageAccess} from '@/api/staffs';
 import {ROUTES} from '@/constants';
 import {IMenuItems} from './types';
-import { EPageAccess } from '@/api/staffs';
 
 export const mainMenuList: IMenuItems[] = [
   {
@@ -74,6 +74,16 @@ export const mainMenuList: IMenuItems[] = [
         label: 'Mijozlar hisoboti',
         key: ROUTES.clientsStatistic,
         roleKey: EPageAccess.CLIENTSTATISTIC,
+      },
+      {
+        label: 'Chat',
+        key: ROUTES.clientsChat,
+        roleKey: EPageAccess.CHAT,
+      },
+      {
+        label: 'Eslatmalar',
+        key: ROUTES.clientsReminder,
+        roleKey: EPageAccess.REMINDER,
       },
     ],
   },

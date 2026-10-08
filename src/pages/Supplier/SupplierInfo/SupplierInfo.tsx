@@ -108,13 +108,13 @@ export const SupplierInfo = observer(() => {
           <InputNumber
             placeholder="Qarz miqdorini kiriting"
             onChange={handleDebtValueChange}
-            style={{ width: '350px' }}
+            style={{ width: 460 }}
             defaultValue={0}
             addonAfter={
               <Select
                 options={supplierDebtFilter}
                 onChange={handleDebtFilterChange}
-                style={{ width: '200px' }}
+                style={{ width: '240px' }}
                 placeholder="Hammasi"
                 value={supplierInfoStore.debtType}
               />
@@ -127,7 +127,7 @@ export const SupplierInfo = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Exelda Yuklash
+              Excelga yuklash
             </Button>
           </Tooltip>
           <Button

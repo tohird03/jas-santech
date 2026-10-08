@@ -12,6 +12,7 @@ import { supplierPaymentsStore } from '@/stores/supplier';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { priceFormat } from '@/utils/priceFormat';
+import { currencyTagUi } from '@/constants/payment';
 import { addNotification } from '@/utils';
 import { incomePaymentApi } from '@/api/payment-income';
 
@@ -138,7 +139,7 @@ export const SupplierPayments = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Exelda Yuklash
+              Excelga yuklash
             </Button>
           </Tooltip>
         </div>
@@ -158,27 +159,18 @@ export const SupplierPayments = observer(() => {
         }}
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell colSpan={2} index={1} />
+            <Table.Summary.Cell index={0} colSpan={2} />
             <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalCash)}
+              <div className="currency-row" style={{ fontWeight: 'bold' }}>
+                {supplierPaymentsData?.data?.calcByCurrency?.map(payment => (
+                  <span className="currency-item" key={payment?.currency?.id}>
+                    {priceFormat(payment?.total)}
+                    {currencyTagUi(payment?.currency?.symbol)}
+                  </span>
+                ))}
               </div>
             </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalCard)}
-              </div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalTransfer)}
-              </div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalOther)}
-              </div>
-            </Table.Summary.Cell>
+            <Table.Summary.Cell index={3} colSpan={3} />
           </Table.Summary.Row>
         )}
       />

@@ -57,7 +57,7 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     render: (value, record) => (
       <>
         {record?.totalPrices?.map(price =>
-          <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
+          <span className="currency-item" key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</span>)}
       </>
     ),
   },
@@ -66,7 +66,6 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '120px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -77,10 +76,10 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -91,7 +90,6 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
-    width: '130px',
     render: (value, record) => {
       const data = record?.debtByCurrency;
 
@@ -102,10 +100,10 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.amount)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );

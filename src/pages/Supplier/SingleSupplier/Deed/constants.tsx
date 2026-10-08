@@ -33,7 +33,7 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
     key: 'debt',
     dataIndex: 'debt',
-    title: 'Дебит',
+    title: 'Debet',
     align: 'center',
     width: '50px',
     className: 'green-col',
@@ -53,7 +53,7 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
     key: 'data',
     dataIndex: 'data',
-    title: 'Кредит',
+    title: 'Kredit',
     align: 'center',
     width: '50px',
     className: 'red-col',

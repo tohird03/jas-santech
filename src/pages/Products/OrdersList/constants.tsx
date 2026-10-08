@@ -64,7 +64,6 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
-    width: '150px',
     render: (value, record) => {
       const data = record?.totalPrices;
 
@@ -75,10 +74,10 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -89,7 +88,6 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '120px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -100,10 +98,10 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -114,7 +112,6 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
-    width: '130px',
     render: (value, record) => {
       const data = record?.debtByCurrency;
 
@@ -125,10 +122,10 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.amount)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -153,7 +150,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     width: '150px',
     render: (value, record) => <Action orders={record} />,
@@ -239,7 +236,6 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
-    width: '150px',
     render: (value, record) => {
       const data = record?.totalPrices;
 
@@ -250,10 +246,10 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -264,7 +260,6 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '120px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -275,10 +270,10 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -289,7 +284,6 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
-    width: '130px',
     render: (value, record) => {
       const data = record?.debtByCurrency;
 
@@ -300,10 +294,10 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.amount)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </>
       );
@@ -368,7 +362,6 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     dataIndex: 'total',
     title: 'Jami narxi',
     align: 'center',
-    width: '150px',
     render: (value, record) => (
       <span>{priceFormat(record?.prices?.selling?.totalPrice)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
     ),
@@ -398,7 +391,6 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
-    width: '150px',
     render: (value, record) => {
       const data = record?.totalPrices;
 
@@ -409,10 +401,10 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
       return (
         <div style={{textAlign: 'end'}}>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </div>
       );
@@ -423,7 +415,6 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
-    width: '150px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -434,10 +425,10 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
       return (
         <div style={{textAlign: 'end'}}>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </div>
       );
@@ -448,7 +439,6 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     dataIndex: 'debt',
     title: 'Jami - Qarzga',
     align: 'center',
-    width: '150px',
     render: (value, record) => {
       const data = record?.totalDebts;
 
@@ -459,10 +449,10 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
       return (
         <div style={{textAlign: 'end'}}>
           {data.map(price => (
-            <div key={price?.currency?.id}>
+            <span className="currency-item" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </div>
+            </span>
           ))}
         </div>
       );

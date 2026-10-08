@@ -21,7 +21,7 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'client',
     title: 'Mijoz',
     align: 'center',
-    render: (value, record) => <ClientNameLink client={record?.client} />,
+    render: (value, record) => <ClientNameLink client={record?.client} plain />,
   },
   {
     key: 'cash',
@@ -29,12 +29,14 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     title: 'Jami to\'lov',
     align: 'center',
     render: (value, record) => (
-      record?.totalsByCurrency?.map(payment => (
-        <div key={payment?.currency?.id}>
-          {priceFormat(payment?.total)}
-          {currencyTagUi(payment?.currency?.symbol)}
-        </div>
-      ))
+      <span className="currency-row">
+        {record?.totalsByCurrency?.map(payment => (
+          <span className="currency-item" key={payment?.currency?.id}>
+            {priceFormat(payment?.total)}
+            {currencyTagUi(payment?.currency?.symbol)}
+          </span>
+        ))}
+      </span>
     ),
   },
   {
@@ -61,7 +63,7 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     width: 200,
     render: (value, record) => <Action clientPayment={record} />,

@@ -65,7 +65,7 @@ export const Staffs = observer(() => {
             type="primary"
             icon={<PlusCircleOutlined />}
           >
-            Xodim qoshish
+            Xodim qo&apos;shish
           </Button>
         </div>
       </div>

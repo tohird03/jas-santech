@@ -33,7 +33,7 @@ export const clientsColumns: ColumnType<ICurrency>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     render: (value, record) => <Action currency={record} />,
   },

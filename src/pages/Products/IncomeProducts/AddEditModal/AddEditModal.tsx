@@ -432,7 +432,7 @@ export const AddEditIncomeOrderModal = observer(() => {
     {
       key: 'action',
       dataIndex: 'action',
-      title: 'Action',
+      title: 'Amallar',
       align: 'center',
       render: (value, record) => (
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>

@@ -26,7 +26,7 @@ export const clientsColumns: ColumnType<IProductWarehouse>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Action',
+    title: 'Amallar',
     align: 'center',
     render: (value, record) => <Action warehouse={record} />,
   },

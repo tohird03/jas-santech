@@ -104,15 +104,15 @@ export const ClientsInfo = observer(() => {
   return (
     <main>
       <div className={cn('client-info__head')}>
-        <Typography.Title level={3}>Mijozlar</Typography.Title>
+        <Typography.Title level={3} className={cn('client-info__title')}>Mijozlar</Typography.Title>
         <div className={cn('client-info__filter')}>
-          <Typography.Title level={3}>
+          <Typography.Title level={3} className={cn('client-info__debt')}>
             Jami qarz:
             {ordersStatisticData?.clientDebtByCurrency?.map(clientDebt => (
-              <p key={clientDebt?.currency?.id} className={cn('statistic__top-card-value')}>
+              <span key={clientDebt?.currency?.id}>
                 {priceFormat(clientDebt?.theirDebt)}
                 {currencyTagUi(clientDebt?.currency?.symbol)}
-              </p>
+              </span>
             ))}
           </Typography.Title>
           <Input
@@ -124,13 +124,13 @@ export const ClientsInfo = observer(() => {
           <InputNumber
             placeholder="Qarz miqdorini kiriting"
             onChange={handleDebtValueChange}
-            style={{ width: '350px' }}
+            style={{ width: 460 }}
             defaultValue={0}
             addonAfter={
               <Select
                 options={clientDebtFilter}
                 onChange={handleDebtFilterChange}
-                style={{ width: '200px' }}
+                style={{ width: '240px' }}
                 placeholder="Hammasi"
                 value={clientsInfoStore.debtType}
               />
@@ -150,7 +150,7 @@ export const ClientsInfo = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Exelda Yuklash
+              Excelga yuklash
             </Button>
           </Tooltip>
         </div>

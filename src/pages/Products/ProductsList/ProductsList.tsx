@@ -97,7 +97,7 @@ export const ProductsList = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Exelda Yuklash
+              Excelga yuklash
             </Button>
           </Tooltip>
           <Button
@@ -127,42 +127,34 @@ export const ProductsList = observer(() => {
         }}
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell colSpan={2} index={1} />
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                Umumiy:
-                <p style={{ margin: '0', fontWeight: 'bold' }}>{productsData?.data?.calc?.calcTotal?.totalCount || 0}</p>
-              </div>
+            <Table.Summary.Cell index={0} />
+            <Table.Summary.Cell index={1} align="center">
+              <span style={{ fontWeight: 600, color: '#262626' }}>Jami</span>
             </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold', maxWidth: '150px', margin: '0 auto' }}>
-                Umumiy sotib olingan narxi:
-                <p style={{ margin: '0', fontWeight: 'bold' }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalCost)}</p>
-              </div>
+            <Table.Summary.Cell index={2} />
+            <Table.Summary.Cell index={3} align="center">
+              <span style={{ fontWeight: 600 }}>{productsData?.data?.calc?.calcTotal?.totalCount || 0}</span>
             </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold', maxWidth: '150px', margin: '0 auto' }}>
-                Umumiy ulgurji narxi:
-                <p style={{ margin: '0', fontWeight: 'bold' }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalWholesale)}</p>
-              </div>
+            <Table.Summary.Cell index={4} align="center">
+              <span style={{ fontWeight: 600 }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalCost)}</span>
             </Table.Summary.Cell>
-            <Table.Summary.Cell index={3}>
-              <div style={{ textAlign: 'center', fontWeight: 'bold', maxWidth: '150px', margin: '0 auto' }}>
-                Umumiy sotilish narxi:
-                <p style={{ margin: '0', fontWeight: 'bold' }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalPrice)}</p>
-              </div>
+            <Table.Summary.Cell index={5} align="center">
+              <span style={{ fontWeight: 600 }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalWholesale)}</span>
             </Table.Summary.Cell>
-            {authStore?.staffInfo?.role === 'super_admin' && (
-              <Table.Summary.Cell index={3}>
-                <div style={{ textAlign: 'center', fontWeight: 'bold', maxWidth: '150px', margin: '0 auto' }}>
-                  Umumiy qiymati:
-                  <p style={{ margin: '0', fontWeight: 'bold' }}>
-                    {priceFormat(productsData?.data?.data?.reduce((cur, prev) => cur + prev?.prices?.cost?.price * prev?.count, 0))}
-                  </p>
-                </div>
+            <Table.Summary.Cell index={6} align="center">
+              <span style={{ fontWeight: 600 }}>{priceFormat(productsData?.data?.calc?.calcTotal?.totalPrice)}</span>
+            </Table.Summary.Cell>
+            {authStore?.staffInfo?.role === 'super_admin' ? (
+              <Table.Summary.Cell index={7} align="center">
+                <span style={{ fontWeight: 600 }}>
+                  {priceFormat(productsData?.data?.data?.reduce((cur, prev) => cur + prev?.prices?.cost?.price * prev?.count, 0))}
+                </span>
               </Table.Summary.Cell>
-            )
-            }
+            ) : <Table.Summary.Cell index={7} />}
+            <Table.Summary.Cell index={8} />
+            <Table.Summary.Cell index={9} />
+            <Table.Summary.Cell index={10} />
+            <Table.Summary.Cell index={11} />
           </Table.Summary.Row>
         )}
       />
