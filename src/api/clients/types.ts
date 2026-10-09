@@ -96,40 +96,37 @@ export interface IGetClientsStatisticParams extends IPagination{
   startDate?: Date;
   endDate?: Date;
   search?: string;
-  debtType?: 'gt' | 'lt' | 'eq';
+  pagination?: boolean;
+}
+
+export interface IReportAmount {
+  amount: string | number;
+  currency?: {
+    id?: string;
+    name?: string;
+    symbol?: string;
+  };
 }
 
 export interface IClientStatistic {
   id: string;
   fullname: string;
-  address: string;
   phone: string;
-  debtByCurrency: {
-    amount: number;
-    currency: ICurrency;
-  }[];
-  deedInfo: IClientDeedInfo;
-  lastSellingDate: string;
   calc: {
     selling: {
       count: number;
-      totalPrice: number;
-      payment: {
-        count: number;
-        total: number;
-        totalCard: number;
-        totalCash: number;
-        totalTransfer: number;
-        totalOther: number;
-      };
+      totalPriceByCurrency: IReportAmount[];
+      paymentCount: number;
+      paymentByCurrency: IReportAmount[];
+    };
+    clientPayment: {
+      count: number;
+      totalByCurrency: IReportAmount[];
     };
     returning: {
       count: number;
-      totalPrice: number;
-      payment: {
-        totalFromBalance: number;
-        totalCash: number;
-      };
+      paymentByCurrency: IReportAmount[];
     };
+    debtByCurrency: IReportAmount[];
   };
 }

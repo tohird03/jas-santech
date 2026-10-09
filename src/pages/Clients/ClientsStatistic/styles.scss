@@ -7,10 +7,12 @@
 .client-report__filter {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  gap: 16px;
 }
-.client-report__search {
+.client-report__search,
+.orders__search {
   width: 250px;
-  margin-right: 10px;
 }
 
 @media only screen and (max-width: 800px) {

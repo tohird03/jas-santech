@@ -15,7 +15,7 @@ export enum Endpoints {
   // CLIENTS
   ClientsMany = '/client/many',
   ClientOne = '/client/one',
-  ClientsStatistic = '/client/many/report',
+  ClientsStatistic = '/statistics/client-report',
 
   // CLIENTS PAYMENTS
   ClientsPaymentsMany = '/client-payment/many',

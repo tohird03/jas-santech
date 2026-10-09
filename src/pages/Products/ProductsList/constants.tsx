@@ -6,7 +6,7 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import { priceFormat } from '@/utils/priceFormat';
 import { NavLink } from 'react-router-dom';
 import { currencyTagUi } from '@/constants/payment';
-import { Image } from 'antd';
+import { Image, Tooltip } from 'antd';
 import { imageUrlWithBase } from '@/utils/image';
 
 const unitTitle = (label: string) => (
@@ -30,11 +30,15 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     render: (value, record) => (
-      <div className="person-link" style={{ cursor: 'default' }}>
+      <div className="person-link product-card" style={{ cursor: 'default' }}>
         <NavLink to={`/products/${record?.id}`} className="person-link__name">
           {record?.name}
         </NavLink>
-        {record?.description ? <p className="person-link__phone">{record.description}</p> : null}
+        {record?.description ? (
+          <Tooltip title={record.description}>
+            <p className="person-link__phone">{record.description}</p>
+          </Tooltip>
+        ) : null}
       </div>
     ),
   },
@@ -60,7 +64,12 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: unitTitle('Qoldiq'),
     align: 'center',
     width: 100,
-    render: (value, record) => record?.count,
+    render: (value, record) => {
+      const low = (record?.count ?? 0) >= 0 && (record?.count ?? 0) < (record?.minAmount ?? 0);
+      const tone = (record?.count ?? 0) < 0 ? 'stock-num stock-num--out' : low ? 'stock-num stock-num--low' : 'stock-num';
+
+      return <span className={tone}>{record?.count}</span>;
+    },
   },
   {
     key: 'cost',

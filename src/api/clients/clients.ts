@@ -37,8 +37,17 @@ class ClientsInfoApi extends Instance {
   getSingleClient = (params: IGetSingleClientParams): Promise<{ data: IClientsInfo }> =>
     this.get(Endpoints.ClientOne, { params });
 
-  getClientsStatistic = (params: IGetClientsStatisticParams): Promise<IResponse<IClientStatistic[]>> =>
-    this.get(Endpoints.ClientsStatistic, { params: {...params, debtType: 'gt'} });
+  getClientsStatistic = (params: IGetClientsStatisticParams): Promise<IResponse<IClientStatistic[]>> => {
+    const {search, ...rest} = params;
+
+    return this.get(Endpoints.ClientsStatistic, {
+      params: {
+        ...rest,
+        pagination: true,
+        ...(search ? {search} : {}),
+      },
+    });
+  };
 
   getUploadClients = (params: IGetClientsInfoParams): Promise<any> =>
     this.get(Endpoints.UploadClient, {

@@ -10,6 +10,7 @@ import dayjs, {Dayjs} from 'dayjs';
 import {useDebounce} from 'usehooks-ts';
 import {clientsInfoApi} from '@/api/clients';
 import {IReminder, IReminderForm, reminderApi} from '@/api/reminder';
+import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
 import {DataTable} from '@/components/Datatable/datatable';
 import {addNotification} from '@/utils';
 import {dateFormat} from '@/utils/getDateFormat';
@@ -135,13 +136,17 @@ export const Reminders = () => {
       key: 'client',
       title: 'Mijoz',
       align: 'center',
-      render: (_value, record) => record.client?.fullname,
-    },
-    {
-      key: 'phone',
-      title: 'Telefon raqami',
-      align: 'center',
-      render: (_value, record) => (record.client?.phone ? `+${formatPhoneNumber(record.client.phone)}` : ''),
+      width: 280,
+      render: (_value, record) => (
+        <ClientNameLink
+          client={{
+            id: record.client?.id || record.clientId,
+            fullname: record.client?.fullname || '',
+            phone: record.client?.phone,
+          }}
+          plain
+        />
+      ),
     },
     {
       key: 'startDate',

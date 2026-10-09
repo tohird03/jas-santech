@@ -240,6 +240,18 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
+.content .ant-table-thead > tr > th.report-head-selling {
+  background: #e7f6ea !important;
+}
+
+.content .ant-table-thead > tr > th.report-head-payment {
+  background: #e7f3ff !important;
+}
+
+.content .ant-table-thead > tr > th.report-head-return {
+  background: #fde8ea !important;
+}
+
 .person-link {
   display: flex;
   flex-direction: column;
@@ -275,6 +287,64 @@ input::-webkit-inner-spin-button {
 
 .error__row .person-link__phone {
   color: #8f2d3c;
+}
+
+.person-link.person-link--pay {
+  cursor: default;
+}
+
+.person-link.person-link--center {
+  width: 100%;
+  align-items: center;
+}
+
+.person-link--center .person-link__name,
+.person-link--center .person-link__phone {
+  width: 100%;
+  text-align: center;
+}
+
+.ant-table-row:not(.error__row):not(.warning__row) .person-link--pay .person-link__name {
+  color: #000;
+  cursor: pointer;
+}
+
+.ant-table-row:not(.error__row):not(.warning__row) .person-link--pay .person-link__name:hover {
+  color: #1d4ed8;
+}
+
+.ant-table-row:not(.error__row):not(.warning__row) .person-link--pay .person-link__phone {
+  color: #000;
+  cursor: default;
+}
+
+.ant-table-tbody > tr > td .name-row-link,
+.ant-table-tbody > tr > td .name-row-link p {
+  color: #000;
+}
+
+.ant-table-tbody > tr:not(.error__row) > td .name-row-link:hover,
+.ant-table-tbody > tr:not(.error__row) > td .name-row-link:hover p {
+  color: #17a2b8;
+}
+
+.ant-table-tbody > tr.error__row > td .name-row-link,
+.ant-table-tbody > tr.error__row > td .name-row-link p {
+  color: #000;
+}
+
+.ant-table-tbody > tr.error__row > td .name-row-link:hover,
+.ant-table-tbody > tr.error__row > td .name-row-link:hover p {
+  color: #c2253a;
+}
+
+.staff-list__name:hover {
+  color: #17a2b8;
+}
+
+.content .ant-table-thead > tr > th.report-head-debt {
+  text-align: center !important;
+  vertical-align: middle !important;
 }
 
 .bot-mark {
@@ -456,6 +526,64 @@ input::-webkit-inner-spin-button {
   margin: auto 0 0 !important;
   padding-top: 12px;
   background: #fff;
+}
+
+.ant-table-tbody > tr.stock-out > td:first-child {
+  box-shadow: inset 3px 0 0 #dc2626;
+}
+
+.ant-table-tbody > tr.stock-low > td:first-child {
+  box-shadow: inset 3px 0 0 #d97706;
+}
+
+.stock-num--out {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.stock-num--low {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.product-card.person-link {
+  align-items: stretch;
+  width: 100%;
+  cursor: default;
+}
+
+.ant-table-row:not(.error__row):not(.warning__row) .product-card .person-link__name {
+  color: #1d4ed8;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ant-table-row:not(.error__row):not(.warning__row) .product-card .person-link__name:hover {
+  color: #1e3a8a;
+  text-decoration: underline;
+}
+
+.ant-table-row:not(.error__row):not(.warning__row) .product-card .person-link__phone {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #434343;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.ant-table-row.stock-out:not(.error__row):not(.warning__row) .product-card .person-link__name {
+  color: #7f1d1d;
+}
+
+.ant-table-row.stock-out:not(.error__row):not(.warning__row) .product-card .person-link__name:hover {
+  color: #450a0a;
+  text-decoration: underline;
+}
+
+.ant-table-row.stock-out:not(.error__row):not(.warning__row) .product-card .person-link__phone {
+  color: #b91c1c;
 }
 
 .warning__row {

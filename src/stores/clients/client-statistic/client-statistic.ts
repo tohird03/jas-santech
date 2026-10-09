@@ -8,7 +8,7 @@ class ClientsStatisticStore {
 
   search: string | null = null;
   pageNumber = 1;
-  pageSize = 5000;
+  pageSize = 20;
   startDate: Date | null = this.#today;
   endDate: Date | null = this.#today;
 

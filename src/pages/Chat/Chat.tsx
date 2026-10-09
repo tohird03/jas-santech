@@ -1,9 +1,9 @@
 import './chat.scss';
 
 import React, {useEffect, useRef, useState} from 'react';
-import {DeleteOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
+import {CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {Button, Empty, Input, Modal, notification, Popconfirm, Spin, Tag, Typography} from 'antd';
+import {Button, Empty, Input, notification, Popconfirm, Spin, Tag, Typography} from 'antd';
 import {AxiosError} from 'axios';
 import {io} from 'socket.io-client';
 import {useDebounce} from 'usehooks-ts';
@@ -25,6 +25,13 @@ const showWarning = (result?: {warning?: {is?: boolean, messages?: string[]}}) =
 };
 
 const fileHref = (fileUrl: string) => fileUrl.startsWith('http') ? fileUrl : `${umsStages.apiUrl}${fileUrl}`;
+
+const TELEGRAM_DELETE_MS = 48 * 60 * 60 * 1000;
+
+const canDeleteMessage = (createdAt: string) => Date.now() - new Date(createdAt).getTime() < TELEGRAM_DELETE_MS;
+
+const isPdfFile = (message: {mimeType?: string | null, fileName?: string | null}) =>
+  message.mimeType === 'application/pdf' || Boolean(message.fileName?.toLowerCase().endsWith('.pdf'));
 
 const seenKey = (clientId: string) => `jas-chat-seen:${clientId}`;
 
@@ -105,31 +112,36 @@ const MessageBubble = ({
         <span className="chat-page__author">{author}</span>
         {message.direction === 'out' && <span className="chat-page__role">sayt</span>}
         <span className="chat-page__time">{getFullDateFormat(message.createdAt)}</span>
-        <Popconfirm
-          title="Xabarni o'chirish"
-          description="Saytdan o'chiriladi. Telegramda 48 soat ichidagi xabar ham o'chadi."
-          okText="Ha"
-          cancelText="Yo'q"
-          okButtonProps={{style: {background: 'red'}}}
-          onConfirm={() => onDelete(message.id)}
-        >
-          <Button
-            size="small"
-            type="text"
-            danger
-            icon={<DeleteOutlined />}
-            className="chat-page__delete"
-          />
-        </Popconfirm>
+        {canDeleteMessage(message.createdAt) && (
+          <Popconfirm
+            title="Xabarni o'chirish"
+            description="Saytdan va telegramdan o'chadi."
+            okText="Ha"
+            cancelText="Yo'q"
+            okButtonProps={{style: {background: 'red'}}}
+            onConfirm={() => onDelete(message.id)}
+          >
+            <Button
+              size="small"
+              type="text"
+              icon={<DeleteOutlined />}
+              className="chat-page__delete"
+              aria-label="Xabarni o'chirish"
+            />
+          </Popconfirm>
+        )}
       </div>
       {message.text && <div className="chat-page__text">{message.text}</div>}
-      {message.fileUrl && (
-        <a className="chat-page__file" href={fileHref(message.fileUrl)} target="_blank" rel="noreferrer">
-          {message.kind === 'photo' || message.mimeType?.startsWith('image/')
-            ? <img src={fileHref(message.fileUrl)} alt={message.fileName || 'rasm'} />
-            : (message.fileName || 'Fayl')}
+      {message.fileUrl && (message.kind === 'photo' || message.mimeType?.startsWith('image/') ? (
+        <a className="chat-page__file chat-page__file--photo" href={fileHref(message.fileUrl)} target="_blank" rel="noreferrer">
+          <img src={fileHref(message.fileUrl)} alt={message.fileName || 'rasm'} />
         </a>
-      )}
+      ) : (
+        <a className="chat-page__file" href={fileHref(message.fileUrl)} target="_blank" rel="noreferrer">
+          {isPdfFile(message) ? <FilePdfOutlined /> : <FileOutlined />}
+          <span>{message.fileName || 'Fayl'}</span>
+        </a>
+      ))}
     </div>
   );
 };
@@ -139,6 +151,7 @@ export const ChatPage = () => {
   const [search, setSearch] = useState('');
   const [client, setClient] = useState<ChatListClient | null>(null);
   const [text, setText] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [sending, setSending] = useState(false);
   const [summaries, setSummaries] = useState<Record<string, ChatSummary | null>>({});
   const threadRef = useRef<HTMLDivElement>(null);
@@ -427,17 +440,20 @@ export const ChatPage = () => {
   const handleSend = async () => {
     const value = text.trim();
 
-    if (!client?.id || !value) {
+    if (!client?.id || (!value && !file)) {
       return;
     }
 
     setSending(true);
 
     try {
-      const result = await chatApi.sendText(client.id, value);
+      const result = file
+        ? await chatApi.sendFile(client.id, file, value || undefined)
+        : await chatApi.sendText(client.id, value);
 
       showWarning(result);
       setText('');
+      setFile(null);
       refreshMessages();
     } catch (error) {
       addNotification(error as AxiosError);
@@ -446,35 +462,22 @@ export const ChatPage = () => {
     }
   };
 
-  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const next = event.target.files?.[0];
 
     event.target.value = '';
 
-    if (!file || !client?.id) {
+    if (!next) {
       return;
     }
 
-    if (file.size > 20 * 1024 * 1024) {
+    if (next.size > 20 * 1024 * 1024) {
       addNotification('Fayl 20 MB dan katta');
 
       return;
     }
 
-    setSending(true);
-
-    try {
-      const caption = text.trim();
-      const result = await chatApi.sendFile(client.id, file, caption || undefined);
-
-      showWarning(result);
-      setText('');
-      refreshMessages();
-    } catch (error) {
-      addNotification(error as AxiosError);
-    } finally {
-      setSending(false);
-    }
+    setFile(next);
   };
 
   const handleDelete = async (id: string) => {
@@ -494,20 +497,12 @@ export const ChatPage = () => {
     .map(toChatClient)
     .filter((item) => !needle || item.fullname.toLowerCase().includes(needle) || item.phone.includes(needle))
     .sort((left, right) => (summaries[right.id]?.lastAt || 0) - (summaries[left.id]?.lastAt || 0));
-  const directory = allClients.filter((item) => !chattedIds.has(item.id));
+  const directory = allClients.filter((item) => !chattedIds.has(item.id) && item.telegram?.isActive);
   const listLoading = inboxLoading || clientsLoading;
 
   const openClient = (item: ChatListClient) => {
-    if (!item.telegram?.isActive) {
-      Modal.warning({
-        title: 'Chatga kirib bo‘lmaydi',
-        content: 'Bu mijoz telegram botdan ro‘yxatdan o‘tmagan. Chatga kira olmaysiz.',
-        okText: 'Yopish',
-      });
-
-      return;
-    }
-
+    setFile(null);
+    setText('');
     setClient(item);
   };
 
@@ -605,37 +600,49 @@ export const ChatPage = () => {
                 ))}
               </div>
               <div className="chat-page__composer">
-                <input
-                  ref={fileRef}
-                  type="file"
-                  hidden
-                  onChange={handleFile}
-                />
-                <Button
-                  icon={<PaperClipOutlined />}
-                  onClick={() => fileRef.current?.click()}
-                  disabled={sending}
-                />
-                <Input.TextArea
-                  value={text}
-                  autoSize={{minRows: 1, maxRows: 4}}
-                  placeholder="Xabar"
-                  onChange={(event) => setText(event.target.value)}
-                  onPressEnter={(event) => {
-                    if (!event.shiftKey) {
-                      event.preventDefault();
-                      handleSend();
-                    }
-                  }}
-                />
-                <Button
-                  type="primary"
-                  icon={<SendOutlined />}
-                  loading={sending}
-                  onClick={handleSend}
-                >
-                  Yuborish
-                </Button>
+                {file && (
+                  <div className="chat-page__attach">
+                    {isPdfFile({fileName: file.name, mimeType: file.type}) ? <FilePdfOutlined /> : <FileOutlined />}
+                    <span>{file.name}</span>
+                    <button type="button" onClick={() => setFile(null)} aria-label="Faylni olib tashlash">
+                      <CloseOutlined />
+                    </button>
+                  </div>
+                )}
+                <div className="chat-page__composer-row">
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    hidden
+                    onChange={handleFile}
+                  />
+                  <Button
+                    icon={<PaperClipOutlined />}
+                    onClick={() => fileRef.current?.click()}
+                    disabled={sending}
+                  />
+                  <Input.TextArea
+                    value={text}
+                    autoSize={{minRows: 1, maxRows: 4}}
+                    placeholder={file ? 'Fayl matni' : 'Xabar'}
+                    onChange={(event) => setText(event.target.value)}
+                    onPressEnter={(event) => {
+                      if (!event.shiftKey) {
+                        event.preventDefault();
+                        handleSend();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="primary"
+                    icon={<SendOutlined />}
+                    loading={sending}
+                    disabled={!text.trim() && !file}
+                    onClick={handleSend}
+                  >
+                    Yuborish
+                  </Button>
+                </div>
               </div>
             </>
           )}

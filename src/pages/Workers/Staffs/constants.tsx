@@ -18,7 +18,7 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     dataIndex: 'name',
     title: 'Xodim',
     align: 'center',
-    render: (value, record) => record?.fullname,
+    render: (value, record) => <span className="staff-list__name">{record?.fullname}</span>,
   },
   {
     key: 'phone',

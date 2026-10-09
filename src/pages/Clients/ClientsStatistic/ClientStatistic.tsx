@@ -9,16 +9,18 @@ import classNames from 'classnames/bind';
 import dayjs from 'dayjs';
 import { clientsStatisticStore } from '@/stores/clients';
 import { useQuery } from '@tanstack/react-query';
+import { useDebounce } from 'usehooks-ts';
 
 const cn = classNames.bind(styles);
 
 export const ClientStatistic = observer(() => {
-  const { data: clientsStatisticData, isLoading: loading } = useQuery({
+  const search = useDebounce(clientsStatisticStore.search || '', 400);
+  const { data: clientsStatisticData, isLoading: loading, isError } = useQuery({
     queryKey: [
-      'getOrders',
+      'clientReport',
       clientsStatisticStore?.pageNumber,
       clientsStatisticStore?.pageSize,
-      clientsStatisticStore?.search,
+      search,
       clientsStatisticStore?.startDate,
       clientsStatisticStore?.endDate,
     ],
@@ -26,28 +28,25 @@ export const ClientStatistic = observer(() => {
       clientsStatisticStore.getClientsStatistic({
         pageNumber: clientsStatisticStore.pageNumber,
         pageSize: clientsStatisticStore.pageSize,
-        search: clientsStatisticStore.search!,
-        startDate: clientsStatisticStore.startDate!,
-        endDate: clientsStatisticStore.endDate!,
+        search,
+        startDate: clientsStatisticStore.startDate || undefined,
+        endDate: clientsStatisticStore.endDate || undefined,
       }),
   });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    clientsStatisticStore.setPageNumber(1);
     clientsStatisticStore.setSearch(e.currentTarget?.value);
   };
 
   const handleStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    if (!dateString) {
-      clientsStatisticStore.setStartDate(null);
-    }
-    clientsStatisticStore.setStartDate(new Date(dateString));
+    clientsStatisticStore.setPageNumber(1);
+    clientsStatisticStore.setStartDate(date && dateString ? new Date(String(dateString)) : null);
   };
 
   const handleEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    if (!dateString) {
-      clientsStatisticStore.setEndDate(null);
-    }
-    clientsStatisticStore.setEndDate(new Date(dateString));
+    clientsStatisticStore.setPageNumber(1);
+    clientsStatisticStore.setEndDate(date && dateString ? new Date(String(dateString)) : null);
   };
 
   const handlePageChange = (page: number, pageSize: number | undefined) => {
@@ -84,9 +83,11 @@ export const ClientStatistic = observer(() => {
       </div>
 
       <DataTable
+        rowKey="id"
         columns={staffsWorkingTimeReportsColumns}
-        data={clientsStatisticData?.data?.data || []}
+        data={isError ? [] : (clientsStatisticData?.data?.data || [])}
         loading={loading}
+        scroll={{x: 1620}}
         pagination={{
           total: clientsStatisticData?.data?.totalCount,
           current: clientsStatisticStore?.pageNumber,

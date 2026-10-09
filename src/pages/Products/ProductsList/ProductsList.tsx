@@ -75,9 +75,9 @@ export const ProductsList = observer(() => {
   }, []);
 
   const rowClassName = (record: IProducts) =>
-    record.count < 0 ? 'error__row'
+    record.count < 0 ? 'stock-out'
       : record.count < record?.minAmount
-        ? 'warning__row' : '';
+        ? 'stock-low' : '';
 
   return (
     <main>
