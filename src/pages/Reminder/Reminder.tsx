@@ -3,7 +3,7 @@ import './reminder.scss';
 import React, {useState} from 'react';
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {Button, DatePicker, Form, Input, Modal, Popconfirm, Select, Spin, Typography} from 'antd';
+import {Button, DatePicker, Form, Input, Modal, Popconfirm, Select, Spin, Tooltip, Typography} from 'antd';
 import {ColumnType} from 'antd/es/table';
 import {AxiosError} from 'axios';
 import dayjs, {Dayjs} from 'dayjs';
@@ -12,6 +12,7 @@ import {clientsInfoApi} from '@/api/clients';
 import {IReminder, IReminderForm, reminderApi} from '@/api/reminder';
 import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
 import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
 import {addNotification} from '@/utils';
 import {dateFormat} from '@/utils/getDateFormat';
 import {getPaginationParams} from '@/utils/getPaginationParams';
@@ -24,6 +25,32 @@ interface ReminderFormValues {
   description: string;
 }
 
+const reminderColumnKeys = ['index', 'client', 'startDate', 'description', 'lastSentOn', 'action'];
+const reminderColumnTitles = [
+  {key: 'index', title: '#'},
+  {key: 'client', title: 'Mijoz'},
+  {key: 'startDate', title: 'Boshlanish sanasi'},
+  {key: 'description', title: 'Tavsif'},
+  {key: 'lastSentOn', title: 'Oxirgi yuborilgan'},
+  {key: 'action', title: 'Amallar'},
+];
+const reminderDefaultWidths = {
+  index: 64,
+  client: 260,
+  startDate: 170,
+  description: 320,
+  lastSentOn: 180,
+  action: 130,
+};
+const reminderMinWidths = {
+  index: 56,
+  client: 150,
+  startDate: 140,
+  description: 120,
+  lastSentOn: 140,
+  action: 112,
+};
+
 export const Reminders = () => {
   const queryClient = useQueryClient();
   const isMobile = useMediaQuery('(max-width: 800px)');
@@ -34,6 +61,13 @@ export const Reminders = () => {
   const [clientSearch, setClientSearch] = useState('');
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<IReminder | null>(null);
+  const {boxRef, apply, picker} = useResizableColumns({
+    keys: reminderColumnKeys,
+    defaults: reminderDefaultWidths,
+    mins: reminderMinWidths,
+    titles: reminderColumnTitles,
+    flexKey: 'description',
+  });
   const debouncedSearch = useDebounce(clientSearch, 400);
 
   const {data: reminders, isLoading} = useQuery({
@@ -137,6 +171,7 @@ export const Reminders = () => {
       title: 'Mijoz',
       align: 'center',
       width: 280,
+      onCell: () => ({style: {maxWidth: 0}}),
       render: (_value, record) => (
         <ClientNameLink
           client={{
@@ -145,6 +180,7 @@ export const Reminders = () => {
             phone: record.client?.phone,
           }}
           plain
+          clip
         />
       ),
     },
@@ -159,6 +195,20 @@ export const Reminders = () => {
       title: 'Tavsif',
       align: 'center',
       dataIndex: 'description',
+      onCell: () => ({style: {maxWidth: 0}}),
+      render: (_value, record) => {
+        const description = record.description || '';
+
+        if (!description) {
+          return null;
+        }
+
+        return (
+          <Tooltip title={description} placement="topLeft">
+            <span className="cell-ellipsis">{description}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       key: 'lastSentOn',
@@ -188,8 +238,10 @@ export const Reminders = () => {
     },
   ];
 
+  const tableColumns = apply(columns);
+
   return (
-    <main>
+    <main ref={boxRef}>
       <div className="reminder-page__head">
         <Typography.Title level={3}>Eslatmalar</Typography.Title>
         <div className="reminder-page__filter">
@@ -208,6 +260,7 @@ export const Reminders = () => {
               setPageNumber(1);
             }}
           />
+          {picker}
           <Button type="primary" icon={<PlusCircleOutlined />} onClick={openCreate}>
             Eslatma qo&apos;shish
           </Button>
@@ -215,7 +268,10 @@ export const Reminders = () => {
       </div>
       <DataTable
         rowKey="id"
-        columns={columns}
+        className={resizableTableProps.className}
+        columns={tableColumns}
+        tableLayout={resizableTableProps.tableLayout}
+        components={resizableTableProps.components}
         data={reminders?.data?.data || []}
         loading={isLoading}
         isMobile={isMobile}

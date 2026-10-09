@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tooltip} from 'antd';
 import {ColumnType} from 'antd/es/table';
 import {EPageAccess, IStaffs} from '@/api/staffs';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
@@ -18,7 +19,11 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     dataIndex: 'name',
     title: 'Xodim',
     align: 'center',
-    render: (value, record) => <span className="staff-list__name">{record?.fullname}</span>,
+    render: (value, record) => (
+      <Tooltip title={record?.fullname} placement="topLeft">
+        <span className="staff-list__name">{record?.fullname}</span>
+      </Tooltip>
+    ),
   },
   {
     key: 'phone',
@@ -28,14 +33,14 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     render: (value, record) => `+${formatPhoneNumber(record?.phone)}`,
   },
   {
-    key: 'action',
+    key: 'active',
     dataIndex: 'action',
     title: 'Faolligi',
     align: 'center',
     render: (value, record) => <ActiveStatus staff={record} />,
   },
   {
-    key: 'action',
+    key: 'actions',
     dataIndex: 'action',
     title: 'Amallar',
     align: 'center',

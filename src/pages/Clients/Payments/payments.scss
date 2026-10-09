@@ -16,6 +16,14 @@
   width: 250px;
 }
 
+.clients-payments__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+}
+
 @media only screen and (max-width: 800px) {
   .clients-payments__head {
     flex-direction: column;

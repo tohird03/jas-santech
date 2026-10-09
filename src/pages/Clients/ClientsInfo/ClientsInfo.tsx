@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button, Input, InputNumber, Select, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
 import { DataTable } from '@/components/Datatable/datatable';
+import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
 import { clientsInfoStore } from '@/stores/clients';
 import { getPaginationParams } from '@/utils/getPaginationParams';
 import { useMediaQuery } from '@/utils/mediaQuery';
@@ -20,9 +21,45 @@ import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
+const clientColumnKeys = ['index', 'name', 'phone', 'debt', 'isActiveBot', 'lastSale', 'action'];
+const clientColumnTitles = [
+  { key: 'index', title: '#' },
+  { key: 'name', title: 'Mijoz' },
+  { key: 'phone', title: 'Telefon raqami' },
+  { key: 'debt', title: 'Mijoz qarzi' },
+  { key: 'isActiveBot', title: 'Telegram bot' },
+  { key: 'lastSale', title: 'Oxirgi sotuv' },
+  { key: 'action', title: 'Amallar' },
+];
+const clientDefaultWidths = {
+  index: 64,
+  name: 320,
+  phone: 180,
+  debt: 220,
+  isActiveBot: 130,
+  lastSale: 180,
+  action: 120,
+};
+const clientMinWidths = {
+  index: 56,
+  name: 160,
+  phone: 140,
+  debt: 140,
+  isActiveBot: 110,
+  lastSale: 140,
+  action: 112,
+};
+
 export const ClientsInfo = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
+  const { boxRef, apply, picker } = useResizableColumns({
+    keys: clientColumnKeys,
+    defaults: clientDefaultWidths,
+    mins: clientMinWidths,
+    titles: clientColumnTitles,
+  });
+  const columns = apply(clientsColumns);
 
   const { data: clientsInfoData, isLoading: loading } = useQuery({
     queryKey: [
@@ -102,7 +139,7 @@ export const ClientsInfo = observer(() => {
   };
 
   return (
-    <main>
+    <main ref={boxRef}>
       <div className={cn('client-info__head')}>
         <Typography.Title level={3} className={cn('client-info__title')}>Mijozlar</Typography.Title>
         <div className={cn('client-info__filter')}>
@@ -136,28 +173,34 @@ export const ClientsInfo = observer(() => {
               />
             }
           />
-          <Button
-            onClick={handleAddNewClient}
-            type="primary"
-            icon={<PlusCircleOutlined />}
-          >
-            Mijoz qo&apos;shish
-          </Button>
-          <Tooltip placement="top" title="Excelda yuklash">
+          <div className={cn('client-info__actions')}>
+            {picker}
+            <Tooltip placement="top" title="Excelda yuklash">
+              <Button
+                onClick={handleDownloadExcel}
+                type="primary"
+                icon={<DownloadOutlined />}
+                loading={downloadLoading}
+              >
+                Excelga yuklash
+              </Button>
+            </Tooltip>
             <Button
-              onClick={handleDownloadExcel}
+              onClick={handleAddNewClient}
               type="primary"
-              icon={<DownloadOutlined />}
-              loading={downloadLoading}
+              icon={<PlusCircleOutlined />}
             >
-              Excelga yuklash
+              Mijoz qo&apos;shish
             </Button>
-          </Tooltip>
+          </div>
         </div>
       </div>
 
       <DataTable
-        columns={clientsColumns}
+        className={resizableTableProps.className}
+        columns={columns}
+        tableLayout={resizableTableProps.tableLayout}
+        components={resizableTableProps.components}
         data={clientsInfoData?.data?.data || []}
         loading={loading}
         isMobile={isMobile}

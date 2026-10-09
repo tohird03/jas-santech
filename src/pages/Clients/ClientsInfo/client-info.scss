@@ -6,8 +6,12 @@
 }
 .client-info__filter {
   display: flex;
+  flex: 1 1 480px;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 30px;
+  justify-content: flex-end;
+  min-width: 0;
+  gap: 10px;
 
   .ant-input-number-group-wrapper {
     flex: 0 0 auto;
@@ -31,6 +35,14 @@
 }
 .client-info__search {
   width: 250px;
+}
+
+.client-info__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
 }
 
 @media only screen and (max-width: 1000px) {

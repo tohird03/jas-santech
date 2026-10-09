@@ -2,12 +2,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 20px;
 }
 .deed__filter {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 .deed__search {
   width: 250px;
@@ -31,6 +35,12 @@
 
 
 .deed {
+  width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+
   &__green-col {
     background-color: green;
   }

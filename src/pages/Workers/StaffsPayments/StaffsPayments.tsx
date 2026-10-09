@@ -4,6 +4,7 @@ import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Button, DatePicker, DatePickerProps, Select, Table, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
+import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
 import { getPaginationParams } from '@/utils/getPaginationParams';
 import { AddEditModal } from './AddEditModal';
 import styles from './staffs-payments.scss';
@@ -20,8 +21,41 @@ import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
+const paymentColumnKeys = ['index', 'name', 'amount', 'note', 'date', 'actions'];
+const paymentColumnTitles = [
+  { key: 'index', title: '#' },
+  { key: 'name', title: 'Xodim' },
+  { key: 'amount', title: 'To\'lov qiymati' },
+  { key: 'note', title: 'Ma\'lumot' },
+  { key: 'date', title: 'To\'lov vaqti' },
+  { key: 'actions', title: 'Amallar' },
+];
+const paymentDefaultWidths = {
+  index: 64,
+  name: 440,
+  amount: 300,
+  note: 280,
+  date: 200,
+  actions: 120,
+};
+const paymentMinWidths = {
+  index: 56,
+  name: 180,
+  amount: 160,
+  note: 120,
+  date: 150,
+  actions: 112,
+};
+
 export const StaffsPayments = observer(() => {
   const [downloadLoading, setDownLoadLoading] = useState(false);
+  const { boxRef, apply, picker } = useResizableColumns({
+    keys: paymentColumnKeys,
+    defaults: paymentDefaultWidths,
+    mins: paymentMinWidths,
+    titles: paymentColumnTitles,
+  });
+  const columns = apply(clientsColumns);
 
   const { data: staffPaymentsData, isLoading: loading } = useQuery({
     queryKey: [
@@ -120,7 +154,7 @@ export const StaffsPayments = observer(() => {
   }, []);
 
   return (
-    <main>
+    <main ref={boxRef}>
       <div className={cn('client-info__head')}>
         <Typography.Title level={3}>Xodimlar hisoboti</Typography.Title>
         <div className={cn('client-info__filter')}>
@@ -146,6 +180,7 @@ export const StaffsPayments = observer(() => {
             defaultValue={dayjs(staffsPaymentStore.endDate)}
             allowClear={false}
           />
+          {picker}
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -167,7 +202,8 @@ export const StaffsPayments = observer(() => {
       </div>
 
       <Table
-        columns={clientsColumns}
+        {...resizableTableProps}
+        columns={columns}
         dataSource={staffPaymentsData?.data?.data || []}
         loading={loading}
         pagination={{
@@ -181,20 +217,31 @@ export const StaffsPayments = observer(() => {
         tableLayout="fixed"
         summary={() => (
           <Table.Summary.Row>
-            <Table.Summary.Cell index={0} />
-            <Table.Summary.Cell index={1} align="center">
-              <span className={cn('staff-payment__name')}>Jami</span>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <div className="currency-row" style={{ fontWeight: 600 }}>
-                {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
-                  <span className="currency-item" key={total?.currency?.id}>
-                    {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
-                  </span>
-                ))}
-              </div>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={3} colSpan={3} />
+            {columns.map((column, index) => {
+              if (column.key === 'name') {
+                return (
+                  <Table.Summary.Cell key={column.key} index={index} align="center">
+                    <span className={cn('staff-payment__name')}>Jami</span>
+                  </Table.Summary.Cell>
+                );
+              }
+
+              if (column.key === 'amount') {
+                return (
+                  <Table.Summary.Cell key={column.key} index={index}>
+                    <div className="currency-row" style={{ fontWeight: 600 }}>
+                      {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
+                        <span className="currency-item" key={total?.currency?.id}>
+                          {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
+                        </span>
+                      ))}
+                    </div>
+                  </Table.Summary.Cell>
+                );
+              }
+
+              return <Table.Summary.Cell key={String(column.key)} index={index} />;
+            })}
           </Table.Summary.Row>
         )}
       />

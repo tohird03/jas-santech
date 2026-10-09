@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tooltip} from 'antd';
 import {ColumnType} from 'antd/es/table';
 import {IClientsInfo} from '@/api/clients';
 import {Action} from './Action';
@@ -21,7 +22,8 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'client',
     title: 'Mijoz',
     align: 'center',
-    render: (value, record) => <ClientNameLink client={record?.client} plain />,
+    onCell: () => ({style: {maxWidth: 0}}),
+    render: (value, record) => <ClientNameLink client={record?.client} plain clip />,
   },
   {
     key: 'cash',
@@ -44,7 +46,20 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    render: (value, record) => <span>{record?.description}</span>,
+    onCell: () => ({style: {maxWidth: 0}}),
+    render: (value, record) => {
+      const description = record?.description || '';
+
+      if (!description) {
+        return null;
+      }
+
+      return (
+        <Tooltip title={description} placement="topLeft">
+          <span className="cell-ellipsis">{description}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     key: 'createdAt',
@@ -58,7 +73,20 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'seller',
     title: 'Sotuvchi',
     align: 'center',
-    render: (value, record) => <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>,
+    onCell: () => ({style: {maxWidth: 0}}),
+    render: (value, record) => {
+      const fullname = record?.staff?.fullname || '';
+
+      if (!fullname) {
+        return null;
+      }
+
+      return (
+        <Tooltip title={fullname} placement="topLeft">
+          <span className="cell-ellipsis" style={{fontWeight: 'bold'}}>{fullname}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     key: 'action',

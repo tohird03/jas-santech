@@ -31,7 +31,7 @@ export const clientsColumns: ColumnType<ICurrency>[] = [
     render: (value, record) => <span>{priceFormat(record?.exchangeRate)}</span>,
   },
   {
-    key: 'action',
+    key: 'actions',
     dataIndex: 'action',
     title: 'Amallar',
     align: 'center',

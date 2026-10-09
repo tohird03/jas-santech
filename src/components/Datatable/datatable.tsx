@@ -20,7 +20,7 @@ type DataTableProps = {
   loadingLength?: number;
   scroll?: {
     y?: number;
-    x?: number;
+    x?: number | string | true;
   };
   isMobile?: boolean;
   columns: any[];
@@ -43,6 +43,8 @@ type DataTableProps = {
     selectedRowKeys: React.Key[];
     onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => void;
   };
+  components?: React.ComponentProps<typeof Table>['components'];
+  tableLayout?: 'auto' | 'fixed';
 };
 
 export const DataTable = (props: DataTableProps) => {
@@ -60,6 +62,8 @@ export const DataTable = (props: DataTableProps) => {
     scroll,
     cardStyle,
     cardTextStyle,
+    components,
+    tableLayout,
   } = props;
 
   const onChange: PaginationProps['onChange'] = (page, pageSize) => {
@@ -70,6 +74,7 @@ export const DataTable = (props: DataTableProps) => {
 
   return !isMobile ? (
     <Table
+      className={className}
       pagination={{
         ...pagination,
         pageSizeOptions: [20, 50, 100, 500, 1000],
@@ -82,6 +87,8 @@ export const DataTable = (props: DataTableProps) => {
       rowSelection={rowSelection}
       rowKey={rowKey}
       scroll={scroll}
+      components={components}
+      tableLayout={tableLayout}
     />
   ) : loading ? (
     <div className={styles.loading__container}>

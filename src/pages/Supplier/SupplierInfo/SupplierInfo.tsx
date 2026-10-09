@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button, Input, InputNumber, Select, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
 import { DataTable } from '@/components/Datatable/datatable';
+import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
 import { getPaginationParams } from '@/utils/getPaginationParams';
 import { useMediaQuery } from '@/utils/mediaQuery';
 import { AddEditSupplierModal } from './AddEditModal';
@@ -17,9 +18,42 @@ import { addNotification } from '@/utils';
 
 const cn = classNames.bind(styles);
 
+const supplierColumnKeys = ['index', 'name', 'phone', 'debt', 'lastSale', 'action'];
+const supplierColumnTitles = [
+  { key: 'index', title: '#' },
+  { key: 'name', title: 'Yetkazib beruvchi' },
+  { key: 'phone', title: 'Telefon raqami' },
+  { key: 'debt', title: 'Yetkazib beruvchiga qarz' },
+  { key: 'lastSale', title: 'Oxirgi xarid' },
+  { key: 'action', title: 'Amallar' },
+];
+const supplierDefaultWidths = {
+  index: 64,
+  name: 360,
+  phone: 180,
+  debt: 280,
+  lastSale: 180,
+  action: 120,
+};
+const supplierMinWidths = {
+  index: 56,
+  name: 160,
+  phone: 140,
+  debt: 160,
+  lastSale: 140,
+  action: 112,
+};
+
 export const SupplierInfo = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
+  const { boxRef, apply, picker } = useResizableColumns({
+    keys: supplierColumnKeys,
+    defaults: supplierDefaultWidths,
+    mins: supplierMinWidths,
+    titles: supplierColumnTitles,
+  });
+  const columns = apply(supplierColumns);
 
   const { data: supplierData, isLoading: loading } = useQuery({
     queryKey: [
@@ -95,7 +129,7 @@ export const SupplierInfo = observer(() => {
   }, []);
 
   return (
-    <main>
+    <main ref={boxRef}>
       <div className={cn('supplier-info__head')}>
         <Typography.Title level={3}>Yetkazib beruvchilar ro&apos;yxati</Typography.Title>
         <div className={cn('supplier-info__filter')}>
@@ -120,6 +154,7 @@ export const SupplierInfo = observer(() => {
               />
             }
           />
+          {picker}
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -141,7 +176,10 @@ export const SupplierInfo = observer(() => {
       </div>
 
       <DataTable
-        columns={supplierColumns}
+        className={resizableTableProps.className}
+        columns={columns}
+        tableLayout={resizableTableProps.tableLayout}
+        components={resizableTableProps.components}
         data={supplierData?.data?.data || []}
         loading={loading}
         isMobile={isMobile}

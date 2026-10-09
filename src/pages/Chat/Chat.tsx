@@ -2,6 +2,7 @@ import './chat.scss';
 
 import React, {useEffect, useRef, useState} from 'react';
 import {CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
+import {observer} from 'mobx-react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {Button, Empty, Input, notification, Popconfirm, Spin, Tag, Typography} from 'antd';
 import {AxiosError} from 'axios';
@@ -11,6 +12,7 @@ import {chatApi, IApiResult, IChatInboxItem, IChatList, IChatMessage} from '@/ap
 import {clientsInfoApi} from '@/api/clients';
 import {umsStages} from '@/api/endpoints';
 import {authStore} from '@/stores/auth';
+import {chatBadgeStore} from '@/stores/chat/chat-badge';
 import {addNotification} from '@/utils';
 import {getFullDateFormat} from '@/utils/getDateFormat';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
@@ -146,7 +148,7 @@ const MessageBubble = ({
   );
 };
 
-export const ChatPage = () => {
+export const ChatPage = observer(() => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [client, setClient] = useState<ChatListClient | null>(null);
@@ -352,10 +354,17 @@ export const ChatPage = () => {
   }, [messages, client?.id]);
 
   useEffect(() => {
+    chatBadgeStore.setOpenClient(client?.id || null);
+
+    return () => chatBadgeStore.setOpenClient(null);
+  }, [client?.id]);
+
+  useEffect(() => {
     if (!inboxItems.length) {
       return;
     }
 
+    chatBadgeStore.syncInbox(inboxItems);
     setSummaries((current) => {
       const next = {...current};
 
@@ -540,8 +549,8 @@ export const ChatPage = () => {
                       <span className="chat-page__client-name">{item.fullname}</span>
                       <span className="chat-page__client-phone">+{formatPhoneNumber(item.phone)}</span>
                     </span>
-                    {summary && summary.unread > 0 && (
-                      <span className="chat-page__badge">{summary.unread}</span>
+                    {chatBadgeStore.countFor(item.id) > 0 && (
+                      <span className="chat-page__badge">{chatBadgeStore.countFor(item.id)}</span>
                     )}
                   </span>
                   {summary?.lastText && (
@@ -650,4 +659,4 @@ export const ChatPage = () => {
       </div>
     </main>
   );
-};
+});

@@ -22,7 +22,8 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
     dataIndex: 'name',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    render: (value, record) => <SupplierNameLink supplier={record} showPhone={false} rowHover />,
+    onCell: () => ({ style: { maxWidth: 0 } }),
+    render: (value, record) => <SupplierNameLink supplier={record} showPhone={false} rowHover clip />,
   },
   {
     key: 'phone',

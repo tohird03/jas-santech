@@ -338,8 +338,76 @@ input::-webkit-inner-spin-button {
   color: #c2253a;
 }
 
+.staff-list__name {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.88);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .staff-list__name:hover {
   color: #17a2b8;
+}
+
+.resizable-table.ant-table-wrapper .ant-table,
+.resizable-table .ant-table-content {
+  overflow-x: hidden !important;
+}
+
+.resizable-table .ant-table-content > table {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.resizable-table.resizable-table--scroll .ant-table-content,
+.resizable-table--scroll.ant-table-wrapper .ant-table {
+  overflow-x: auto !important;
+}
+
+.resizable-table.resizable-table--scroll .ant-table-content > table {
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+.resizable-table .ant-table-thead > tr > th {
+  overflow: visible;
+}
+
+.staff-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+  padding: 4px 2px;
+}
+
+.col-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  width: 8px;
+  height: 100%;
+  transform: translateX(50%);
+  cursor: col-resize;
+}
+
+.col-resizer::after {
+  content: '';
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  left: 3px;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+}
+
+.col-resizer:hover::after {
+  background: #3823d7;
 }
 
 .content .ant-table-thead > tr > th.report-head-debt {
@@ -373,10 +441,23 @@ input::-webkit-inner-spin-button {
 
 .cell-ellipsis {
   display: block;
+  width: 100%;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.name-clip {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.person-link.name-clip .person-link__name,
+.person-link.name-clip .person-link__phone {
+  width: 100%;
+  min-width: 0;
 }
 
 .error__row {
@@ -478,7 +559,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
 }
 
-.content .ant-table:has(.ant-table-summary) .ant-table-summary {
+.content .ant-table-wrapper:not(.deed-table) .ant-table:has(.ant-table-summary) .ant-table-summary {
   position: absolute;
   left: 0;
   right: 0;
@@ -489,6 +570,43 @@ input::-webkit-inner-spin-button {
   table-layout: fixed;
   background: #fff;
   border-top: 1px solid #d9d9d9;
+}
+
+.content .deed-table.ant-table-wrapper,
+.content .deed-table.ant-table-wrapper > .ant-spin-nested-loading,
+.content .deed-table.ant-table-wrapper .ant-spin-container,
+.content .deed-table.ant-table-wrapper .ant-table,
+.content .deed-table.ant-table-wrapper .ant-table-container,
+.content .deed-table.ant-table-wrapper .ant-table-content {
+  display: block;
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+  min-height: auto;
+  min-width: 0;
+  overflow: visible;
+}
+
+.content .deed-table .ant-table-content > table {
+  width: 100% !important;
+  min-width: 720px;
+}
+
+.content .deed-table .deed-note {
+  overflow: hidden;
+}
+
+.content .deed-table.ant-table-wrapper .ant-table-summary {
+  position: static;
+  display: table-footer-group;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  table-layout: auto;
+  background: #fff;
 }
 
 .content .ant-table:has(.ant-table-summary) .ant-table-summary > tr > td {

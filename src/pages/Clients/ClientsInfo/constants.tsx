@@ -23,7 +23,8 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
     dataIndex: 'name',
     title: 'Mijoz',
     align: 'center',
-    render: (value, record) => <ClientNameLink client={record} rowHover />,
+    onCell: () => ({ style: { maxWidth: 0 } }),
+    render: (value, record) => <ClientNameLink client={record} rowHover clip />,
   },
   {
     key: 'phone',

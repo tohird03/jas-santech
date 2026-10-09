@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import { Action } from './Action';
 import { priceFormat } from '@/utils/priceFormat';
@@ -20,7 +21,8 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'client',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    render: (value, record) => <SupplierNameLink supplier={record?.supplier} plain />,
+    onCell: () => ({ style: { maxWidth: 0 } }),
+    render: (value, record) => <SupplierNameLink supplier={record?.supplier} plain clip />,
   },
   {
     key: 'totalPayment',
@@ -43,7 +45,20 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    render: (value, record) => <span>{record?.description}</span>,
+    onCell: () => ({ style: { maxWidth: 0 } }),
+    render: (value, record) => {
+      const description = record?.description || '';
+
+      if (!description) {
+        return null;
+      }
+
+      return (
+        <Tooltip title={description} placement="topLeft">
+          <span className="cell-ellipsis">{description}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     key: 'createdAt',

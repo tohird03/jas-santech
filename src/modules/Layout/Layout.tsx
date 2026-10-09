@@ -9,6 +9,7 @@ import {useBoolean} from 'usehooks-ts';
 import {useMediaQuery} from '@/utils/mediaQuery';
 import {Content} from './Content';
 import {Header} from './Header';
+import {ChatBadgeBridge} from './ChatBadgeBridge';
 import {Menu} from './Menu';
 
 export const Layout = () => {
@@ -38,6 +39,7 @@ export const Layout = () => {
           </div>
         )}
 
+        <ChatBadgeBridge />
         <div className="layout__menu"><Menu /></div>
       </AntdLayout.Sider>
 

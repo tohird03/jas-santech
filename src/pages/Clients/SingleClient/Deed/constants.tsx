@@ -3,7 +3,7 @@ import { ColumnType } from 'antd/es/table';
 import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { IClientDeed, IClientDeedAction, IClientDeedType } from '@/api/clients';
-import { Tag } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import { currencyTagUi } from '@/constants/payment';
 
 export const deedColumns: ColumnType<IClientDeed>[] = [
@@ -12,22 +12,23 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     dataIndex: 'index',
     title: '#',
     align: 'center',
-    width: '40px',
+    width: 56,
     render: (value, record, index) => index + 1,
   },
   {
-    key: 'data',
-    dataIndex: 'data',
+    key: 'date',
+    dataIndex: 'date',
     title: 'Vaqti',
     align: 'center',
-    width: '100px',
+    width: 168,
     render: (value, record) => getFullDateFormat(record?.date),
   },
   {
     key: 'type',
     dataIndex: 'type',
     title: 'Harakat turi',
-    width: '50px',
+    align: 'center',
+    width: 120,
     render: (value, record) => <Tag color={clientDeedActionColor[record?.action]}>{clientDeedAction[record?.action]}</Tag>,
   },
   {
@@ -35,7 +36,7 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     dataIndex: 'debt',
     title: 'Debet',
     align: 'center',
-    width: '100px',
+    width: 160,
     className: 'green-col',
     render: (value, record) => (
       record?.type === IClientDeedType.DEBIT
@@ -51,11 +52,11 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     ),
   },
   {
-    key: 'data',
-    dataIndex: 'data',
+    key: 'credit',
+    dataIndex: 'credit',
     title: 'Kredit',
     align: 'center',
-    width: '100px',
+    width: 160,
     className: 'red-col',
     render: (value, record) => (
       record?.type === IClientDeedType.KREDIT
@@ -75,8 +76,21 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    width: '200px',
-    render: (value, record) => <span>{record?.description}</span>,
+    width: 220,
+    className: 'deed-note',
+    render: (value, record) => {
+      const description = record?.description || '';
+
+      if (!description) {
+        return null;
+      }
+
+      return (
+        <Tooltip title={description} placement="topLeft">
+          <span className="cell-ellipsis">{description}</span>
+        </Tooltip>
+      );
+    },
   },
 ];
 

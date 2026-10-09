@@ -39,7 +39,7 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     },
   },
   {
-    key: 'description',
+    key: 'amount',
     dataIndex: 'description',
     title: 'To\'lov qiymati',
     align: 'center',
@@ -53,7 +53,7 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     ),
   },
   {
-    key: 'description',
+    key: 'note',
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
@@ -74,7 +74,7 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     },
   },
   {
-    key: 'description',
+    key: 'date',
     dataIndex: 'description',
     title: 'To\'lov vaqti',
     align: 'center',
@@ -82,7 +82,7 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     render: (value, record) => <span>{getFullDateFormat(record?.createdAt)}</span>,
   },
   {
-    key: 'action',
+    key: 'actions',
     dataIndex: 'action',
     title: 'Amallar',
     align: 'center',

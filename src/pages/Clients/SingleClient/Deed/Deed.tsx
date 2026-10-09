@@ -81,7 +81,7 @@ export const Deed = observer(() => {
   };
 
   return (
-    <main>
+    <div className={cn('deed')}>
       <div className={cn('deed__head')}>
         <Typography.Title level={3}>Solishtiruv dalolatnomalari</Typography.Title>
         <div className={cn('deed__filter')}>
@@ -119,6 +119,8 @@ export const Deed = observer(() => {
       </div>
 
       <Table
+        className="deed-table"
+        tableLayout="fixed"
         columns={deedColumns}
         dataSource={singleClientStore?.activeClient?.deedInfo?.deeds || []}
         bordered
@@ -150,6 +152,7 @@ export const Deed = observer(() => {
                   }
                 </div>
               </Table.Summary.Cell>
+              <Table.Summary.Cell index={5} />
             </Table.Summary.Row>
             <Table.Summary.Row>
               <Table.Summary.Cell colSpan={3} index={0}>
@@ -166,11 +169,12 @@ export const Deed = observer(() => {
                   }
                 </div>
               </Table.Summary.Cell>
+              <Table.Summary.Cell index={5} />
             </Table.Summary.Row>
           </>
         )}
         pagination={false}
       />
-    </main>
+    </div>
   );
 });
