@@ -4,8 +4,10 @@ import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Button, DatePicker, DatePickerProps, Input, Select, Table, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
+import { DataTable } from '@/components/Datatable/datatable';
 import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
 import { getPaginationParams } from '@/utils/getPaginationParams';
+import { useMediaQuery } from '@/utils/mediaQuery';
 import { AddEditModal } from './AddEditModal';
 import styles from './payments.scss';
 import { paymentsColumns } from './constants';
@@ -50,6 +52,7 @@ const paymentMinWidths = {
 };
 
 export const ClientsPayments = observer(() => {
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
   const { clientId } = useParams();
   const { boxRef, apply, picker } = useResizableColumns({
@@ -167,7 +170,7 @@ export const ClientsPayments = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="clients-payments-page">
       <div className={cn('clients-payments__head')}>
         <Typography.Title level={3}>To&apos;lovlar ro&apos;yxati</Typography.Title>
         <div className={cn('clients-payments__filter')}>
@@ -180,7 +183,7 @@ export const ClientsPayments = observer(() => {
           <Select
             options={sellerOptions}
             onChange={handleChangeSeller}
-            style={{ width: '200px' }}
+            className={cn('clients-payments__seller')}
             placeholder="Sotuvchilar"
             loading={loadingSeller}
             allowClear
@@ -222,42 +225,73 @@ export const ClientsPayments = observer(() => {
         </div>
       </div>
 
-      <Table
-        {...resizableTableProps}
-        columns={columns}
-        dataSource={paymentsData?.data?.data || []}
-        loading={loading}
-        pagination={{
-          total: paymentsData?.data?.totalCount,
-          current: paymentsStore?.pageNumber,
-          pageSize: paymentsStore?.pageSize,
-          showSizeChanger: true,
-          onChange: handlePageChange,
-          ...getPaginationParams(paymentsData?.data?.totalCount),
-        }}
-        summary={() => (
-          <Table.Summary.Row>
-            {columns.map((column, index) => {
-              if (column.key === 'cash') {
-                return (
-                  <Table.Summary.Cell key={column.key} index={index}>
-                    <div className="currency-row" style={{ fontWeight: 'bold' }}>
-                      {paymentsData?.data?.calcByCurrency?.map(payment => (
-                        <span className="currency-item" key={payment?.currency?.id}>
-                          {priceFormat(payment?.total)}
-                          {currencyTagUi(payment?.currency?.symbol)}
-                        </span>
-                      ))}
-                    </div>
-                  </Table.Summary.Cell>
-                );
-              }
+      {isMobile ? (
+        <>
+          <div className={cn('clients-payments__total')}>
+            <span>Jami</span>
+            <div className="currency-row">
+              {paymentsData?.data?.calcByCurrency?.map(payment => (
+                <span className="currency-item" key={payment?.currency?.id}>
+                  {priceFormat(payment?.total)}
+                  {currencyTagUi(payment?.currency?.symbol)}
+                </span>
+              ))}
+            </div>
+          </div>
+          <DataTable
+            className="clients-payments__cards"
+            isMobile
+            columns={columns}
+            data={paymentsData?.data?.data || []}
+            loading={loading}
+            pagination={{
+              total: paymentsData?.data?.totalCount,
+              current: paymentsStore?.pageNumber,
+              pageSize: paymentsStore?.pageSize,
+              showSizeChanger: true,
+              onChange: handlePageChange,
+              ...getPaginationParams(paymentsData?.data?.totalCount),
+            }}
+          />
+        </>
+      ) : (
+        <Table
+          {...resizableTableProps}
+          columns={columns}
+          dataSource={paymentsData?.data?.data || []}
+          loading={loading}
+          pagination={{
+            total: paymentsData?.data?.totalCount,
+            current: paymentsStore?.pageNumber,
+            pageSize: paymentsStore?.pageSize,
+            showSizeChanger: true,
+            onChange: handlePageChange,
+            ...getPaginationParams(paymentsData?.data?.totalCount),
+          }}
+          summary={() => (
+            <Table.Summary.Row>
+              {columns.map((column, index) => {
+                if (column.key === 'cash') {
+                  return (
+                    <Table.Summary.Cell key={column.key} index={index}>
+                      <div className="currency-row" style={{ fontWeight: 'bold' }}>
+                        {paymentsData?.data?.calcByCurrency?.map(payment => (
+                          <span className="currency-item" key={payment?.currency?.id}>
+                            {priceFormat(payment?.total)}
+                            {currencyTagUi(payment?.currency?.symbol)}
+                          </span>
+                        ))}
+                      </div>
+                    </Table.Summary.Cell>
+                  );
+                }
 
-              return <Table.Summary.Cell key={String(column.key)} index={index} />;
-            })}
-          </Table.Summary.Row>
-        )}
-      />
+                return <Table.Summary.Cell key={String(column.key)} index={index} />;
+              })}
+            </Table.Summary.Row>
+          )}
+        />
+      )}
 
       {paymentsStore.isOpenAddEditPaymentModal && <AddEditModal />}
     </main>

@@ -426,26 +426,30 @@
 }
 
 @media only screen and (max-width: 800px) {
-  .chat-page {
-    height: auto;
-    max-height: none;
-    overflow: visible;
-  }
-
-  .chat-page__body {
-    flex-direction: column;
-    height: auto;
-    min-height: 0;
-  }
-
   .chat-page__clients {
     width: 100%;
-    max-height: 240px;
+    max-width: none;
     border-right: 0;
-    border-bottom: 1px solid #f0f0f0;
   }
 
-  .chat-page__thread {
-    min-height: 320px;
+  .chat-page__thread-wrap {
+    display: none;
+  }
+
+  .chat-page--open .chat-page__clients {
+    display: none;
+  }
+
+  .chat-page--open .chat-page__thread-wrap {
+    display: flex;
+    width: 100%;
+  }
+
+  .chat-page__bubble {
+    max-width: 88%;
+  }
+
+  .chat-page__back {
+    flex: 0 0 auto;
   }
 }

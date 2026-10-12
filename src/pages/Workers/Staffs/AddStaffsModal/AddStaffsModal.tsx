@@ -5,12 +5,14 @@ import { Checkbox, Collapse, Form, Input, InputNumber, Modal } from 'antd';
 import { EPageAccess, IAddStaff, IUpdateStaff, staffsApi } from '@/api/staffs';
 import { staffsStore } from '@/stores/workers';
 import { addNotification } from '@/utils';
+import { useMediaQuery } from '@/utils/mediaQuery';
 import { regexPhoneNumber } from '@/utils/phoneFormat';
 import { roleApi } from '@/api/role';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { EPageAccessLabel } from '../constants';
 
 export const AddStaffsModal = observer(() => {
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
@@ -145,7 +147,8 @@ export const AddStaffsModal = observer(() => {
       cancelText="Bekor qilish"
       centered
       confirmLoading={loading}
-      width={600}
+      width={isMobile ? 'calc(100vw - 24px)' : 600}
+      style={isMobile ? {top: 12} : undefined}
     >
       <Form
         form={form}

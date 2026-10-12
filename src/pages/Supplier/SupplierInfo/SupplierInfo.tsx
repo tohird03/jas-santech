@@ -129,7 +129,7 @@ export const SupplierInfo = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="supplier-info-page">
       <div className={cn('supplier-info__head')}>
         <Typography.Title level={3}>Yetkazib beruvchilar ro&apos;yxati</Typography.Title>
         <div className={cn('supplier-info__filter')}>
@@ -139,21 +139,39 @@ export const SupplierInfo = observer(() => {
             onChange={handleSearch}
             className={cn('supplier-info__search')}
           />
-          <InputNumber
-            placeholder="Qarz miqdorini kiriting"
-            onChange={handleDebtValueChange}
-            style={{ width: 460 }}
-            defaultValue={0}
-            addonAfter={
+          {isMobile ? (
+            <>
+              <InputNumber
+                className={cn('supplier-info__debt')}
+                placeholder="Qarz miqdorini kiriting"
+                onChange={handleDebtValueChange}
+                defaultValue={0}
+              />
               <Select
+                className={cn('supplier-info__debt-type')}
                 options={supplierDebtFilter}
                 onChange={handleDebtFilterChange}
-                style={{ width: '240px' }}
                 placeholder="Hammasi"
                 value={supplierInfoStore.debtType}
               />
-            }
-          />
+            </>
+          ) : (
+            <InputNumber
+              placeholder="Qarz miqdorini kiriting"
+              onChange={handleDebtValueChange}
+              style={{ width: 460 }}
+              defaultValue={0}
+              addonAfter={
+                <Select
+                  options={supplierDebtFilter}
+                  onChange={handleDebtFilterChange}
+                  style={{ width: '240px' }}
+                  placeholder="Hammasi"
+                  value={supplierInfoStore.debtType}
+                />
+              }
+            />
+          )}
           {picker}
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
@@ -176,7 +194,7 @@ export const SupplierInfo = observer(() => {
       </div>
 
       <DataTable
-        className={resizableTableProps.className}
+        className={isMobile ? 'supplier-info__cards' : resizableTableProps.className}
         columns={columns}
         tableLayout={resizableTableProps.tableLayout}
         components={resizableTableProps.components}

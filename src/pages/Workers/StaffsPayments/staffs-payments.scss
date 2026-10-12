@@ -1,16 +1,23 @@
-.client-info__head {
+.staff-payments__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 20px;
 }
-.client-info__filter {
+.staff-payments__filter {
   display: flex;
-  align-items: flex-start;
-  gap: 30px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .client-info__search {
   width: 250px;
+}
+
+.staff-payments__seller {
+  width: 200px;
 }
 
 .staff-payment__person {
@@ -46,17 +53,51 @@
   white-space: nowrap;
 }
 
+.staff-payments__total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+}
+
+.staff-payments__cards .staff-payment__person {
+  align-items: flex-end;
+  width: 100%;
+  min-width: 0;
+}
+
+.staff-payments__cards .staff-payment__name,
+.staff-payments__cards .staff-payment__note,
+.staff-payments__cards .currency-row,
+.staff-payments__total .currency-row {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  text-align: right;
+}
+
 @media only screen and (max-width: 800px) {
-  .client-info__head {
+  .staff-payments__head {
     flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 12px;
   }
-  .client-info__filter {
-    display: flex;
+  .staff-payments__filter {
     flex-direction: column;
-    gap: 15px !important;
+    align-items: stretch;
+    justify-content: flex-start;
     width: 100%;
   }
-  .client-info__search {
+  .staff-payments__seller,
+  .staff-payments__filter .ant-picker,
+  .staff-payments__filter .ant-btn {
     width: 100%;
   }
 }

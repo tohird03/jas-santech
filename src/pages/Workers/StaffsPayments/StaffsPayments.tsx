@@ -4,8 +4,10 @@ import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Button, DatePicker, DatePickerProps, Select, Table, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
+import { DataTable } from '@/components/Datatable/datatable';
 import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
 import { getPaginationParams } from '@/utils/getPaginationParams';
+import { useMediaQuery } from '@/utils/mediaQuery';
 import { AddEditModal } from './AddEditModal';
 import styles from './staffs-payments.scss';
 import { clientsColumns } from './constants';
@@ -48,6 +50,7 @@ const paymentMinWidths = {
 };
 
 export const StaffsPayments = observer(() => {
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
   const { boxRef, apply, picker } = useResizableColumns({
     keys: paymentColumnKeys,
@@ -154,14 +157,14 @@ export const StaffsPayments = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef}>
-      <div className={cn('client-info__head')}>
+    <main ref={boxRef} className="staff-payments-page">
+      <div className={cn('staff-payments__head')}>
         <Typography.Title level={3}>Xodimlar hisoboti</Typography.Title>
-        <div className={cn('client-info__filter')}>
+        <div className={cn('staff-payments__filter')}>
           <Select
             options={sellerOptions}
             onChange={handleChangeSeller}
-            style={{ width: '200px' }}
+            className={cn('staff-payments__seller')}
             placeholder="Sotuvchilar"
             loading={loadingSeller}
             allowClear
@@ -201,50 +204,80 @@ export const StaffsPayments = observer(() => {
         </div>
       </div>
 
-      <Table
-        {...resizableTableProps}
-        columns={columns}
-        dataSource={staffPaymentsData?.data?.data || []}
-        loading={loading}
-        pagination={{
-          total: staffPaymentsData?.data?.totalCount,
-          current: staffsPaymentStore?.pageNumber,
-          pageSize: staffsPaymentStore?.pageSize,
-          showSizeChanger: true,
-          onChange: handlePageChange,
-          ...getPaginationParams(staffPaymentsData?.data?.totalCount),
-        }}
-        tableLayout="fixed"
-        summary={() => (
-          <Table.Summary.Row>
-            {columns.map((column, index) => {
-              if (column.key === 'name') {
-                return (
-                  <Table.Summary.Cell key={column.key} index={index} align="center">
-                    <span className={cn('staff-payment__name')}>Jami</span>
-                  </Table.Summary.Cell>
-                );
-              }
+      {isMobile ? (
+        <>
+          <div className={cn('staff-payments__total')}>
+            <span className={cn('staff-payment__name')}>Jami</span>
+            <div className="currency-row">
+              {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
+                <span className="currency-item" key={total?.currency?.id}>
+                  {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
+                </span>
+              ))}
+            </div>
+          </div>
+          <DataTable
+            className={cn('staff-payments__cards')}
+            isMobile
+            columns={columns}
+            data={staffPaymentsData?.data?.data || []}
+            loading={loading}
+            pagination={{
+              total: staffPaymentsData?.data?.totalCount,
+              current: staffsPaymentStore?.pageNumber,
+              pageSize: staffsPaymentStore?.pageSize,
+              showSizeChanger: true,
+              onChange: handlePageChange,
+              ...getPaginationParams(staffPaymentsData?.data?.totalCount),
+            }}
+          />
+        </>
+      ) : (
+        <Table
+          {...resizableTableProps}
+          columns={columns}
+          dataSource={staffPaymentsData?.data?.data || []}
+          loading={loading}
+          pagination={{
+            total: staffPaymentsData?.data?.totalCount,
+            current: staffsPaymentStore?.pageNumber,
+            pageSize: staffsPaymentStore?.pageSize,
+            showSizeChanger: true,
+            onChange: handlePageChange,
+            ...getPaginationParams(staffPaymentsData?.data?.totalCount),
+          }}
+          tableLayout="fixed"
+          summary={() => (
+            <Table.Summary.Row>
+              {columns.map((column, index) => {
+                if (column.key === 'name') {
+                  return (
+                    <Table.Summary.Cell key={column.key} index={index} align="center">
+                      <span className={cn('staff-payment__name')}>Jami</span>
+                    </Table.Summary.Cell>
+                  );
+                }
 
-              if (column.key === 'amount') {
-                return (
-                  <Table.Summary.Cell key={column.key} index={index}>
-                    <div className="currency-row" style={{ fontWeight: 600 }}>
-                      {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
-                        <span className="currency-item" key={total?.currency?.id}>
-                          {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
-                        </span>
-                      ))}
-                    </div>
-                  </Table.Summary.Cell>
-                );
-              }
+                if (column.key === 'amount') {
+                  return (
+                    <Table.Summary.Cell key={column.key} index={index}>
+                      <div className="currency-row" style={{ fontWeight: 600 }}>
+                        {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
+                          <span className="currency-item" key={total?.currency?.id}>
+                            {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
+                          </span>
+                        ))}
+                      </div>
+                    </Table.Summary.Cell>
+                  );
+                }
 
-              return <Table.Summary.Cell key={String(column.key)} index={index} />;
-            })}
-          </Table.Summary.Row>
-        )}
-      />
+                return <Table.Summary.Cell key={String(column.key)} index={index} />;
+              })}
+            </Table.Summary.Row>
+          )}
+        />
+      )}
 
       {staffsPaymentStore.isOpenAddEditStaffPaymentsModal && <AddEditModal />}
     </main>

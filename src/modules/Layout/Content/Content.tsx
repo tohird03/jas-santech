@@ -47,6 +47,20 @@ const syncTableFooters = (root: Element) => {
   let pending = false;
 
   root.querySelectorAll('.ant-table').forEach((table) => {
+    if (
+      window.matchMedia('(max-width: 800px)').matches
+      && table.closest('.staff-payments-page, .currency-page, .staffs-page')
+    ) {
+      const scroller = table.querySelector('.ant-table-content, .ant-table-body');
+
+      if (scroller instanceof HTMLElement) {
+        scroller.style.height = '';
+        scroller.style.paddingBottom = '';
+      }
+
+      return;
+    }
+
     const summary = table.querySelector('.ant-table-summary');
     const headerCells = headerCellsOf(table);
 

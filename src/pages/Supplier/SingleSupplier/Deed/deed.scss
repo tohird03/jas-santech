@@ -1,37 +1,34 @@
-.deed__head {
+.supplier-deed__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 20px;
 }
-.deed__filter {
+
+.supplier-deed__filter {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-.deed__search {
-  width: 250px;
-  margin-right: 10px;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 @media only screen and (max-width: 800px) {
-  .deed__head {
+  .supplier-deed__head {
     flex-direction: column;
+    align-items: stretch;
   }
-  .deed__filter {
-    display: flex;
+
+  .supplier-deed__filter {
     flex-direction: column;
-    gap: 15px !important;
+    align-items: stretch;
+    justify-content: flex-start;
     width: 100%;
   }
-  .deed__search {
+
+  .supplier-deed__filter .ant-picker,
+  .supplier-deed__filter .ant-btn {
     width: 100%;
-  }
-}
-
-
-.deed {
-  &__green-col {
-    background-color: green;
   }
 }

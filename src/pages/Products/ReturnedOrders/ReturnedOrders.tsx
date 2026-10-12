@@ -98,7 +98,7 @@ export const ReturnedOrders = observer(() => {
   }, []);
 
   return (
-    <main>
+    <main className="returned-orders-page">
       <div className={cn('returned-orders__head')}>
         <Typography.Title level={3}>Mijozdan qaytgan mahsulotlar</Typography.Title>
         <div className={cn('returned-orders__filter')}>

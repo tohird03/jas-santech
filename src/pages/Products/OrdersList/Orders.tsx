@@ -151,7 +151,7 @@ export const Orders = observer(() => {
   }, []);
 
   return (
-    <main>
+    <main className="orders-page">
       <div className={cn('orders__head')}>
         <Typography.Title level={3}>Sotuvlar ro&apos;yxati</Typography.Title>
         <div className={cn('orders__filter')}>

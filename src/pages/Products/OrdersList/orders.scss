@@ -38,12 +38,21 @@
 @media only screen and (max-width: 800px) {
   .orders__head {
     flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .orders__filter {
     display: flex;
     flex-direction: column;
-    gap: 15px !important;
+    align-items: stretch;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .orders__filter .ant-picker,
+  .orders__filter .ant-select,
+  .orders__filter .ant-btn {
     width: 100%;
   }
 }

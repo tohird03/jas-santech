@@ -39,6 +39,30 @@
 @media screen and (max-width: 800px) {
   .card {
     width: 100%;
+    min-width: 0;
+  }
+
+  .paragraph {
+    min-width: 0;
+    gap: 12px;
+  }
+
+  .head {
+    flex: 0 0 auto;
+  }
+
+  .title {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-align: right;
+  }
+
+  .pagination {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
   }
 }
 

@@ -3,6 +3,8 @@ import { observer } from 'mobx-react';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Table, Typography } from 'antd';
 import classNames from 'classnames';
+import { DataTable } from '@/components/Datatable/datatable';
+import { useMediaQuery } from '@/utils/mediaQuery';
 import { AddEditModal } from './AddEditModal';
 import styles from './warehouse.scss';
 import { clientsColumns } from './constants';
@@ -12,6 +14,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 const cn = classNames.bind(styles);
 
 export const Warehouse = observer(() => {
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const { data: warehousesData, isLoading: loading } = useQuery({
     queryKey: ['getWarehouses'],
     queryFn: () =>
@@ -27,7 +30,7 @@ export const Warehouse = observer(() => {
   }, []);
 
   return (
-    <main>
+    <main className="warehouse-page">
       <div className={cn('currency__head')}>
         <Typography.Title level={3}>Skladlar</Typography.Title>
         <div className={cn('supplier-info__filter')}>
@@ -41,11 +44,21 @@ export const Warehouse = observer(() => {
         </div>
       </div>
 
-      <Table
-        columns={clientsColumns}
-        dataSource={warehousesData?.data?.data || []}
-        loading={loading}
-      />
+      {isMobile ? (
+        <DataTable
+          className="warehouse-cards"
+          isMobile
+          columns={clientsColumns}
+          data={warehousesData?.data?.data || []}
+          loading={loading}
+        />
+      ) : (
+        <Table
+          columns={clientsColumns}
+          dataSource={warehousesData?.data?.data || []}
+          loading={loading}
+        />
+      )}
 
       {warehouseStore.isOpenAddEditCurrency && <AddEditModal />}
     </main>

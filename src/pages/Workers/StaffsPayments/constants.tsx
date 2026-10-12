@@ -1,12 +1,12 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Tooltip } from 'antd';
+import {Tooltip} from 'antd';
+import {ColumnType} from 'antd/es/table';
 import classNames from 'classnames';
-import { Action } from './Action';
-import { priceFormat } from '@/utils/priceFormat';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { IStaffsPayments } from '@/api/staffs-payments/types';
-import { currencyTagUi } from '@/constants/payment';
+import {IStaffsPayments} from '@/api/staffs-payments/types';
+import {currencyTagUi} from '@/constants/payment';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
 import styles from './staffs-payments.scss';
 
 const cn = classNames.bind(styles);
@@ -32,7 +32,9 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
 
       return (
         <div className={cn('staff-payment__person')}>
-          <p className={cn('staff-payment__name')}>{record?.employee?.fullname}</p>
+          <Tooltip title={record?.employee?.fullname} placement="topLeft" mouseEnterDelay={0} zIndex={3000} getPopupContainer={() => document.body}>
+            <p className={`${cn('staff-payment__name')} cell-ellipsis`}>{record?.employee?.fullname}</p>
+          </Tooltip>
           {phoneText ? <p className={cn('staff-payment__phone')}>{phoneText}</p> : null}
         </div>
       );
@@ -58,7 +60,7 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     title: 'Ma\'lumot',
     align: 'center',
     width: 280,
-    onCell: () => ({ style: { maxWidth: 0 } }),
+    onCell: () => ({style: {maxWidth: 0}}),
     render: (value, record) => {
       const description = record?.description || '';
 
@@ -67,7 +69,7 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
       }
 
       return (
-        <Tooltip title={description} placement="top">
+        <Tooltip title={description} placement="top" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body} trigger={['hover', 'click']}>
           <span className={cn('staff-payment__note')}>{description}</span>
         </Tooltip>
       );

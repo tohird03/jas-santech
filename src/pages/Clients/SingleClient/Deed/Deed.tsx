@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, DatePickerProps, Table, Typography } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {DownloadOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, DatePicker, DatePickerProps, Table, Typography} from 'antd';
 import classNames from 'classnames';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { deedColumns } from './constants';
-import { singleClientStore } from '@/stores/clients';
-import { useParams } from 'react-router-dom';
-import styles from './deed.scss';
-import { DownloadOutlined } from '@ant-design/icons';
-import { clientsInfoApi } from '@/api/clients';
-import { addNotification } from '@/utils';
 import dayjs from 'dayjs';
-import { priceFormat } from '@/utils/priceFormat';
-import { currencyTagUi } from '@/constants/payment';
+import {clientsInfoApi, IClientDeed} from '@/api/clients';
+import {DataTable} from '@/components/Datatable/datatable';
+import {currencyTagUi} from '@/constants/payment';
+import {singleClientStore} from '@/stores/clients';
+import {addNotification} from '@/utils';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {priceFormat} from '@/utils/priceFormat';
+import {deedColumns} from './constants';
+import styles from './deed.scss';
 
 const cn = classNames.bind(styles);
 
 export const Deed = observer(() => {
-  const { clientId } = useParams();
+  const {clientId} = useParams();
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoadingDeed, setDownLoadLoadingDeed] = useState(false);
   const [downloadLoadingDeedProduct, setDownLoadLoadingDeedProduct] = useState(false);
 
@@ -118,63 +120,116 @@ export const Deed = observer(() => {
         </div>
       </div>
 
-      <Table
-        className="deed-table"
-        tableLayout="fixed"
-        columns={deedColumns}
-        dataSource={singleClientStore?.activeClient?.deedInfo?.deeds || []}
-        bordered
-        summary={(pageData) => (
-          <>
-            <Table.Summary.Row>
-              <Table.Summary.Cell colSpan={3} index={0}>
+      {isMobile ? (
+        <>
+          <div className={cn('deed__total')}>
+            <div>
+              <span>Jami debet</span>
+              <b>
+                {singleClientStore?.activeClient?.deedInfo?.totalDebitByCurrency?.map(debt => (
+                  <span key={debt?.currency?.id}>
+                    {priceFormat(debt?.amount)}
+                    {currencyTagUi(debt?.currency?.symbol)}
+                  </span>
+                ))}
+              </b>
+            </div>
+            <div>
+              <span>Jami kredit</span>
+              <b>
+                {singleClientStore?.activeClient?.deedInfo?.totalCreditByCurrency?.map(debt => (
+                  <span key={debt?.currency?.id}>
+                    {priceFormat(debt?.amount)}
+                    {currencyTagUi(debt?.currency?.symbol)}
+                  </span>
+                ))}
+              </b>
+            </div>
+            <div>
+              <span>Umumiy farq</span>
+              <b>
+                {singleClientStore?.activeClient?.deedInfo?.debtByCurrency?.map(debt => (
+                  <span key={debt?.currency?.id}>
+                    {priceFormat(debt?.amount)}
+                    {currencyTagUi(debt?.currency?.symbol)}
+                  </span>
+                ))}
+              </b>
+            </div>
+          </div>
+          <DataTable
+            className="deed-cards"
+            isMobile
+            columns={deedColumns}
+            data={(singleClientStore?.activeClient?.deedInfo?.deeds || []).map((item, index) => ({
+              ...item,
+              id: `${item.date}-${item.action}-${index}`,
+            }))}
+            rowClassName={(record: IClientDeed) => (
+              record?.type === 'debit' ? 'deed-card-debit' : 'deed-card-credit'
+            )}
+            pagination={false}
+          />
+        </>
+      ) : (
+        <Table
+          className="deed-table"
+          tableLayout="fixed"
+          columns={deedColumns}
+          dataSource={singleClientStore?.activeClient?.deedInfo?.deeds || []}
+          bordered
+          summary={(pageData) => (
+            <>
+              <Table.Summary.Row>
+                <Table.Summary.Cell colSpan={3} index={0}>
                 Jami
-              </Table.Summary.Cell>
-              <Table.Summary.Cell index={2}>
-                <div style={{ textAlign: 'center' }}>
-                  {singleClientStore?.activeClient?.deedInfo?.totalDebitByCurrency?.map(debt => (
-                    <div key={debt?.currency?.id}>
-                      {priceFormat(debt?.amount)}
-                      {currencyTagUi(debt?.currency?.symbol)}
-                    </div>
-                  ))
-                  }
-                </div>
-              </Table.Summary.Cell>
-              <Table.Summary.Cell index={2}>
-                <div style={{ textAlign: 'center' }}>
-                  {singleClientStore?.activeClient?.deedInfo?.totalCreditByCurrency?.map(debt => (
-                    <div key={debt?.currency?.id}>
-                      {priceFormat(debt?.amount)}
-                      {currencyTagUi(debt?.currency?.symbol)}
-                    </div>
-                  ))
-                  }
-                </div>
-              </Table.Summary.Cell>
-              <Table.Summary.Cell index={5} />
-            </Table.Summary.Row>
-            <Table.Summary.Row>
-              <Table.Summary.Cell colSpan={3} index={0}>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>
+                  <div style={{textAlign: 'center'}}>
+                    {singleClientStore?.activeClient?.deedInfo?.totalDebitByCurrency?.map(debt => (
+                      <div key={debt?.currency?.id}>
+                        {priceFormat(debt?.amount)}
+                        {currencyTagUi(debt?.currency?.symbol)}
+                      </div>
+                    ))
+                    }
+                  </div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>
+                  <div style={{textAlign: 'center'}}>
+                    {singleClientStore?.activeClient?.deedInfo?.totalCreditByCurrency?.map(debt => (
+                      <div key={debt?.currency?.id}>
+                        {priceFormat(debt?.amount)}
+                        {currencyTagUi(debt?.currency?.symbol)}
+                      </div>
+                    ))
+                    }
+                  </div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5} />
+              </Table.Summary.Row>
+              <Table.Summary.Row>
+                <Table.Summary.Cell colSpan={3} index={0}>
                 Umumiy farq
-              </Table.Summary.Cell>
-              <Table.Summary.Cell colSpan={2} index={2}>
-                <div style={{ textAlign: 'center' }}>
-                  {singleClientStore?.activeClient?.deedInfo?.debtByCurrency?.map(debt => (
-                    <div key={debt?.currency?.id}>
-                      {priceFormat(debt?.amount)}
-                      {currencyTagUi(debt?.currency?.symbol)}
-                    </div>
-                  ))
-                  }
-                </div>
-              </Table.Summary.Cell>
-              <Table.Summary.Cell index={5} />
-            </Table.Summary.Row>
-          </>
-        )}
-        pagination={false}
-      />
+                </Table.Summary.Cell>
+                <Table.Summary.Cell colSpan={2} index={2}>
+                  <div style={{textAlign: 'center'}}>
+                    {singleClientStore?.activeClient?.deedInfo?.debtByCurrency?.map(debt => (
+                      <div key={debt?.currency?.id}>
+                        {priceFormat(debt?.amount)}
+                        {currencyTagUi(debt?.currency?.symbol)}
+                      </div>
+                    ))
+                    }
+                  </div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5} />
+              </Table.Summary.Row>
+            </>
+          )}
+          pagination={false}
+        />
+      )}
     </div>
   );
 });

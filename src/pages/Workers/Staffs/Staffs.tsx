@@ -82,7 +82,7 @@ export const Staffs = observer(() => {
   const columns = apply(staffsColumns);
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="staffs-page">
       <div className={cn('staffs__head')}>
         <Typography.Title level={3}>Xodimlar</Typography.Title>
         <div className={cn('staffs__filter')}>

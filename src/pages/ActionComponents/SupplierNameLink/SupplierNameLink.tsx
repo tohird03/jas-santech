@@ -1,8 +1,8 @@
 import React from 'react';
-import { Tooltip } from 'antd';
-import { ROUTES } from '@/constants';
-import { useNavigate } from 'react-router-dom';
-import { ISupplierInfo } from '@/api/supplier/types';
+import {useNavigate} from 'react-router-dom';
+import {Tooltip} from 'antd';
+import {ISupplierInfo} from '@/api/supplier/types';
+import {ROUTES} from '@/constants';
 
 type Props = {
   supplier: ISupplierInfo;
@@ -12,7 +12,7 @@ type Props = {
   clip?: boolean;
 };
 
-export const SupplierNameLink = ({ supplier, showPhone = true, plain = false, rowHover = false, clip = false }: Props) => {
+export const SupplierNameLink = ({supplier, showPhone = true, plain = false, rowHover = false, clip = false}: Props) => {
   const navigate = useNavigate();
   const phone = supplier?.phone ? String(supplier.phone) : '';
   const phoneText = phone.startsWith('+') ? phone : `+${phone || '998000000000'}`;
@@ -23,23 +23,35 @@ export const SupplierNameLink = ({ supplier, showPhone = true, plain = false, ro
 
   const fullname = supplier?.fullname || '';
   const nameClass = plain ? `person-link__name${clip ? ' cell-ellipsis' : ''}` : (clip ? 'cell-ellipsis' : undefined);
-  const nameStyle = plain ? undefined : { margin: 0, fontWeight: 'bold' };
+  const nameStyle = plain ? undefined : {margin: 0, fontWeight: 'bold'};
   const nameText = (
     <p className={nameClass} style={nameStyle} onClick={plain ? handleReloadSingleClient : undefined}>
       {fullname}
     </p>
   );
-  const nameNode = clip ? (
-    <Tooltip title={fullname} placement="topLeft">
+  const nameNode = fullname ? (
+    <Tooltip
+      title={fullname}
+      placement="topLeft"
+      mouseEnterDelay={0}
+      zIndex={3000}
+      getPopupContainer={() => document.body}
+    >
       {nameText}
     </Tooltip>
   ) : nameText;
 
   if (plain) {
     return (
-      <div className={clip ? 'person-link person-link--pay name-clip' : 'person-link person-link--pay'}>
+      <div className={clip ? 'person-link person-link--pay name-clip clip-box' : 'person-link person-link--pay'}>
         {nameNode}
-        {showPhone ? <p className={clip ? 'person-link__phone cell-ellipsis' : 'person-link__phone'}>{phoneText}</p> : null}
+        {showPhone ? (
+          clip ? (
+            <Tooltip title={phoneText} placement="topLeft" mouseEnterDelay={0} zIndex={3000} getPopupContainer={() => document.body}>
+              <p className="person-link__phone cell-ellipsis">{phoneText}</p>
+            </Tooltip>
+          ) : <p className="person-link__phone">{phoneText}</p>
+        ) : null}
       </div>
     );
   }
@@ -47,7 +59,7 @@ export const SupplierNameLink = ({ supplier, showPhone = true, plain = false, ro
   const linkClass = [
     'table-name-link',
     rowHover ? 'name-row-link' : '',
-    clip ? 'name-clip' : '',
+    clip ? 'name-clip clip-box' : '',
   ].filter(Boolean).join(' ');
 
   return (

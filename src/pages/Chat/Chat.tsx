@@ -1,7 +1,7 @@
 import './chat.scss';
 
 import React, {useEffect, useRef, useState} from 'react';
-import {CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
+import {ArrowLeftOutlined, CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
 import {observer} from 'mobx-react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {Button, Empty, Input, notification, Popconfirm, Spin, Tag, Typography} from 'antd';
@@ -15,6 +15,7 @@ import {authStore} from '@/stores/auth';
 import {chatBadgeStore} from '@/stores/chat/chat-badge';
 import {addNotification} from '@/utils';
 import {getFullDateFormat} from '@/utils/getDateFormat';
+import {useMediaQuery} from '@/utils/mediaQuery';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
 
 const showWarning = (result?: {warning?: {is?: boolean, messages?: string[]}}) => {
@@ -150,6 +151,7 @@ const MessageBubble = ({
 
 export const ChatPage = observer(() => {
   const queryClient = useQueryClient();
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const [search, setSearch] = useState('');
   const [client, setClient] = useState<ChatListClient | null>(null);
   const [text, setText] = useState('');
@@ -516,7 +518,7 @@ export const ChatPage = observer(() => {
   };
 
   return (
-    <main className="chat-page">
+    <main className={`chat-page${client && isMobile ? ' chat-page--open' : ''}`}>
       <div className="chat-page__head">
         <Typography.Title level={3}>Chat</Typography.Title>
       </div>
@@ -581,6 +583,15 @@ export const ChatPage = observer(() => {
           {client && (
             <>
               <div className="chat-page__thread-head">
+                {isMobile && (
+                  <Button
+                    className="chat-page__back"
+                    type="text"
+                    icon={<ArrowLeftOutlined />}
+                    aria-label="Ro'yxatga qaytish"
+                    onClick={() => setClient(null)}
+                  />
+                )}
                 <span className="chat-page__avatar">{(client.fullname || '?').trim().charAt(0).toUpperCase()}</span>
                 <span className="chat-page__thread-person">
                   <span className="chat-page__thread-name">{client.fullname}</span>

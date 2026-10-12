@@ -4,3 +4,21 @@
   justify-content: space-between;
   margin-bottom: 20px;
 }
+
+@media only screen and (max-width: 800px) {
+  .warehouse-page .currency__head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .warehouse-page .supplier-info__filter {
+    flex: none;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .warehouse-page .supplier-info__filter .ant-btn {
+    width: 100%;
+  }
+}

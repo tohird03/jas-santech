@@ -107,7 +107,7 @@ export const IncomeProducts = observer(() => {
   }, []);
 
   return (
-    <main>
+    <main className="income-products-page">
       <div className={cn('income-products__head')}>
         <Typography.Title level={3}>Tushurilgan mahsulotlar</Typography.Title>
         <div className={cn('income-products__filter')}>

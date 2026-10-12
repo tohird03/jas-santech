@@ -1,13 +1,14 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Action } from './Action';
-import { IIncomeOrder, IIncomeProduct, ITotalIncomeOrderPaymentCalc } from '@/api/income-products/types';
-import { priceFormat } from '@/utils/priceFormat';
-import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
-import { PaymentStatus } from './PaymentStatus';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { currencyTagUi } from '@/constants/payment';
-import { OrderDescUpdate } from './OrderDescUpdate/OrderDescUpdate';
+import {ColumnType} from 'antd/es/table';
+import {IIncomeOrder, IIncomeProduct, ITotalIncomeOrderPaymentCalc} from '@/api/income-products/types';
+import {ClipText} from '@/components/ClipText';
+import {currencyTagUi} from '@/constants/payment';
+import {SupplierNameLink} from '@/pages/ActionComponents/SupplierNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
+import {OrderDescUpdate} from './OrderDescUpdate/OrderDescUpdate';
+import {PaymentStatus} from './PaymentStatus';
 
 export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
   {
@@ -24,7 +25,8 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Yetkazib beruvchi',
     align: 'center',
     width: '300px',
-    render: (value, record) => <SupplierNameLink supplier={record?.supplier} />,
+    onCell: () => ({style: {maxWidth: 300}}),
+    render: (value, record) => <SupplierNameLink supplier={record?.supplier} showPhone={false} clip />,
   },
   {
     key: 'staff',
@@ -33,9 +35,11 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     align: 'center',
     width: '120px',
     render: (value, record) => (
-      <div>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
-      </div>
+      <ClipText text={record?.staff?.fullname}>
+        <div className="clip-box">
+          <p className="cell-ellipsis" style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
+        </div>
+      </ClipText>
     ),
   },
   {
@@ -151,8 +155,8 @@ export const ordersInfoColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Yetkazib beruvchi',
     align: 'center',
     render: (value, record) => (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.supplier?.fullname}</p>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
+        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.supplier?.fullname}</p>
         <i>+{record?.supplier?.phone}</i>
       </div>
     ),
@@ -163,8 +167,8 @@ export const ordersInfoColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Ma\'sul xodim',
     align: 'center',
     render: (value, record) => (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
+        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
         <i>+{record?.staff?.phone}</i>
       </div>
     ),
@@ -282,7 +286,13 @@ export const ordersInfoProductsColumns: ColumnType<IIncomeProduct>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     width: '150px',
-    render: (value, record) => record?.product?.name,
+    render: (value, record) => (
+      <ClipText text={record?.product?.name}>
+        <div className="clip-box">
+          <span className="cell-ellipsis">{record?.product?.name}</span>
+        </div>
+      </ClipText>
+    ),
   },
   {
     key: 'count',

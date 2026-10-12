@@ -204,7 +204,14 @@ export const Reminders = () => {
         }
 
         return (
-          <Tooltip title={description} placement="topLeft">
+          <Tooltip
+            title={description}
+            placement="topLeft"
+            mouseEnterDelay={0}
+            zIndex={2000}
+            getPopupContainer={() => document.body}
+            trigger={['hover', 'click']}
+          >
             <span className="cell-ellipsis">{description}</span>
           </Tooltip>
         );
@@ -241,7 +248,7 @@ export const Reminders = () => {
   const tableColumns = apply(columns);
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="reminder-page">
       <div className="reminder-page__head">
         <Typography.Title level={3}>Eslatmalar</Typography.Title>
         <div className="reminder-page__filter">
@@ -268,7 +275,7 @@ export const Reminders = () => {
       </div>
       <DataTable
         rowKey="id"
-        className={resizableTableProps.className}
+        className={isMobile ? 'reminder-page__cards' : resizableTableProps.className}
         columns={tableColumns}
         tableLayout={resizableTableProps.tableLayout}
         components={resizableTableProps.components}
@@ -295,7 +302,9 @@ export const Reminders = () => {
         okText={editing ? 'Saqlash' : 'Qo\'shish'}
         cancelText="Bekor qilish"
         confirmLoading={isPending}
-        centered
+        centered={!isMobile}
+        width={isMobile ? 'calc(100vw - 24px)' : 520}
+        style={isMobile ? {top: 12} : undefined}
       >
         <Form form={form} layout="vertical" onFinish={(values) => saveReminder(values)}>
           <Form.Item name="clientId" label="Mijoz" rules={[{required: true}]}>

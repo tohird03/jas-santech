@@ -1,16 +1,17 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Action } from './Action';
-import { IOrder, IOrderProducts, IOrderStatus, ITotalOrderPaymentCalc } from '@/api/order/types';
-import { Image, Tag } from 'antd';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { priceFormat } from '@/utils/priceFormat';
-import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
-import { PaymentStatus } from './PaymentStatus';
-import { currencyTagUi } from '@/constants/payment';
-import { imageUrlWithBase } from '@/utils/image';
-import { OrderDescUpdate } from './OrderDescUpdate/OrderDescUpdate';
-import { ActionShowProduct } from './OrderShowInfoModal/Action';
+import {Image, Tag} from 'antd';
+import {ColumnType} from 'antd/es/table';
+import {IOrder, IOrderProducts, IOrderStatus, ITotalOrderPaymentCalc} from '@/api/order/types';
+import {ClipText} from '@/components/ClipText';
+import {currencyTagUi} from '@/constants/payment';
+import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {imageUrlWithBase} from '@/utils/image';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
+import {OrderDescUpdate} from './OrderDescUpdate/OrderDescUpdate';
+import {ActionShowProduct} from './OrderShowInfoModal/Action';
+import {PaymentStatus} from './PaymentStatus';
 
 export const ordersColumns: ColumnType<IOrder>[] = [
   {
@@ -27,7 +28,8 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Mijoz',
     align: 'center',
     width: '300px',
-    render: (value, record) => <ClientNameLink client={record?.client} />,
+    onCell: () => ({style: {maxWidth: 300}}),
+    render: (value, record) => <ClientNameLink client={record?.client} clip />,
   },
   {
     key: 'status',
@@ -57,7 +59,13 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Sotuvchi',
     align: 'center',
     width: '100px',
-    render: (value, record) => <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>,
+    render: (value, record) => (
+      <ClipText text={record?.staff?.fullname}>
+        <div className="clip-box">
+          <p className="cell-ellipsis" style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
+        </div>
+      </ClipText>
+    ),
   },
   {
     key: 'totalPrice',
@@ -158,9 +166,9 @@ export const ordersColumns: ColumnType<IOrder>[] = [
 ];
 
 export const PRICE_TYPE_OPTIONS = [
-  { label: 'Sotib olingan narx', value: 'cost' },
-  { label: 'Ulgurji narx', value: 'wholesale' },
-  { label: 'Sotish narxi', value: 'selling' },
+  {label: 'Sotib olingan narx', value: 'cost'},
+  {label: 'Ulgurji narx', value: 'wholesale'},
+  {label: 'Sotish narxi', value: 'selling'},
 ];
 
 export const OrderStatus: Record<IOrderStatus, string> = {
@@ -188,8 +196,8 @@ export const ordersInfoColumns: ColumnType<IOrder>[] = [
     title: 'Mijoz',
     align: 'center',
     render: (value, record) => (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.client?.fullname}</p>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
+        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.client?.fullname}</p>
         <i>+{record?.client?.phone}</i>
       </div>
     ),
@@ -200,8 +208,8 @@ export const ordersInfoColumns: ColumnType<IOrder>[] = [
     title: 'Sotuvchi',
     align: 'center',
     render: (value, record) => (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
+        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
         <i>+{record?.staff?.phone}</i>
       </div>
     ),
@@ -334,7 +342,13 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     width: '150px',
-    render: (value, record) => record?.product?.name,
+    render: (value, record) => (
+      <ClipText text={record?.product?.name}>
+        <div className="clip-box">
+          <span className="cell-ellipsis">{record?.product?.name}</span>
+        </div>
+      </ClipText>
+    ),
   },
   {
     key: 'count',
@@ -372,7 +386,13 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'O\'ram haqida ma\'lumot',
     align: 'center',
     width: 300,
-    render: (value, record) => <span>{record?.product?.description}</span>,
+    render: (value, record) => (
+      <ClipText text={record?.product?.description}>
+        <div className="clip-box">
+          <span className="cell-ellipsis">{record?.product?.description}</span>
+        </div>
+      </ClipText>
+    ),
   },
   {
     key: 'action',
@@ -466,7 +486,7 @@ export const FilterOrderStatusOptions = [
     label: (
       <Tag
         color={OrderStatusColor[IOrderStatus.ACCEPTED]}
-        style={{ width: '100%', fontSize: '14px' }}
+        style={{width: '100%', fontSize: '14px'}}
       >
         {OrderStatus[IOrderStatus.ACCEPTED]}
       </Tag>
@@ -477,7 +497,7 @@ export const FilterOrderStatusOptions = [
     label: (
       <Tag
         color={OrderStatusColor[IOrderStatus.NOTACCEPTED]}
-        style={{ width: '100%', fontSize: '14px' }}
+        style={{width: '100%', fontSize: '14px'}}
       >
         {OrderStatus[IOrderStatus.NOTACCEPTED]}
       </Tag>

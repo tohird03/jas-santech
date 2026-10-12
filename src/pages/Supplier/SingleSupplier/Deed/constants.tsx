@@ -1,10 +1,10 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { priceFormat } from '@/utils/priceFormat';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { ISupplierDeed, ISupplierDeedAction, ISupplierDeedType } from '@/api/supplier/types';
-import { Tag } from 'antd';
-import { currencyTagUi } from '@/constants/payment';
+import {Tag, Tooltip} from 'antd';
+import {ColumnType} from 'antd/es/table';
+import {ISupplierDeed, ISupplierDeedAction, ISupplierDeedType} from '@/api/supplier/types';
+import {currencyTagUi} from '@/constants/payment';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
 
 export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
@@ -76,7 +76,21 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
     title: 'Ma\'lumot',
     align: 'center',
     width: '200px',
-    render: (value, record) => <span>{record?.description}</span>,
+    render: (value, record) => (
+      record?.description ? (
+        <Tooltip
+          title={record.description}
+          placement="topLeft"
+          mouseEnterDelay={0}
+          zIndex={3000}
+          getPopupContainer={() => document.body}
+        >
+          <div className="clip-box">
+            <span className="cell-ellipsis">{record.description}</span>
+          </div>
+        </Tooltip>
+      ) : null
+    ),
   },
 ];
 

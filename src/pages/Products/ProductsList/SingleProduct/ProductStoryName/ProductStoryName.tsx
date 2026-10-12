@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { ROUTES } from '@/constants';
-import { useNavigate } from 'react-router-dom';
-import { ISingleProductStory } from '@/api/product/types';
-import { incomeProductsStore, ordersStore, returnedOrdersStore } from '@/stores/products';
+import React from 'react';
+import {Tooltip} from 'antd';
+import {ISingleProductStory} from '@/api/product/types';
+import {incomeProductsStore, ordersStore, returnedOrdersStore} from '@/stores/products';
 
 type Props = {
   client: ISingleProductStory;
@@ -13,8 +12,6 @@ export const ProductStoryClientName = ({
   client,
   type,
 }: Props) => {
-  const navigate = useNavigate();
-
   const handleClick = () => {
     if (type === 'selling') {
       ordersStore.setOrderId(client?.selling?.id);
@@ -41,21 +38,26 @@ export const ProductStoryClientName = ({
 
   return (
     <div
+      className="clip-box"
       onClick={handleClick}
       style={{
         color: '#17a2b8',
         cursor: 'pointer',
       }}
     >
-      <p
-        style={{
-          margin: 0,
-          fontWeight: 'bold',
-          fontSize: '14px',
-        }}
-      >
-        {client?.type === type ? fullname : null}
-      </p>
+      {client?.type === type && fullname ? (
+        <Tooltip
+          title={fullname}
+          placement="topLeft"
+          mouseEnterDelay={0}
+          zIndex={3000}
+          getPopupContainer={() => document.body}
+        >
+          <p className="cell-ellipsis" style={{margin: 0, fontWeight: 'bold', fontSize: '14px'}}>
+            {fullname}
+          </p>
+        </Tooltip>
+      ) : null}
     </div>
   );
 };

@@ -30,13 +30,15 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     render: (value, record) => (
-      <div className="person-link product-card" style={{ cursor: 'default' }}>
-        <NavLink to={`/products/${record?.id}`} className="person-link__name">
-          {record?.name}
-        </NavLink>
+      <div className="person-link product-card name-clip" style={{ cursor: 'default' }}>
+        <Tooltip title={record?.name} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
+          <NavLink to={`/products/${record?.id}`} className="person-link__name cell-ellipsis">
+            {record?.name}
+          </NavLink>
+        </Tooltip>
         {record?.description ? (
-          <Tooltip title={record.description}>
-            <p className="person-link__phone">{record.description}</p>
+          <Tooltip title={record.description} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
+            <p className="person-link__phone cell-ellipsis">{record.description}</p>
           </Tooltip>
         ) : null}
       </div>

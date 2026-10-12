@@ -1,8 +1,11 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { ColumnsType } from 'antd/es/table';
 import { DataTable } from '@/components/Datatable/datatable';
 import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
+import { IClientStatistic } from '@/api/clients';
 import { getPaginationParams } from '@/utils/getPaginationParams';
+import { useMediaQuery } from '@/utils/mediaQuery';
 import { staffsWorkingTimeReportsColumns } from './constants';
 import { DatePicker, DatePickerProps, Input, Typography } from 'antd';
 import styles from './styles.scss';
@@ -13,6 +16,13 @@ import { useQuery } from '@tanstack/react-query';
 import { useDebounce } from 'usehooks-ts';
 
 const cn = classNames.bind(styles);
+
+const flattenColumns = (items: ColumnsType<IClientStatistic>): ColumnsType<IClientStatistic> =>
+  items.flatMap((column) => (
+    'children' in column && column.children?.length
+      ? flattenColumns(column.children)
+      : [column]
+  ));
 
 const reportColumnKeys = [
   'index',
@@ -68,6 +78,7 @@ const reportMinWidths = {
 };
 
 export const ClientStatistic = observer(() => {
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const { boxRef, apply, picker } = useResizableColumns({
     keys: reportColumnKeys,
     defaults: reportDefaultWidths,
@@ -77,6 +88,11 @@ export const ClientStatistic = observer(() => {
     fit: false,
   });
   const columns = apply(staffsWorkingTimeReportsColumns);
+  const titleByKey = Object.fromEntries(reportColumnTitles.map((item) => [item.key, item.title]));
+  const cardColumns = flattenColumns(columns).map((column) => ({
+    ...column,
+    title: titleByKey[String(column.key)] || column.title,
+  }));
   const search = useDebounce(clientsStatisticStore.search || '', 400);
   const { data: clientsStatisticData, isLoading: loading, isError } = useQuery({
     queryKey: [
@@ -118,7 +134,7 @@ export const ClientStatistic = observer(() => {
   };
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="client-report-page">
       <div className={cn('client-report__head')}>
         <Typography.Title level={3}>Mijozlar hisoboti</Typography.Title>
         <div className={cn('client-report__filter')}>
@@ -148,13 +164,14 @@ export const ClientStatistic = observer(() => {
 
       <DataTable
         rowKey="id"
-        className={`${resizableTableProps.className} resizable-table--scroll`}
-        columns={columns}
-        tableLayout={resizableTableProps.tableLayout}
-        components={resizableTableProps.components}
+        className={isMobile ? 'client-report__cards' : `${resizableTableProps.className} resizable-table--scroll`}
+        columns={isMobile ? cardColumns : columns}
+        tableLayout={isMobile ? undefined : resizableTableProps.tableLayout}
+        components={isMobile ? undefined : resizableTableProps.components}
         data={isError ? [] : (clientsStatisticData?.data?.data || [])}
         loading={loading}
-        scroll={{x: true}}
+        isMobile={isMobile}
+        scroll={isMobile ? undefined : {x: true}}
         pagination={{
           total: clientsStatisticData?.data?.totalCount,
           current: clientsStatisticStore?.pageNumber,

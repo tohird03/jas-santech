@@ -1,13 +1,14 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Action } from './Action';
-import { priceFormat } from '@/utils/priceFormat';
-import { IReturnedOrder, IReturnedOrderProducts } from '@/api/returned-order/types';
-import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
-import { Tag } from 'antd';
-import { OrderStatus, OrderStatusColor } from '../OrdersList/constants';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { currencyTagUi } from '@/constants/payment';
+import {Tag} from 'antd';
+import {ColumnType} from 'antd/es/table';
+import {IReturnedOrder, IReturnedOrderProducts} from '@/api/returned-order/types';
+import {ClipText} from '@/components/ClipText';
+import {currencyTagUi} from '@/constants/payment';
+import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
+import {OrderStatus, OrderStatusColor} from '../OrdersList/constants';
+import {Action} from './Action';
 
 export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
   {
@@ -22,7 +23,8 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     dataIndex: 'name',
     title: 'Mijoz',
     align: 'center',
-    render: (value, record) => <ClientNameLink client={record?.client} />,
+    onCell: () => ({style: {maxWidth: 280}}),
+    render: (value, record) => <ClientNameLink client={record?.client} clip />,
   },
   {
     key: 'status',
@@ -43,10 +45,12 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     title: 'Sotuvchi',
     align: 'center',
     render: (value, record) => (
-      <div>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
-        <i>+{record?.staff?.phone}</i>
-      </div>
+      <ClipText text={record?.staff?.fullname}>
+        <div className="clip-box">
+          <p className="cell-ellipsis" style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
+          <i>+{record?.staff?.phone}</i>
+        </div>
+      </ClipText>
     ),
   },
   {
@@ -142,7 +146,13 @@ export const returnedOrdersInfoProductsColumns: ColumnType<IReturnedOrderProduct
     title: 'Mahsulot nomi',
     align: 'center',
     width: '150px',
-    render: (value, record) => record?.product?.name,
+    render: (value, record) => (
+      <ClipText text={record?.product?.name}>
+        <div className="clip-box">
+          <span className="cell-ellipsis">{record?.product?.name}</span>
+        </div>
+      </ClipText>
+    ),
   },
   {
     key: 'count',

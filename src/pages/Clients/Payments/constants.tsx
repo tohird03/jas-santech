@@ -55,7 +55,7 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
       }
 
       return (
-        <Tooltip title={description} placement="topLeft">
+        <Tooltip title={description} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body} trigger={['hover', 'click']}>
           <span className="cell-ellipsis">{description}</span>
         </Tooltip>
       );
@@ -82,7 +82,7 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
       }
 
       return (
-        <Tooltip title={fullname} placement="topLeft">
+        <Tooltip title={fullname} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
           <span className="cell-ellipsis" style={{fontWeight: 'bold'}}>{fullname}</span>
         </Tooltip>
       );

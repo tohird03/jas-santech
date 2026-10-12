@@ -139,7 +139,7 @@ export const ClientsInfo = observer(() => {
   };
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="clients-info-page">
       <div className={cn('client-info__head')}>
         <Typography.Title level={3} className={cn('client-info__title')}>Mijozlar</Typography.Title>
         <div className={cn('client-info__filter')}>
@@ -158,21 +158,39 @@ export const ClientsInfo = observer(() => {
             onChange={handleSearch}
             className={cn('client-info__search')}
           />
-          <InputNumber
-            placeholder="Qarz miqdorini kiriting"
-            onChange={handleDebtValueChange}
-            style={{ width: 460 }}
-            defaultValue={0}
-            addonAfter={
+          {isMobile ? (
+            <>
+              <InputNumber
+                className={cn('client-info__debt-input')}
+                placeholder="Qarz miqdorini kiriting"
+                onChange={handleDebtValueChange}
+                defaultValue={0}
+              />
               <Select
+                className={cn('client-info__debt-type')}
                 options={clientDebtFilter}
                 onChange={handleDebtFilterChange}
-                style={{ width: '240px' }}
                 placeholder="Hammasi"
                 value={clientsInfoStore.debtType}
               />
-            }
-          />
+            </>
+          ) : (
+            <InputNumber
+              placeholder="Qarz miqdorini kiriting"
+              onChange={handleDebtValueChange}
+              style={{ width: 460 }}
+              defaultValue={0}
+              addonAfter={
+                <Select
+                  options={clientDebtFilter}
+                  onChange={handleDebtFilterChange}
+                  style={{ width: '240px' }}
+                  placeholder="Hammasi"
+                  value={clientsInfoStore.debtType}
+                />
+              }
+            />
+          )}
           <div className={cn('client-info__actions')}>
             {picker}
             <Tooltip placement="top" title="Excelda yuklash">
@@ -197,7 +215,7 @@ export const ClientsInfo = observer(() => {
       </div>
 
       <DataTable
-        className={resizableTableProps.className}
+        className={isMobile ? 'clients-info__cards' : resizableTableProps.className}
         columns={columns}
         tableLayout={resizableTableProps.tableLayout}
         components={resizableTableProps.components}

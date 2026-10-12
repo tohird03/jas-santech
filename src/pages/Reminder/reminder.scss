@@ -16,6 +16,14 @@
   width: 280px;
 }
 
+.reminder-page__cards .cell-ellipsis,
+.reminder-page__cards .name-clip {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  text-align: right;
+}
+
 @media only screen and (max-width: 800px) {
   .reminder-page__head {
     flex-direction: column;
@@ -27,7 +35,8 @@
     align-items: stretch;
   }
 
-  .reminder-page__client {
+  .reminder-page__client,
+  .reminder-page__filter .ant-btn {
     width: 100%;
   }
 }

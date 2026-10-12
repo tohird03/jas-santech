@@ -20,7 +20,7 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     title: 'Xodim',
     align: 'center',
     render: (value, record) => (
-      <Tooltip title={record?.fullname} placement="topLeft">
+      <Tooltip title={record?.fullname} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
         <span className="staff-list__name">{record?.fullname}</span>
       </Tooltip>
     ),

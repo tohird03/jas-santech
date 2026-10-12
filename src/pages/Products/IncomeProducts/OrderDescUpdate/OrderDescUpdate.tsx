@@ -1,10 +1,11 @@
-import { incomeProductsApi } from '@/api/income-products';
-import { IIncomeOrder } from '@/api/income-products/types';
-import { ordersApi } from '@/api/order';
-import { IOrder } from '@/api/order/types';
-import { addNotification } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import {useQueryClient} from '@tanstack/react-query';
+import {incomeProductsApi} from '@/api/income-products';
+import {IIncomeOrder} from '@/api/income-products/types';
+import {ordersApi} from '@/api/order';
+import {IOrder} from '@/api/order/types';
+import {ClipText} from '@/components/ClipText';
+import {addNotification} from '@/utils';
 
 interface Props {
   order: IIncomeOrder;
@@ -22,7 +23,7 @@ export const OrderDescUpdate: React.FC<Props> = ({order}) => {
     })
       .then(() => {
         addNotification('Tahrirlandi');
-        queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+        queryClient.invalidateQueries({queryKey: ['getOrders']});
       })
       .catch(addNotification);
   };
@@ -46,7 +47,7 @@ export const OrderDescUpdate: React.FC<Props> = ({order}) => {
   }, [order?.description]);
 
   return (
-    <div style={{ minHeight: '40px' }}>
+    <div style={{minHeight: '40px'}}>
       {isEditing ? (
         <textarea
           value={value}
@@ -73,16 +74,19 @@ export const OrderDescUpdate: React.FC<Props> = ({order}) => {
           }}
         />
       ) : (
-        <div
-          onDoubleClick={handleDoubleClick}
-          style={{
-            cursor: 'pointer',
-            padding: '6px 8px',
-            borderRadius: '6px',
-          }}
-        >
-          {value || <span style={{ color: '#999' }}>Izoh yo‘q...</span>}
-        </div>
+        <ClipText text={value}>
+          <div
+            className="clip-box"
+            onDoubleClick={handleDoubleClick}
+            style={{
+              cursor: 'pointer',
+              padding: '6px 8px',
+              borderRadius: '6px',
+            }}
+          >
+            <span className="cell-ellipsis">{value || <span style={{color: '#999'}}>Izoh yo‘q...</span>}</span>
+          </div>
+        </ClipText>
       )}
     </div>
   );

@@ -54,7 +54,7 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
       }
 
       return (
-        <Tooltip title={description} placement="topLeft">
+        <Tooltip title={description} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body} trigger={['hover', 'click']}>
           <span className="cell-ellipsis">{description}</span>
         </Tooltip>
       );

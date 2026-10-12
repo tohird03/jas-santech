@@ -3,11 +3,13 @@ import { observer } from 'mobx-react';
 import { useQuery } from '@tanstack/react-query';
 import { Table, Typography } from 'antd';
 import classNames from 'classnames';
+import { DataTable } from '@/components/Datatable/datatable';
 import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
 import { AddEditModal } from './AddEditModal';
 import styles from './currency.scss';
 import { clientsColumns } from './constants';
 import { currencyStore } from '@/stores/workers';
+import { useMediaQuery } from '@/utils/mediaQuery';
 
 const cn = classNames.bind(styles);
 
@@ -32,6 +34,7 @@ const currencyMinWidths = {
 };
 
 export const Currency = observer(() => {
+  const isMobile = useMediaQuery('(max-width: 800px)');
   const { boxRef, apply, picker } = useResizableColumns({
     keys: currencyColumnKeys,
     defaults: currencyDefaultWidths,
@@ -50,18 +53,28 @@ export const Currency = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef}>
+    <main ref={boxRef} className="currency-page">
       <div className={cn('currency__head')}>
         <Typography.Title level={3}>Valyuta</Typography.Title>
         {picker}
       </div>
 
-      <Table
-        {...resizableTableProps}
-        columns={columns}
-        dataSource={currencyData?.data?.data || []}
-        loading={loading}
-      />
+      {isMobile ? (
+        <DataTable
+          className="currency-cards"
+          isMobile
+          columns={columns}
+          data={currencyData?.data?.data || []}
+          loading={loading}
+        />
+      ) : (
+        <Table
+          {...resizableTableProps}
+          columns={columns}
+          dataSource={currencyData?.data?.data || []}
+          loading={loading}
+        />
+      )}
 
       {currencyStore.isOpenEditCurrency && <AddEditModal />}
     </main>
