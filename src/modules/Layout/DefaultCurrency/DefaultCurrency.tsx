@@ -50,7 +50,7 @@ export const DefaultCurrency: React.FC = observer(() => {
     <div>
       <Select
         options={currencyManyData}
-        style={{width: '130px'}}
+        className="header-currency"
         placeholder="Valyuta"
         value={authStore?.staffInfo?.currency?.id}
         onChange={handleCurrencyChange}

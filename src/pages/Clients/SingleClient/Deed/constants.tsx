@@ -3,7 +3,8 @@ import { ColumnType } from 'antd/es/table';
 import { priceFormat } from '@/utils/priceFormat';
 import { getFullDateFormat } from '@/utils/getDateFormat';
 import { IClientDeed, IClientDeedAction, IClientDeedType } from '@/api/clients';
-import { Tag, Tooltip } from 'antd';
+import { Tag } from 'antd';
+import { ClipText } from '@/components/ClipText';
 import { currencyTagUi } from '@/constants/payment';
 
 export const deedColumns: ColumnType<IClientDeed>[] = [
@@ -86,9 +87,9 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
       }
 
       return (
-        <Tooltip title={description} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body} trigger={['hover', 'click']}>
+        <ClipText text={description}>
           <span className="cell-ellipsis">{description}</span>
-        </Tooltip>
+        </ClipText>
       );
     },
   },

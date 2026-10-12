@@ -1,6 +1,6 @@
 import React from 'react';
-import {Tooltip} from 'antd';
 import {ColumnType} from 'antd/es/table';
+import {ClipText} from '@/components/ClipText';
 import classNames from 'classnames';
 import {IStaffsPayments} from '@/api/staffs-payments/types';
 import {currencyTagUi} from '@/constants/payment';
@@ -32,9 +32,9 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
 
       return (
         <div className={cn('staff-payment__person')}>
-          <Tooltip title={record?.employee?.fullname} placement="topLeft" mouseEnterDelay={0} zIndex={3000} getPopupContainer={() => document.body}>
+          <ClipText text={record?.employee?.fullname}>
             <p className={`${cn('staff-payment__name')} cell-ellipsis`}>{record?.employee?.fullname}</p>
-          </Tooltip>
+          </ClipText>
           {phoneText ? <p className={cn('staff-payment__phone')}>{phoneText}</p> : null}
         </div>
       );
@@ -69,9 +69,9 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
       }
 
       return (
-        <Tooltip title={description} placement="top" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body} trigger={['hover', 'click']}>
+        <ClipText text={description}>
           <span className={cn('staff-payment__note')}>{description}</span>
-        </Tooltip>
+        </ClipText>
       );
     },
   },

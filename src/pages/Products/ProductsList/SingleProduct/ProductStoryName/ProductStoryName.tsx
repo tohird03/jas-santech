@@ -1,6 +1,6 @@
 import React from 'react';
-import {Tooltip} from 'antd';
 import {ISingleProductStory} from '@/api/product/types';
+import {ClipText} from '@/components/ClipText';
 import {incomeProductsStore, ordersStore, returnedOrdersStore} from '@/stores/products';
 
 type Props = {
@@ -46,17 +46,11 @@ export const ProductStoryClientName = ({
       }}
     >
       {client?.type === type && fullname ? (
-        <Tooltip
-          title={fullname}
-          placement="topLeft"
-          mouseEnterDelay={0}
-          zIndex={3000}
-          getPopupContainer={() => document.body}
-        >
+        <ClipText text={fullname}>
           <p className="cell-ellipsis" style={{margin: 0, fontWeight: 'bold', fontSize: '14px'}}>
             {fullname}
           </p>
-        </Tooltip>
+        </ClipText>
       ) : null}
     </div>
   );

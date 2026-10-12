@@ -1,6 +1,6 @@
 import React from 'react';
-import {Tooltip} from 'antd';
 import {ColumnType} from 'antd/es/table';
+import {ClipText} from '@/components/ClipText';
 import {EPageAccess, IStaffs} from '@/api/staffs';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
 import {Action} from './Action';
@@ -20,9 +20,9 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     title: 'Xodim',
     align: 'center',
     render: (value, record) => (
-      <Tooltip title={record?.fullname} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
+      <ClipText text={record?.fullname}>
         <span className="staff-list__name">{record?.fullname}</span>
-      </Tooltip>
+      </ClipText>
     ),
   },
   {

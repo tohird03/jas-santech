@@ -6,7 +6,8 @@ import { getFullDateFormat } from '@/utils/getDateFormat';
 import { priceFormat } from '@/utils/priceFormat';
 import { NavLink } from 'react-router-dom';
 import { currencyTagUi } from '@/constants/payment';
-import { Image, Tooltip } from 'antd';
+import { Image } from 'antd';
+import { ClipText } from '@/components/ClipText';
 import { imageUrlWithBase } from '@/utils/image';
 
 const unitTitle = (label: string) => (
@@ -31,15 +32,15 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     align: 'center',
     render: (value, record) => (
       <div className="person-link product-card name-clip" style={{ cursor: 'default' }}>
-        <Tooltip title={record?.name} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
+        <ClipText text={record?.name}>
           <NavLink to={`/products/${record?.id}`} className="person-link__name cell-ellipsis">
             {record?.name}
           </NavLink>
-        </Tooltip>
+        </ClipText>
         {record?.description ? (
-          <Tooltip title={record.description} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
+          <ClipText text={record.description}>
             <p className="person-link__phone cell-ellipsis">{record.description}</p>
-          </Tooltip>
+          </ClipText>
         ) : null}
       </div>
     ),

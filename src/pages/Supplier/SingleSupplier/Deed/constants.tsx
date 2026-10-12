@@ -1,5 +1,6 @@
 import React from 'react';
-import {Tag, Tooltip} from 'antd';
+import {Tag} from 'antd';
+import {ClipText} from '@/components/ClipText';
 import {ColumnType} from 'antd/es/table';
 import {ISupplierDeed, ISupplierDeedAction, ISupplierDeedType} from '@/api/supplier/types';
 import {currencyTagUi} from '@/constants/payment';
@@ -78,17 +79,11 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
     width: '200px',
     render: (value, record) => (
       record?.description ? (
-        <Tooltip
-          title={record.description}
-          placement="topLeft"
-          mouseEnterDelay={0}
-          zIndex={3000}
-          getPopupContainer={() => document.body}
-        >
+        <ClipText text={record.description}>
           <div className="clip-box">
             <span className="cell-ellipsis">{record.description}</span>
           </div>
-        </Tooltip>
+        </ClipText>
       ) : null
     ),
   },

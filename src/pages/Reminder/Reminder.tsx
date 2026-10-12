@@ -3,7 +3,7 @@ import './reminder.scss';
 import React, {useState} from 'react';
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {Button, DatePicker, Form, Input, Modal, Popconfirm, Select, Spin, Tooltip, Typography} from 'antd';
+import {Button, DatePicker, Form, Input, Modal, Popconfirm, Select, Spin, Typography} from 'antd';
 import {ColumnType} from 'antd/es/table';
 import {AxiosError} from 'axios';
 import dayjs, {Dayjs} from 'dayjs';
@@ -11,6 +11,7 @@ import {useDebounce} from 'usehooks-ts';
 import {clientsInfoApi} from '@/api/clients';
 import {IReminder, IReminderForm, reminderApi} from '@/api/reminder';
 import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
+import {ClipText} from '@/components/ClipText';
 import {DataTable} from '@/components/Datatable/datatable';
 import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
 import {addNotification} from '@/utils';
@@ -223,16 +224,9 @@ export const Reminders = () => {
         }
 
         return (
-          <Tooltip
-            title={description}
-            placement="topLeft"
-            mouseEnterDelay={0}
-            zIndex={2000}
-            getPopupContainer={() => document.body}
-            trigger={['hover', 'click']}
-          >
+          <ClipText text={description}>
             <span className="cell-ellipsis">{description}</span>
-          </Tooltip>
+          </ClipText>
         );
       },
     },

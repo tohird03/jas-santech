@@ -1,6 +1,6 @@
 import React from 'react';
-import {Tooltip} from 'antd';
 import {ColumnType} from 'antd/es/table';
+import {ClipText} from '@/components/ClipText';
 import {IClientsInfo} from '@/api/clients';
 import {Action} from './Action';
 import { priceFormat } from '@/utils/priceFormat';
@@ -55,9 +55,9 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
       }
 
       return (
-        <Tooltip title={description} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body} trigger={['hover', 'click']}>
+        <ClipText text={description}>
           <span className="cell-ellipsis">{description}</span>
-        </Tooltip>
+        </ClipText>
       );
     },
   },
@@ -82,9 +82,9 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
       }
 
       return (
-        <Tooltip title={fullname} placement="topLeft" mouseEnterDelay={0} zIndex={2000} getPopupContainer={() => document.body}>
+        <ClipText text={fullname}>
           <span className="cell-ellipsis" style={{fontWeight: 'bold'}}>{fullname}</span>
-        </Tooltip>
+        </ClipText>
       );
     },
   },

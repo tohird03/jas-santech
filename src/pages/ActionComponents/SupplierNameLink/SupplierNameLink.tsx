@@ -1,7 +1,7 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Tooltip} from 'antd';
 import {ISupplierInfo} from '@/api/supplier/types';
+import {ClipText} from '@/components/ClipText';
 import {ROUTES} from '@/constants';
 
 type Props = {
@@ -29,17 +29,7 @@ export const SupplierNameLink = ({supplier, showPhone = true, plain = false, row
       {fullname}
     </p>
   );
-  const nameNode = fullname ? (
-    <Tooltip
-      title={fullname}
-      placement="topLeft"
-      mouseEnterDelay={0}
-      zIndex={3000}
-      getPopupContainer={() => document.body}
-    >
-      {nameText}
-    </Tooltip>
-  ) : nameText;
+  const nameNode = fullname ? <ClipText text={fullname}>{nameText}</ClipText> : nameText;
 
   if (plain) {
     return (
@@ -47,9 +37,9 @@ export const SupplierNameLink = ({supplier, showPhone = true, plain = false, row
         {nameNode}
         {showPhone ? (
           clip ? (
-            <Tooltip title={phoneText} placement="topLeft" mouseEnterDelay={0} zIndex={3000} getPopupContainer={() => document.body}>
+            <ClipText text={phoneText}>
               <p className="person-link__phone cell-ellipsis">{phoneText}</p>
-            </Tooltip>
+            </ClipText>
           ) : <p className="person-link__phone">{phoneText}</p>
         ) : null}
       </div>
