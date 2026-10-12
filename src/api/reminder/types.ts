@@ -9,6 +9,7 @@ export interface IReminder {
   clientId: string;
   client: IReminderClient;
   startDate: string;
+  sendHour: number;
   description: string;
   lastSentOn: string | null;
   createdAt: string;
@@ -39,5 +40,6 @@ export interface IReminderQuery {
 export interface IReminderForm {
   clientId: string;
   startDate: string;
+  sendHour: number;
   description: string;
 }

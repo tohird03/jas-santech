@@ -120,6 +120,7 @@ export enum Endpoints {
   // CHAT
   ChatMany = '/chat/many',
   ChatInbox = '/chat/inbox',
+  ChatRead = '/chat/read',
   ChatOne = '/chat/one',
   ChatFile = '/chat/file',
 

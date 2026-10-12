@@ -14,6 +14,9 @@ class ChatApi extends Instance {
 
   inbox = (): Promise<IApiResult<IChatInboxItem[]>> => this.get(Endpoints.ChatInbox);
 
+  markRead = (clientId: string): Promise<IApiResult<{clientId: string}>> =>
+    this.resPost(Endpoints.ChatRead, {clientId});
+
   getMany = (clientId: string, pageSize?: number): Promise<IApiResult<IChatList>> =>
     this.get(Endpoints.ChatMany, {
       params: pageSize

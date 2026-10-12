@@ -6,22 +6,6 @@ import {umsStages} from '@/api/endpoints';
 
 type BadgeRow = {
   unread: number;
-  incoming: number;
-  lastAt: number;
-};
-
-const seenKey = (clientId: string) => `jas-chat-seen:${clientId}`;
-
-const seenAt = (clientId: string) => {
-  const value = Number(localStorage.getItem(seenKey(clientId)) || 0);
-
-  return Number.isFinite(value) ? value : 0;
-};
-
-const rememberSeen = (clientId: string, at: number) => {
-  if (at > seenAt(clientId)) {
-    localStorage.setItem(seenKey(clientId), String(at));
-  }
 };
 
 class ChatBadgeStore {
@@ -49,66 +33,29 @@ class ChatBadgeStore {
     this.openClientId = clientId;
 
     if (clientId) {
-      this.markRead(clientId, Date.now());
+      this.markRead(clientId);
     }
   }
 
-  markRead(clientId: string, at: number) {
-    rememberSeen(clientId, at);
+  markRead(clientId: string) {
     const previous = this.rows[clientId];
 
-    if (!previous || previous.unread === 0) {
-      return;
+    if (previous?.unread) {
+      this.rows = {
+        ...this.rows,
+        [clientId]: {unread: 0},
+      };
     }
 
-    this.rows = {
-      ...this.rows,
-      [clientId]: {...previous, unread: 0},
-    };
+    chatApi.markRead(clientId).catch(() => undefined);
   }
 
   syncInbox(items: IChatInboxItem[]) {
-    const next = {...this.rows};
+    const next: Record<string, BadgeRow> = {};
 
     items.forEach((item) => {
-      const at = Date.parse(item.lastMessage?.createdAt);
-      const lastAt = Number.isNaN(at) ? 0 : at;
-      const previous = next[item.id];
-      const seen = seenAt(item.id);
-
-      if (previous && previous.lastAt > lastAt) {
-        return;
-      }
-
-      if (previous && previous.lastAt === lastAt) {
-        next[item.id] = {
-          ...previous,
-          unread: seen >= lastAt ? 0 : previous.unread,
-          incoming: Math.max(previous.incoming, item.incomingCount),
-        };
-
-        return;
-      }
-
-      const added = previous ? Math.max(0, item.incomingCount - previous.incoming) : 0;
-      let unread = 0;
-
-      if (seen < lastAt) {
-        if (!previous) {
-          unread = seen > 0 ? Math.max(added, 1) : item.incomingCount;
-        } else {
-          unread = previous.unread + added;
-        }
-      }
-
-      if (this.openClientId === item.id) {
-        unread = 0;
-      }
-
       next[item.id] = {
-        lastAt,
-        unread,
-        incoming: Math.max(item.incomingCount, previous?.incoming || 0),
+        unread: this.openClientId === item.id ? 0 : (item.unreadCount || 0),
       };
     });
 
@@ -142,21 +89,23 @@ class ChatBadgeStore {
     }
 
     this.seenIds.add(message.id);
-    const at = Date.parse(message.createdAt);
-    const lastAt = Number.isNaN(at) ? Date.now() : at;
     const viewing = this.openClientId === message.clientId;
 
     if (viewing) {
-      rememberSeen(message.clientId, lastAt);
+      this.markRead(message.clientId);
+
+      return;
     }
 
-    const previous = this.rows[message.clientId] || {unread: 0, incoming: 0, lastAt: 0};
-    const incoming = previous.incoming + (message.direction === 'in' ? 1 : 0);
-    const unread = viewing || message.direction !== 'in' ? (viewing ? 0 : previous.unread) : previous.unread + 1;
+    if (message.direction !== 'in') {
+      return;
+    }
+
+    const previous = this.rows[message.clientId]?.unread || 0;
 
     this.rows = {
       ...this.rows,
-      [message.clientId]: {unread, incoming, lastAt},
+      [message.clientId]: {unread: previous + 1},
     };
   }
 }

@@ -22,14 +22,21 @@ import {formatPhoneNumber} from '@/utils/phoneFormat';
 interface ReminderFormValues {
   clientId: string;
   startDate: Dayjs;
+  sendHour: number;
   description: string;
 }
 
-const reminderColumnKeys = ['index', 'client', 'startDate', 'description', 'lastSentOn', 'action'];
+const sendHourOptions = Array.from({length: 24}, (_, hour) => ({
+  value: hour,
+  label: `${String(hour).padStart(2, '0')}:00`,
+}));
+
+const reminderColumnKeys = ['index', 'client', 'startDate', 'sendHour', 'description', 'lastSentOn', 'action'];
 const reminderColumnTitles = [
   {key: 'index', title: '#'},
   {key: 'client', title: 'Mijoz'},
   {key: 'startDate', title: 'Boshlanish sanasi'},
+  {key: 'sendHour', title: 'Yuborish vaqti'},
   {key: 'description', title: 'Tavsif'},
   {key: 'lastSentOn', title: 'Oxirgi yuborilgan'},
   {key: 'action', title: 'Amallar'},
@@ -38,6 +45,7 @@ const reminderDefaultWidths = {
   index: 64,
   client: 260,
   startDate: 170,
+  sendHour: 150,
   description: 320,
   lastSentOn: 180,
   action: 130,
@@ -46,6 +54,7 @@ const reminderMinWidths = {
   index: 56,
   client: 150,
   startDate: 140,
+  sendHour: 120,
   description: 120,
   lastSentOn: 140,
   action: 112,
@@ -106,12 +115,14 @@ export const Reminders = () => {
       const body: IReminderForm = {
         clientId: values.clientId,
         startDate: values.startDate.format('YYYY-MM-DD'),
+        sendHour: values.sendHour,
         description: values.description.trim(),
       };
 
       if (editing) {
         return reminderApi.updateOne(editing.id, {
           startDate: body.startDate,
+          sendHour: body.sendHour,
           description: body.description,
         });
       }
@@ -135,6 +146,7 @@ export const Reminders = () => {
   const openCreate = () => {
     setEditing(null);
     form.resetFields();
+    form.setFieldsValue({sendHour: 8});
     setOpen(true);
   };
 
@@ -143,6 +155,7 @@ export const Reminders = () => {
     form.setFieldsValue({
       clientId: reminder.clientId,
       startDate: dayjs(reminder.startDate),
+      sendHour: reminder.sendHour ?? 8,
       description: reminder.description,
     });
     setOpen(true);
@@ -189,6 +202,12 @@ export const Reminders = () => {
       title: 'Boshlanish sanasi',
       align: 'center',
       render: (_value, record) => dateFormat(record.startDate),
+    },
+    {
+      key: 'sendHour',
+      title: 'Yuborish vaqti',
+      align: 'center',
+      render: (_value, record) => `${String(record.sendHour ?? 8).padStart(2, '0')}:00`,
     },
     {
       key: 'description',
@@ -321,6 +340,9 @@ export const Reminders = () => {
           </Form.Item>
           <Form.Item name="startDate" label="Boshlanish sanasi" rules={[{required: true}]}>
             <DatePicker style={{width: '100%'}} format="DD.MM.YYYY" placeholder="Sanani tanlang" />
+          </Form.Item>
+          <Form.Item name="sendHour" label="Yuborish vaqti" rules={[{required: true}]}>
+            <Select options={sendHourOptions} placeholder="Soatni tanlang" />
           </Form.Item>
           <Form.Item name="description" label="Tavsif" rules={[{required: true}]}>
             <Input.TextArea rows={3} maxLength={1000} placeholder="eslatma matni" />

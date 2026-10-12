@@ -36,6 +36,7 @@ export interface IChatInboxItem {
   phone: string;
   telegram: {isActive: boolean} | null;
   incomingCount: number;
+  unreadCount: number;
   lastMessage: IChatInboxMessage;
 }
 

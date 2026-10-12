@@ -36,20 +36,6 @@ const canDeleteMessage = (createdAt: string) => Date.now() - new Date(createdAt)
 const isPdfFile = (message: {mimeType?: string | null, fileName?: string | null}) =>
   message.mimeType === 'application/pdf' || Boolean(message.fileName?.toLowerCase().endsWith('.pdf'));
 
-const seenKey = (clientId: string) => `jas-chat-seen:${clientId}`;
-
-const seenAt = (clientId: string) => {
-  const value = Number(localStorage.getItem(seenKey(clientId)) || 0);
-
-  return Number.isFinite(value) ? value : 0;
-};
-
-const rememberSeen = (clientId: string, at: number) => {
-  if (at > seenAt(clientId)) {
-    localStorage.setItem(seenKey(clientId), String(at));
-  }
-};
-
 type ChatListClient = {
   id: string;
   fullname: string;
@@ -237,8 +223,8 @@ export const ChatPage = observer(() => {
       const lastAt = Number.isNaN(at) ? Date.now() : at;
       const viewing = openClientId.current === message.clientId;
 
-      if (viewing) {
-        rememberSeen(message.clientId, lastAt);
+      if (viewing && message.direction === 'in') {
+        chatBadgeStore.markRead(message.clientId);
       }
 
       setSummaries((current) => {
@@ -286,6 +272,7 @@ export const ChatPage = observer(() => {
               phone: known.phone,
               telegram: known.telegram || null,
               incomingCount: message.direction === 'in' ? 1 : 0,
+              unreadCount: message.direction === 'in' ? 1 : 0,
               lastMessage,
             });
           }
@@ -374,7 +361,6 @@ export const ChatPage = observer(() => {
         const at = Date.parse(item.lastMessage.createdAt);
         const lastAt = Number.isNaN(at) ? 0 : at;
         const previous = current[item.id];
-        const seen = seenAt(item.id);
 
         if (previous && previous.lastAt > lastAt) {
           next[item.id] = previous;
@@ -382,39 +368,17 @@ export const ChatPage = observer(() => {
           return;
         }
 
-        if (previous && previous.lastAt === lastAt) {
-          next[item.id] = {
-            ...previous,
-            lastText: messagePreview(item.lastMessage),
-            unread: seen >= lastAt ? 0 : previous.unread,
-            incoming: Math.max(previous.incoming, item.incomingCount),
-          };
-
-          return;
-        }
-
-        const added = previous ? Math.max(0, item.incomingCount - previous.incoming) : 0;
-        let unread = 0;
-
-        if (seen < lastAt) {
-          if (!previous) {
-            unread = seen > 0 ? Math.max(added, 1) : item.incomingCount;
-          } else {
-            unread = previous.unread + added;
-          }
-        }
-
         next[item.id] = {
           lastText: messagePreview(item.lastMessage),
-          lastAt,
-          unread,
-          incoming: Math.max(item.incomingCount, previous?.incoming || 0),
+          lastAt: Math.max(previous?.lastAt || 0, lastAt),
+          unread: client?.id === item.id ? 0 : (item.unreadCount || 0),
+          incoming: item.incomingCount,
         };
       });
 
       return next;
     });
-  }, [inboxResult]);
+  }, [inboxResult, client?.id]);
 
   useEffect(() => {
     if (!client?.id || !messages.length) {
@@ -424,7 +388,6 @@ export const ChatPage = observer(() => {
     const newest = messages[messages.length - 1];
     const at = Date.parse(newest.createdAt);
 
-    rememberSeen(client.id, at);
     setSummaries((current) => {
       const previous = current[client.id];
 
