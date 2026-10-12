@@ -1,8 +1,12 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import {Endpoints} from '@/api/endpoints';
 import {IResponse} from '@/api/types';
-import {resetStores, stores} from '@/stores';
 import {INetworkConfig, TMethod} from './types';
+
+// Stores import API classes that extend Instance. A static import here
+// makes that cycle evaluate Instance before the class exists, which
+// crashes the production bundle.
+const loadStores = () => import('@/stores');
 
 export class Instance {
   protected readonly instance: AxiosInstance;
@@ -32,8 +36,10 @@ export class Instance {
 
   handleResponse = <T>(response: AxiosResponse<IResponse<T>>) => response;
 
-  private handleResponseError = (error: AxiosError) => {
+  private handleResponseError = async (error: AxiosError) => {
     if (error?.response?.status === 401) {
+      const {resetStores} = await loadStores();
+
       resetStores();
       window.localStorage.clear();
     }
@@ -42,6 +48,7 @@ export class Instance {
   };
 
   private handleRequest = async ({headers, ...restConfig}: AxiosRequestConfig) => {
+    const {stores} = await loadStores();
     const {authStore} = stores;
     const accessToken = authStore.token?.accessToken;
 
