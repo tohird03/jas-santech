@@ -11,6 +11,10 @@ type Props = {
 const headerCellsOf = (table: Element) => [...table.querySelectorAll('.ant-table-thead th')];
 
 const widenColumnsForFooter = (table: Element) => {
+  if (table.closest('.orders-table')) {
+    return;
+  }
+
   const summary = table.querySelector('.ant-table-summary');
   const headerCells = headerCellsOf(table);
 
@@ -56,6 +60,17 @@ const syncTableFooters = (root: Element) => {
       if (scroller instanceof HTMLElement) {
         scroller.style.height = '';
         scroller.style.paddingBottom = '';
+      }
+
+      return;
+    }
+
+    if (table.closest('.orders-table')) {
+      const orderScroller = table.querySelector('.ant-table-content, .ant-table-body');
+
+      if (orderScroller instanceof HTMLElement) {
+        orderScroller.style.height = '';
+        orderScroller.style.paddingBottom = '';
       }
 
       return;

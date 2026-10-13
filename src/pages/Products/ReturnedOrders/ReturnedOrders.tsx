@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import {returnedOrderApi} from '@/api/returned-order/returned-order';
 import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
 import {returnedOrdersStore} from '@/stores/products';
 import {addNotification} from '@/utils';
 import {getPaginationParams} from '@/utils/getPaginationParams';
@@ -19,9 +20,54 @@ import styles from './returned-orders.scss';
 
 const cn = classNames.bind(styles);
 
+const returnedColumnKeys = [
+  'index', 'name', 'status', 'seller', 'sum', 'totalPay', 'debt', 'createdAt', 'action',
+];
+const returnedColumnTitles = [
+  {key: 'index', title: '#'},
+  {key: 'name', title: 'Mijoz'},
+  {key: 'status', title: 'Qaytaruv holati'},
+  {key: 'seller', title: 'Sotuvchi'},
+  {key: 'sum', title: 'Jami narxi'},
+  {key: 'totalPay', title: 'Jami to\'lov'},
+  {key: 'debt', title: 'Qarzga'},
+  {key: 'createdAt', title: 'Qaytarilgan sanasi'},
+  {key: 'action', title: 'O\'zgartirish'},
+];
+const returnedDefaultWidths = {
+  index: 48,
+  name: 260,
+  status: 148,
+  seller: 150,
+  sum: 128,
+  totalPay: 116,
+  debt: 128,
+  createdAt: 150,
+  action: 176,
+};
+const returnedMinWidths = {
+  index: 44,
+  name: 160,
+  status: 136,
+  seller: 120,
+  sum: 112,
+  totalPay: 96,
+  debt: 112,
+  createdAt: 136,
+  action: 168,
+};
+
 export const ReturnedOrders = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
+  const {boxRef, apply, picker} = useResizableColumns({
+    keys: returnedColumnKeys,
+    defaults: returnedDefaultWidths,
+    mins: returnedMinWidths,
+    titles: returnedColumnTitles,
+    flexKey: 'name',
+  });
+  const columns = apply(returnedOrdersColumns);
 
   const {data: returnedOrdersData, isLoading: loading} = useQuery({
     queryKey: [
@@ -98,7 +144,7 @@ export const ReturnedOrders = observer(() => {
   }, []);
 
   return (
-    <main className="returned-orders-page">
+    <main ref={boxRef} className="returned-orders-page">
       <div className={cn('returned-orders__head')}>
         <Typography.Title level={3}>Mijozdan qaytgan mahsulotlar</Typography.Title>
         <div className={cn('returned-orders__filter')}>
@@ -122,6 +168,7 @@ export const ReturnedOrders = observer(() => {
             defaultValue={dayjs(returnedOrdersStore.endDate)}
             allowClear={false}
           />
+          {picker}
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -143,7 +190,10 @@ export const ReturnedOrders = observer(() => {
       </div>
 
       <DataTable
-        columns={returnedOrdersColumns}
+        className={isMobile ? undefined : resizableTableProps.className}
+        columns={columns}
+        tableLayout={isMobile ? undefined : resizableTableProps.tableLayout}
+        components={isMobile ? undefined : resizableTableProps.components}
         data={returnedOrdersData?.data?.data || []}
         loading={loading}
         isMobile={isMobile}

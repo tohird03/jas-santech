@@ -28,7 +28,7 @@ export const PaymentStatus = observer(({order}: Props) => {
       onClick={handleOpenPaymentModal}
       style={{cursor: 'pointer'}}
     >
-      {order?.payment ? 'To\'lovni ko\'rish' : 'To\'lovni tasdiqlash'}
+      {order?.payment ? 'Ko\'rish' : 'Tasdiqlash'}
     </Tag>
   );
 });

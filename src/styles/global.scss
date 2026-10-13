@@ -564,11 +564,25 @@ input::-webkit-inner-spin-button {
 }
 
 .content .ant-table {
-  flex: 0 1 auto;
-  max-height: 100%;
-  overflow: auto;
+  flex: 1 1 0%;
+  height: 0;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
   border: 1px solid #d9d9d9;
   border-radius: 2px;
+}
+
+.content .ant-table-container {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content .ant-table-content {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
 }
 
 .content .ant-table:has(.ant-table-summary) {
@@ -644,18 +658,23 @@ input::-webkit-inner-spin-button {
 }
 
 .content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) {
-  flex: 1 1 auto;
-  height: auto;
+  flex: 1 1 0%;
+  height: 0;
   max-height: none;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
 }
 
-.content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-container,
+.content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-container {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
 .content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-content {
-  height: auto;
-  max-height: none;
-  overflow: visible;
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-summary {
@@ -673,6 +692,71 @@ input::-webkit-inner-spin-button {
   overflow: visible;
   height: auto;
   background: #fafafa;
+}
+
+.content .orders-table.ant-table-wrapper .ant-table {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  height: 0;
+  max-height: none;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content .orders-table .ant-table-container {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content .orders-table .ant-table-header {
+  flex: 0 0 auto;
+  overflow: hidden !important;
+}
+
+.content .orders-table .ant-table-body {
+  flex: 1 1 auto;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0;
+  overflow: auto !important;
+}
+
+.content .orders-table .ant-table-container > .ant-table-summary {
+  position: static !important;
+  display: block !important;
+  flex: 0 0 auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  background: #fafafa;
+  border-top: 1px solid #d9d9d9;
+}
+
+.content .orders-table tfoot.ant-table-summary {
+  position: static !important;
+  display: table-footer-group !important;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  table-layout: auto;
+}
+
+.content .orders-table .ant-table-summary table {
+  width: 100%;
+}
+
+.content .orders-table .ant-table-summary > tr > td,
+.content .orders-table .ant-table-summary .ant-table-cell {
+  overflow: visible;
+  height: auto;
+  background: #fafafa !important;
 }
 
 .content .ant-table-container {

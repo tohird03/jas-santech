@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import {incomeProductsApi} from '@/api/income-products';
 import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
 import {AddEditSupplierModal} from '@/pages/Supplier/SupplierInfo/AddEditModal';
 import {incomeProductsStore, productsListStore} from '@/stores/products';
 import {supplierInfoStore} from '@/stores/supplier';
@@ -16,17 +17,65 @@ import {getPaginationParams} from '@/utils/getPaginationParams';
 import {useMediaQuery} from '@/utils/mediaQuery';
 import {AddEditModal} from '../ProductsList/AddEditModal';
 import {AddEditIncomeOrderModal} from './AddEditModal';
-import {incomeOrdersColumns, incomeOrdersTotalCalc} from './constants';
+import {incomeOrdersColumns} from './constants';
 import styles from './income-products.scss';
 import {OrderShowInfoModal} from './OrderShowInfoModal';
 import {PaymentModal} from './PaymentModal';
 
 const cn = classNames.bind(styles);
 
+const incomeColumnKeys = [
+  'index', 'supplier', 'staff', 'paymentShow', 'totalPrice', 'totalPay', 'debt', 'description', 'createdAt', 'action',
+];
+const incomeColumnTitles = [
+  {key: 'index', title: '#'},
+  {key: 'supplier', title: 'Yetkazib beruvchi'},
+  {key: 'staff', title: 'Qabul qiluvchi'},
+  {key: 'paymentShow', title: 'To\'lov holat'},
+  {key: 'totalPrice', title: 'Jami narxi'},
+  {key: 'totalPay', title: 'Jami to\'lov'},
+  {key: 'debt', title: 'Qarzga'},
+  {key: 'description', title: 'Ma\'lumot'},
+  {key: 'createdAt', title: 'Tushurilgan vaqti'},
+  {key: 'action', title: 'Amallar'},
+];
+const incomeDefaultWidths = {
+  index: 48,
+  supplier: 240,
+  staff: 110,
+  paymentShow: 156,
+  totalPrice: 128,
+  totalPay: 116,
+  debt: 128,
+  description: 140,
+  createdAt: 140,
+  action: 176,
+};
+const incomeMinWidths = {
+  index: 44,
+  supplier: 160,
+  staff: 88,
+  paymentShow: 148,
+  totalPrice: 112,
+  totalPay: 96,
+  debt: 112,
+  description: 100,
+  createdAt: 128,
+  action: 168,
+};
+
 export const IncomeProducts = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const {supplierId} = useParams();
   const [downloadLoading, setDownLoadLoading] = useState(false);
+  const {boxRef, apply, picker} = useResizableColumns({
+    keys: incomeColumnKeys,
+    defaults: incomeDefaultWidths,
+    mins: incomeMinWidths,
+    titles: incomeColumnTitles,
+    flexKey: 'supplier',
+  });
+  const columns = apply(incomeOrdersColumns);
 
   const {data: incomeOrdersData, isLoading: loading} = useQuery({
     queryKey: [
@@ -107,7 +156,7 @@ export const IncomeProducts = observer(() => {
   }, []);
 
   return (
-    <main className="income-products-page">
+    <main ref={boxRef} className="income-products-page">
       <div className={cn('income-products__head')}>
         <Typography.Title level={3}>Tushurilgan mahsulotlar</Typography.Title>
         <div className={cn('income-products__filter')}>
@@ -131,6 +180,7 @@ export const IncomeProducts = observer(() => {
             defaultValue={dayjs(incomeProductsStore.endDate)}
             allowClear={false}
           />
+          {picker}
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -152,7 +202,10 @@ export const IncomeProducts = observer(() => {
       </div>
 
       <DataTable
-        columns={incomeOrdersColumns}
+        className={isMobile ? undefined : resizableTableProps.className}
+        columns={columns}
+        tableLayout={isMobile ? undefined : resizableTableProps.tableLayout}
+        components={isMobile ? undefined : resizableTableProps.components}
         data={incomeOrdersData?.data?.data || []}
         loading={loading}
         isMobile={isMobile}
@@ -165,18 +218,6 @@ export const IncomeProducts = observer(() => {
           ...getPaginationParams(incomeOrdersData?.data?.totalCount),
         }}
       />
-
-      <div>
-        <DataTable
-          columns={incomeOrdersTotalCalc}
-          data={[incomeOrdersData?.data?.calc || {}]}
-          isMobile
-          loading={loading}
-          cardStyle={{width: '500px'}}
-          className="total-calc"
-          loadingLength={1}
-        />
-      </div>
 
       {incomeProductsStore.isOpenAddEditIncomeProductsModal && <AddEditIncomeOrderModal />}
       {incomeProductsStore.isOpenShowIncomeOrderModal && <OrderShowInfoModal />}

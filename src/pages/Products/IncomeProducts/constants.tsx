@@ -1,6 +1,6 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
-import {IIncomeOrder, IIncomeProduct, ITotalIncomeOrderPaymentCalc} from '@/api/income-products/types';
+import {IIncomeOrder, IIncomeProduct} from '@/api/income-products/types';
 import {ClipText} from '@/components/ClipText';
 import {currencyTagUi} from '@/constants/payment';
 import {SupplierNameLink} from '@/pages/ActionComponents/SupplierNameLink';
@@ -25,7 +25,6 @@ export const incomeOrdersColumns: ColumnType<IIncomeOrder>[] = [
     title: 'Yetkazib beruvchi',
     align: 'center',
     width: '300px',
-    onCell: () => ({style: {maxWidth: 300}}),
     render: (value, record) => <SupplierNameLink supplier={record?.supplier} showPhone={false} clip />,
   },
   {
@@ -326,64 +325,5 @@ export const ordersInfoProductsColumns: ColumnType<IIncomeProduct>[] = [
         {currencyTagUi(record?.prices?.cost?.currency?.symbol)}
       </span>
     ),
-  },
-];
-
-export const incomeOrdersTotalCalc: ColumnType<ITotalIncomeOrderPaymentCalc>[] = [
-  {
-    key: 'totalCost',
-    dataIndex: 'totalCost',
-    title: 'Jami narxi',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCost),
-  },
-  {
-    key: 'totalPay',
-    dataIndex: 'totalPay',
-    title: 'Jami to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalPayment),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Jami - Naqd to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCashPayment),
-  },
-  {
-    key: 'card',
-    dataIndex: 'card',
-    title: 'Jami - Bank kartasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCardPayment),
-  },
-  {
-    key: 'transfer',
-    dataIndex: 'transfer',
-    title: 'Jami - Bank o\'tkazmasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalTransferPayment),
-  },
-  {
-    key: 'other',
-    dataIndex: 'other',
-    title: 'Jami - Boshqa usullar bilan to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalOtherPayment),
-  },
-  {
-    key: 'debt',
-    dataIndex: 'debt',
-    title: 'Jami - Qarzga',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalDebt),
   },
 ];

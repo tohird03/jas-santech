@@ -5,11 +5,13 @@ type ResizableHeaderProps = React.ThHTMLAttributes<HTMLTableCellElement> & {
   columnResize?: (width: number) => void;
 };
 
+const stickyHead = {position: 'sticky' as const, top: 0, zIndex: 3};
+
 export const ResizableHeader = React.forwardRef<HTMLTableCellElement, ResizableHeaderProps>(
   ({columnResize, width, style, children, ...rest}, ref) => {
     if (!width || !columnResize) {
       return (
-        <th {...rest} ref={ref} style={style}>
+        <th {...rest} ref={ref} style={{...style, ...stickyHead}}>
           {children}
         </th>
       );
@@ -39,7 +41,7 @@ export const ResizableHeader = React.forwardRef<HTMLTableCellElement, ResizableH
     };
 
     return (
-      <th {...rest} ref={ref} style={{...style, position: 'relative'}}>
+      <th {...rest} ref={ref} style={{...style, ...stickyHead}}>
         {children}
         <span className="col-resizer" onMouseDown={startResize} onClick={(event) => event.stopPropagation()} />
       </th>

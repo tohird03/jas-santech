@@ -2,37 +2,133 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+  min-width: 0;
+}
 
-  @media (max-width: 1600px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.orders__title {
+  margin: 0 !important;
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  font-size: 20px !important;
 }
 
 .orders__filter {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-
-  @media (max-width: 1600px) {
-    display: grid;
-    grid-template-columns: 45% 45% 45%;
-  }
-
-  @media (max-width: 1200px) {
-    display: grid;
-    grid-template-columns: 45% 45%;
-    justify-content: space-around;
-  }
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 10px;
 }
 
-.orders__search {
-  width: 250px;
+.orders__filter > .orders__search,
+.orders__filter > .ant-picker,
+.orders__filter > .ant-select {
+  flex: 1 1 160px;
+  width: auto !important;
+  min-width: 148px;
+  max-width: none;
+}
 
-  @media (max-width: 768px) {
-    width: 100% !important;
-  }
+.orders__actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.orders__actions .ant-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.orders__total {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #d9d9d9;
+  background: #fafafa;
+  font-weight: 700;
+}
+
+.orders__total-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.orders-page .ant-table-wrapper .ant-table-cell {
+  padding: 8px !important;
+}
+
+.orders-page .orders-table.ant-table-wrapper .ant-table-summary > tr > td.ant-table-cell {
+  padding: 2px 8px !important;
+  line-height: 1.15;
+}
+
+.orders-table .ant-table-summary .orders-money {
+  gap: 0;
+}
+
+.orders-table .ant-table-summary .orders-money__line {
+  line-height: 1.15;
+}
+
+.orders-table .ant-table-summary .orders-money__line p {
+  margin: 0;
+  padding: 0 4px;
+  line-height: 1.15;
+}
+
+.orders-money {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+}
+
+.orders-money__line {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.orders-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.orders-table .ant-table-thead > tr > th {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.orders-table .ant-table-tbody > tr > td,
+.orders-table .ant-table-summary td {
+  overflow: hidden;
+}
+
+.orders-table .ant-tag {
+  margin-inline-end: 0;
+  max-width: 100%;
+  white-space: nowrap;
 }
 
 @media only screen and (max-width: 800px) {
@@ -46,14 +142,31 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 10px !important;
+    flex: none;
+    gap: 10px;
     width: 100%;
   }
 
-  .orders__filter .ant-picker,
-  .orders__filter .ant-select,
-  .orders__filter .ant-btn {
-    width: 100%;
+  .orders__filter > .orders__search,
+  .orders__filter > .ant-picker,
+  .orders__filter > .ant-select,
+  .orders__actions,
+  .orders__actions > *,
+  .orders__actions .ant-btn {
+    width: 100% !important;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .orders__actions {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .orders__total {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

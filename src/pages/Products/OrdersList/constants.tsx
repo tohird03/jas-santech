@@ -28,7 +28,6 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Mijoz',
     align: 'center',
     width: '300px',
-    onCell: () => ({style: {maxWidth: 300}}),
     render: (value, record) => <ClientNameLink client={record?.client} clip />,
   },
   {
@@ -80,14 +79,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <>
+        <div className="orders-money">
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <span className="orders-money__line" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
             </span>
           ))}
-        </>
+        </div>
       );
     },
   },
@@ -104,14 +103,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <>
+        <div className="orders-money">
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <span className="orders-money__line" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
             </span>
           ))}
-        </>
+        </div>
       );
     },
   },
@@ -128,14 +127,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <>
+        <div className="orders-money">
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <span className="orders-money__line" key={price?.currency?.id}>
               {priceFormat(price?.amount)}
               {currencyTagUi(price?.currency?.symbol)}
             </span>
           ))}
-        </>
+        </div>
       );
     },
   },
@@ -145,7 +144,16 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Sotilgan vaqti',
     align: 'center',
     width: '150px',
-    render: (value, record) => getFullDateFormat(record?.date),
+    render: (value, record) => {
+      const [day, time] = (getFullDateFormat(record?.date) || '').split(' ');
+
+      return (
+        <span className="orders-date">
+          <span>{day}</span>
+          <span>{time}</span>
+        </span>
+      );
+    },
   },
   {
     key: 'description',
@@ -252,14 +260,14 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <>
+        <div className="orders-money">
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <span className="orders-money__line" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
             </span>
           ))}
-        </>
+        </div>
       );
     },
   },
@@ -276,14 +284,14 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <>
+        <div className="orders-money">
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <span className="orders-money__line" key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
             </span>
           ))}
-        </>
+        </div>
       );
     },
   },

@@ -23,7 +23,6 @@ export const returnedOrdersColumns: ColumnType<IReturnedOrder>[] = [
     dataIndex: 'name',
     title: 'Mijoz',
     align: 'center',
-    onCell: () => ({style: {maxWidth: 280}}),
     render: (value, record) => <ClientNameLink client={record?.client} clip />,
   },
   {

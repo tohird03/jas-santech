@@ -107,7 +107,9 @@ export const useResizableColumns = ({keys, defaults, mins, titles, flexKey, fit 
         need -= take;
       });
 
-      shown.forEach((key) => {
+      const shrinkOrder = [...shown.filter((key) => key !== flex), flex];
+
+      shrinkOrder.forEach((key) => {
         if (need <= 0) {
           return;
         }
