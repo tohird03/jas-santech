@@ -1,10 +1,10 @@
-import { makeAutoObservable } from 'mobx';
-import { addNotification } from '@/utils';
-import { ISingleSupplierTabs } from './types';
-import { IClientsPayments, IGetClientsPaymentsParams } from '@/api/payment/types';
-import { clientsPaymentApi } from '@/api/payment/payment';
-import { supplierInfoApi } from '@/api/supplier/supplier';
-import { IGetSingleSupplierParams, ISupplierInfo } from '@/api/supplier/types';
+import {makeAutoObservable} from 'mobx';
+import {clientsPaymentApi} from '@/api/payment/payment';
+import {IClientsPayments, IGetClientsPaymentsParams} from '@/api/payment/types';
+import {supplierInfoApi} from '@/api/supplier/supplier';
+import {IGetSingleSupplierParams, ISupplierInfo} from '@/api/supplier/types';
+import {addNotification} from '@/utils';
+import {ISingleSupplierTabs} from './types';
 
 class SingleSupplierStore {
   activeSupplier: ISupplierInfo | null = null;

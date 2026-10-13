@@ -1,9 +1,8 @@
-import { makeAutoObservable } from 'mobx';
-import { addNotification } from '@/utils';
-import { IAddOrder, IAddOrderProducts, IGetOrdersParams, IOrder, IOrderProducts, IOrderStatus } from '@/api/order/types';
-import { ordersApi } from '@/api/order';
-import dayjs from 'dayjs';
-import { IOrderPayment } from './types';
+import {makeAutoObservable} from 'mobx';
+import {ordersApi} from '@/api/order';
+import {IGetOrdersParams, IOrder, IOrderProducts, IOrderStatus} from '@/api/order/types';
+import {addNotification} from '@/utils';
+import {IOrderPayment} from './types';
 
 class OrdersStore {
   #today = new Date();

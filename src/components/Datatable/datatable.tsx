@@ -12,7 +12,7 @@ import {ColumnType} from 'antd/es/table';
 import styles from './datatable.module.css';
 
 export interface DataTableColumnsType<T> extends ColumnType<T> {
-  colStyle?: (value: any, record: T, index: number) => Object;
+  colStyle?: (value: any, record: T, index: number) => object;
 }
 
 type DataTableProps = {
@@ -28,8 +28,8 @@ type DataTableProps = {
   className?: string;
   rowClassName?: any;
   loading?: boolean;
-  cardStyle?: Object;
-  cardTextStyle?: Object;
+  cardStyle?: object;
+  cardTextStyle?: object;
   pagination?:
   | {
     pageSize?: number;
@@ -92,11 +92,11 @@ export const DataTable = (props: DataTableProps) => {
     />
   ) : loading ? (
     <div className={styles.loading__container}>
-      {[...new Array(loadingLength ?? 4)].map((item: any, index: number) => (
+      {Array.from({length: loadingLength ?? 4}, (entry, slot) => `skeleton-${slot}`).map((skeletonKey) => (
         <Skeleton
           paragraph={{rows: 7}}
           className={styles.loading__skeleton}
-          key={index}
+          key={skeletonKey}
           active
         />
       ))}

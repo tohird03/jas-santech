@@ -1,8 +1,8 @@
-import { AxiosResponse } from 'axios';
-import { Endpoints, umsStages } from '../endpoints';
-import { INetworkConfig, Instance } from '../instance';
-import { IResponse } from '../types';
-import { IAddStaff, IGetStaffsParams, IStaffs, IUpdateStaff } from './types';
+import {AxiosResponse} from 'axios';
+import {Endpoints, umsStages} from '../endpoints';
+import {INetworkConfig, Instance} from '../instance';
+import {IResponse} from '../types';
+import {IAddStaff, IGetStaffsParams, IStaffs, IUpdateStaff} from './types';
 
 const config: INetworkConfig = {
   baseURL: Endpoints.Base,
@@ -15,19 +15,19 @@ class StaffsApi extends Instance {
   }
 
   getStaffs = (params: IGetStaffsParams): Promise<IResponse<IStaffs[]>> =>
-    this.get(Endpoints.StaffsMany, { params });
+    this.get(Endpoints.StaffsMany, {params});
 
   addNewStaff = (params: IAddStaff): Promise<AxiosResponse> =>
     this.post(Endpoints.StaffOne, params);
 
   updateStaff = (params: IUpdateStaff): Promise<AxiosResponse> =>
-    this.patch(`${Endpoints.StaffOne}`, params, { params: { id: params?.id } });
+    this.patch(`${Endpoints.StaffOne}`, params, {params: {id: params?.id}});
 
   deleteStaff = (id: string): Promise<AxiosResponse> =>
-    this.delete(`${Endpoints.StaffOne}`, { params: { id } });
+    this.delete(`${Endpoints.StaffOne}`, {params: {id}});
 
-  getSingleStaffs = (staffId: string): Promise<{ data: IStaffs }> =>
-    this.get(Endpoints.StaffOne, { params: { id: staffId } });
+  getSingleStaffs = (staffId: string): Promise<{data: IStaffs}> =>
+    this.get(Endpoints.StaffOne, {params: {id: staffId}});
 }
 
 export const staffsApi = new StaffsApi(config);

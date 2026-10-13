@@ -75,8 +75,8 @@
 
 .menu-count-label__text {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .ant-layout-sider:not(.ant-layout-sider-collapsed) .menu-count--icon .ant-badge-count {

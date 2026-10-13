@@ -1,8 +1,8 @@
-import { AxiosResponse } from 'axios';
-import { Endpoints, umsStages } from '../endpoints';
-import { INetworkConfig, Instance } from '../instance';
-import { IResponse } from '../types';
-import { IAddEditWarehouse, IProductWarehouse } from './types';
+import {AxiosResponse} from 'axios';
+import {Endpoints, umsStages} from '../endpoints';
+import {INetworkConfig, Instance} from '../instance';
+import {IResponse} from '../types';
+import {IAddEditWarehouse, IProductWarehouse} from './types';
 
 const config: INetworkConfig = {
   baseURL: Endpoints.Base,
@@ -15,13 +15,13 @@ class WarehouseApi extends Instance {
   }
 
   getWarehouses = (): Promise<IResponse<IProductWarehouse[]>> =>
-    this.get(Endpoints.WarehouseMany, { params: {pagination: false} });
+    this.get(Endpoints.WarehouseMany, {params: {pagination: false}});
 
   addWarehouse = (params: IAddEditWarehouse): Promise<AxiosResponse> =>
     this.post(Endpoints.WarehouseOne, params);
 
   updateWarehouse = (params: IAddEditWarehouse): Promise<AxiosResponse> =>
-    this.patch(`${Endpoints.WarehouseOne}`, params, { params: { id: params?.id } });
+    this.patch(`${Endpoints.WarehouseOne}`, params, {params: {id: params?.id}});
 
   // deletePayment = (id: string): Promise<AxiosResponse> =>
   //   this.delete(`${Endpoints.ClientsPaymentsOne}`, {params: {id}});

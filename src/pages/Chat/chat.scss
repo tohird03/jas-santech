@@ -121,12 +121,12 @@
 .chat-page__preview {
   display: block;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
   color: #8c8c8c;
   font-size: 12px;
   line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .chat-page__client--active,
@@ -138,9 +138,9 @@
 .chat-page__client-phone {
   display: block;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .chat-page__client-name {
@@ -198,23 +198,23 @@
 }
 
 .chat-page__thread-name {
-  overflow: hidden;
+  overflow: visible;
   color: #262626;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .chat-page__thread-phone {
-  overflow: hidden;
+  overflow: visible;
   color: #8c8c8c;
   font-size: 12px;
   font-weight: 400;
   line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .chat-page__thread {
@@ -268,10 +268,10 @@
 
 .chat-page__author {
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .chat-page__role {
@@ -388,9 +388,9 @@
 
 .chat-page__attach span {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .chat-page__attach button {

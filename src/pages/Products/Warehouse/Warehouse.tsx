@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
-import { observer } from 'mobx-react';
-import { useQuery } from '@tanstack/react-query';
-import { Button, Table, Typography } from 'antd';
+import React, {useEffect} from 'react';
+import {observer} from 'mobx-react';
+import {PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, Table, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
+import {DataTable} from '@/components/Datatable/datatable';
+import {warehouseStore} from '@/stores/products';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {AddEditModal} from './AddEditModal';
+import {clientsColumns} from './constants';
 import styles from './warehouse.scss';
-import { clientsColumns } from './constants';
-import { warehouseStore } from '@/stores/products';
-import { PlusCircleOutlined } from '@ant-design/icons';
 
 const cn = classNames.bind(styles);
 
 export const Warehouse = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const { data: warehousesData, isLoading: loading } = useQuery({
+  const {data: warehousesData, isLoading: loading} = useQuery({
     queryKey: ['getWarehouses'],
     queryFn: () =>
       warehouseStore.getWarehouses(),

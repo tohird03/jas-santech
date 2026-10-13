@@ -1,35 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, Input, InputNumber, Select, Tooltip, Typography } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {observer} from 'mobx-react';
+import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, Input, InputNumber, Select, Tooltip, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
-import { clientsInfoStore } from '@/stores/clients';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
+import {clientsInfoApi, IClientDebtFilter, IClientsInfo} from '@/api/clients';
+import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {currencyTagUi} from '@/constants/payment';
+import {clientsInfoStore} from '@/stores/clients';
+import {homeStore} from '@/stores/home/home';
+import {addNotification} from '@/utils';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {priceFormat} from '@/utils/priceFormat';
+import {AddEditModal} from './AddEditModal';
 import styles from './client-info.scss';
-import { clientDebtFilter, clientsColumns } from './constants';
-import { IClientDebtFilter, IClientsInfo, clientsInfoApi } from '@/api/clients';
-import { addNotification } from '@/utils';
-import { priceFormat } from '@/utils/priceFormat';
-import { ordersStore } from '@/stores/products';
-import { homeStore } from '@/stores/home/home';
-import { currencyTagUi } from '@/constants/payment';
+import {clientDebtFilter, clientsColumns} from './constants';
 
 const cn = classNames.bind(styles);
 
 const clientColumnKeys = ['index', 'name', 'phone', 'debt', 'isActiveBot', 'lastSale', 'action'];
 const clientColumnTitles = [
-  { key: 'index', title: '#' },
-  { key: 'name', title: 'Mijoz' },
-  { key: 'phone', title: 'Telefon raqami' },
-  { key: 'debt', title: 'Mijoz qarzi' },
-  { key: 'isActiveBot', title: 'Telegram bot' },
-  { key: 'lastSale', title: 'Oxirgi sotuv' },
-  { key: 'action', title: 'Amallar' },
+  {key: 'index', title: '#'},
+  {key: 'name', title: 'Mijoz'},
+  {key: 'phone', title: 'Telefon raqami'},
+  {key: 'debt', title: 'Mijoz qarzi'},
+  {key: 'isActiveBot', title: 'Telegram bot'},
+  {key: 'lastSale', title: 'Oxirgi sotuv'},
+  {key: 'action', title: 'Amallar'},
 ];
 const clientDefaultWidths = {
   index: 64,
@@ -53,7 +52,7 @@ const clientMinWidths = {
 export const ClientsInfo = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const { boxRef, apply, picker } = useResizableColumns({
+  const {boxRef, apply, picker} = useResizableColumns({
     keys: clientColumnKeys,
     defaults: clientDefaultWidths,
     mins: clientMinWidths,
@@ -61,7 +60,7 @@ export const ClientsInfo = observer(() => {
   });
   const columns = apply(clientsColumns);
 
-  const { data: clientsInfoData, isLoading: loading } = useQuery({
+  const {data: clientsInfoData, isLoading: loading} = useQuery({
     queryKey: [
       'getClients',
       clientsInfoStore.pageNumber,
@@ -80,7 +79,7 @@ export const ClientsInfo = observer(() => {
       }),
   });
 
-  const { data: ordersStatisticData } = useQuery({
+  const {data: ordersStatisticData} = useQuery({
     queryKey: ['getOrdersStatistic'],
     queryFn: () => homeStore.getOrdersStatistic(),
   });
@@ -178,13 +177,13 @@ export const ClientsInfo = observer(() => {
             <InputNumber
               placeholder="Qarz miqdorini kiriting"
               onChange={handleDebtValueChange}
-              style={{ width: 460 }}
+              style={{width: 460}}
               defaultValue={0}
               addonAfter={
                 <Select
                   options={clientDebtFilter}
                   onChange={handleDebtFilterChange}
-                  style={{ width: '240px' }}
+                  style={{width: '240px'}}
                   placeholder="Hammasi"
                   value={clientsInfoStore.debtType}
                 />

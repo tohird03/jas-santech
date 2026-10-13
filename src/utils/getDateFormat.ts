@@ -33,7 +33,7 @@ export const getStartAndEndDate = (startDateCount: number) => {
   const startDate = new Date(oneWeekAgo);
   const endDate = today;
 
-  return { startDate, endDate };
+  return {startDate, endDate};
 };
 
 export const getStartMonthEndDate = () => {
@@ -42,5 +42,5 @@ export const getStartMonthEndDate = () => {
   const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
   const endDate = today;
 
-  return { startDate, endDate };
+  return {startDate, endDate};
 };

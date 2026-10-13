@@ -1,13 +1,12 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Action } from './Action';
-import { formatPhoneNumber } from '@/utils/phoneFormat';
-import { priceFormat } from '@/utils/priceFormat';
-import { dateFormatterWithStringMonth } from '@/utils/dateFormat';
-import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { ISupplierDebtFilter, ISupplierInfo } from '@/api/supplier/types';
-import { CurrencyAmountZero, currencyTagUi } from '@/constants/payment';
+import {ColumnType} from 'antd/es/table';
+import {ISupplierDebtFilter, ISupplierInfo} from '@/api/supplier/types';
+import {CurrencyAmountZero, currencyTagUi} from '@/constants/payment';
+import {SupplierNameLink} from '@/pages/ActionComponents/SupplierNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {formatPhoneNumber} from '@/utils/phoneFormat';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
 
 export const supplierColumns: ColumnType<ISupplierInfo>[] = [
   {
@@ -22,7 +21,6 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
     dataIndex: 'name',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    onCell: () => ({ style: { maxWidth: 0 } }),
     render: (value, record) => <SupplierNameLink supplier={record} showPhone={false} rowHover clip />,
   },
   {

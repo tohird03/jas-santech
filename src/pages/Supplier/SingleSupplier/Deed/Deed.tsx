@@ -176,7 +176,7 @@ export const Deed = observer(() => {
           columns={deedColumns}
           dataSource={singleSupplierStore?.activeSupplier?.deedInfo?.deeds || []}
           bordered
-          summary={(pageData) => (
+          summary={() => (
             <>
               <Table.Summary.Row>
                 <Table.Summary.Cell colSpan={3} index={0}>

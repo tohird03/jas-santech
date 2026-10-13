@@ -10,10 +10,10 @@ import dayjs, {Dayjs} from 'dayjs';
 import {useDebounce} from 'usehooks-ts';
 import {clientsInfoApi} from '@/api/clients';
 import {IReminder, IReminderForm, reminderApi} from '@/api/reminder';
-import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
 import {ClipText} from '@/components/ClipText';
 import {DataTable} from '@/components/Datatable/datatable';
 import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
 import {addNotification} from '@/utils';
 import {dateFormat} from '@/utils/getDateFormat';
 import {getPaginationParams} from '@/utils/getPaginationParams';
@@ -27,7 +27,7 @@ interface ReminderFormValues {
   description: string;
 }
 
-const sendHourOptions = Array.from({length: 24}, (_, hour) => ({
+const sendHourOptions = Array.from({length: 24}, (slot, hour) => ({
   value: hour,
   label: `${String(hour).padStart(2, '0')}:00`,
 }));
@@ -178,15 +178,14 @@ export const Reminders = () => {
       key: 'index',
       title: '#',
       align: 'center',
-      render: (_value, _record, index) => (pageNumber - 1) * pageSize + index + 1,
+      render: (value, record, index) => (pageNumber - 1) * pageSize + index + 1,
     },
     {
       key: 'client',
       title: 'Mijoz',
       align: 'center',
       width: 280,
-      onCell: () => ({style: {maxWidth: 0}}),
-      render: (_value, record) => (
+      render: (value, record) => (
         <ClientNameLink
           client={{
             id: record.client?.id || record.clientId,
@@ -202,21 +201,20 @@ export const Reminders = () => {
       key: 'startDate',
       title: 'Boshlanish sanasi',
       align: 'center',
-      render: (_value, record) => dateFormat(record.startDate),
+      render: (value, record) => dateFormat(record.startDate),
     },
     {
       key: 'sendHour',
       title: 'Yuborish vaqti',
       align: 'center',
-      render: (_value, record) => `${String(record.sendHour ?? 8).padStart(2, '0')}:00`,
+      render: (value, record) => `${String(record.sendHour ?? 8).padStart(2, '0')}:00`,
     },
     {
       key: 'description',
       title: 'Tavsif',
       align: 'center',
       dataIndex: 'description',
-      onCell: () => ({style: {maxWidth: 0}}),
-      render: (_value, record) => {
+      render: (value, record) => {
         const description = record.description || '';
 
         if (!description) {
@@ -234,13 +232,13 @@ export const Reminders = () => {
       key: 'lastSentOn',
       title: 'Oxirgi yuborilgan',
       align: 'center',
-      render: (_value, record) => (record.lastSentOn ? dateFormat(record.lastSentOn) : 'hali yuborilmagan'),
+      render: (value, record) => (record.lastSentOn ? dateFormat(record.lastSentOn) : 'hali yuborilmagan'),
     },
     {
       key: 'action',
       title: 'Amallar',
       align: 'center',
-      render: (_value, record) => (
+      render: (value, record) => (
         <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
           <Button type="primary" icon={<EditOutlined />} onClick={() => openEdit(record)} />
           <Popconfirm

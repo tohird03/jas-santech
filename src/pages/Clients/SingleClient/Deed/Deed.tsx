@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {observer} from 'mobx-react';
 import {DownloadOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
 import {Button, DatePicker, DatePickerProps, Table, Typography} from 'antd';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
@@ -178,7 +177,7 @@ export const Deed = observer(() => {
           columns={deedColumns}
           dataSource={singleClientStore?.activeClient?.deedInfo?.deeds || []}
           bordered
-          summary={(pageData) => (
+          summary={() => (
             <>
               <Table.Summary.Row>
                 <Table.Summary.Cell colSpan={3} index={0}>

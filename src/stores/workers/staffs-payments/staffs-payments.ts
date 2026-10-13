@@ -1,7 +1,7 @@
-import { makeAutoObservable } from 'mobx';
-import { addNotification } from '@/utils';
-import { IGetStaffsPaymentsParams, IStaffsPayments } from '@/api/staffs-payments/types';
-import { staffsPaymentsApi } from '@/api/staffs-payments/staffs-payments';
+import {makeAutoObservable} from 'mobx';
+import {staffsPaymentsApi} from '@/api/staffs-payments/staffs-payments';
+import {IGetStaffsPaymentsParams, IStaffsPayments} from '@/api/staffs-payments/types';
+import {addNotification} from '@/utils';
 
 class StaffsPayments {
   #today = new Date();

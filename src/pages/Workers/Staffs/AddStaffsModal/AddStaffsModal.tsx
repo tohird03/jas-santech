@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Checkbox, Collapse, Form, Input, InputNumber, Modal } from 'antd';
-import { EPageAccess, IAddStaff, IUpdateStaff, staffsApi } from '@/api/staffs';
-import { staffsStore } from '@/stores/workers';
-import { addNotification } from '@/utils';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { regexPhoneNumber } from '@/utils/phoneFormat';
-import { roleApi } from '@/api/role';
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { EPageAccessLabel } from '../constants';
+import React, {useEffect, useState} from 'react';
+import {observer} from 'mobx-react';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {Checkbox, Collapse, Form, Input, InputNumber, Modal} from 'antd';
+import {CheckboxChangeEvent} from 'antd/es/checkbox';
+import {roleApi} from '@/api/role';
+import {EPageAccess, IAddStaff, IUpdateStaff, staffsApi} from '@/api/staffs';
+import {staffsStore} from '@/stores/workers';
+import {addNotification} from '@/utils';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {regexPhoneNumber} from '@/utils/phoneFormat';
+import {EPageAccessLabel} from '../constants';
 
 export const AddStaffsModal = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
@@ -21,17 +21,17 @@ export const AddStaffsModal = observer(() => {
   const [userPageAccess, setUserPageAccess] = useState<EPageAccess[]>([]);
   const [oldPageAccess, setOldPageAccess] = useState<EPageAccess[]>([]);
 
-  const { data: permissionsData } = useQuery({
+  const {data: permissionsData} = useQuery({
     queryKey: ['getPermissions'],
     queryFn: () => roleApi.getAllPermissions(),
   });
 
-  const { mutate: addNewStaffs } =
+  const {mutate: addNewStaffs} =
     useMutation({
       mutationKey: ['addNewStaffs'],
       mutationFn: (params: IAddStaff) => staffsApi.addNewStaff(params),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getStaffs'] });
+        queryClient.invalidateQueries({queryKey: ['getStaffs']});
         handleModalClose();
         addNotification('Xodim muvaffaqiyatli qo\'shildi');
       },
@@ -41,12 +41,12 @@ export const AddStaffsModal = observer(() => {
       },
     });
 
-  const { mutate: updateStaffs } =
+  const {mutate: updateStaffs} =
     useMutation({
       mutationKey: ['updateStaffs'],
       mutationFn: (params: IUpdateStaff) => staffsApi.updateStaff(params),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getStaffs'] });
+        queryClient.invalidateQueries({queryKey: ['getStaffs']});
         addNotification('Xodim muvaffaqiyatli o\'zgartirildi');
         handleModalClose();
       },
@@ -159,7 +159,7 @@ export const AddStaffsModal = observer(() => {
         <Form.Item
           name="fullname"
           label="Xodim"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
         >
           <Input placeholder="F.I.O" />
         </Form.Item>
@@ -167,7 +167,7 @@ export const AddStaffsModal = observer(() => {
           name="phone"
           label="Telefon raqami: 901234567"
           rules={[
-            { required: true },
+            {required: true},
             {
               pattern: regexPhoneNumber,
               message: 'Raqamni to\'g\'ri kiriting!, Masalan: 901234567',
@@ -177,7 +177,7 @@ export const AddStaffsModal = observer(() => {
           <InputNumber
             addonBefore="+998"
             placeholder="Telefon raqami"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             type="number"
           />
         </Form.Item>
@@ -221,7 +221,7 @@ export const AddStaffsModal = observer(() => {
                     key={access}
                     checked={userPageAccess.includes(access)}
                     onChange={(e) => handleChangePageAccess(e, access)}
-                    style={{ display: 'flex', paddingLeft: 20 }}
+                    style={{display: 'flex', paddingLeft: 20}}
                   >
                     {EPageAccessLabel[access]}
                   </Checkbox>
@@ -243,7 +243,7 @@ export const AddStaffsModal = observer(() => {
                   <Checkbox
                     onChange={(e) => handleChangePer(e, per?.id)}
                     key={per?.id}
-                    style={{ display: 'flex', paddingLeft: '20px' }}
+                    style={{display: 'flex', paddingLeft: '20px'}}
                     checked={userPer?.includes(per?.id)}
                   >
                     {per?.description}

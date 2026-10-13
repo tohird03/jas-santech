@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, Input, InputNumber, Select, Tooltip, Typography } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {observer} from 'mobx-react';
+import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, Input, InputNumber, Select, Tooltip, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditSupplierModal } from './AddEditModal';
+import {supplierInfoApi} from '@/api/supplier/supplier';
+import {ISupplierDebtFilter, ISupplierInfo} from '@/api/supplier/types';
+import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {supplierInfoStore} from '@/stores/supplier';
+import {addNotification} from '@/utils';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {AddEditSupplierModal} from './AddEditModal';
+import {supplierColumns, supplierDebtFilter} from './constants';
 import styles from './supplier-info.scss';
-import { supplierColumns, supplierDebtFilter } from './constants';
-import { supplierInfoStore } from '@/stores/supplier';
-import { ISupplierDebtFilter, ISupplierInfo } from '@/api/supplier/types';
-import { supplierInfoApi } from '@/api/supplier/supplier';
-import { addNotification } from '@/utils';
 
 const cn = classNames.bind(styles);
 
 const supplierColumnKeys = ['index', 'name', 'phone', 'debt', 'lastSale', 'action'];
 const supplierColumnTitles = [
-  { key: 'index', title: '#' },
-  { key: 'name', title: 'Yetkazib beruvchi' },
-  { key: 'phone', title: 'Telefon raqami' },
-  { key: 'debt', title: 'Yetkazib beruvchiga qarz' },
-  { key: 'lastSale', title: 'Oxirgi xarid' },
-  { key: 'action', title: 'Amallar' },
+  {key: 'index', title: '#'},
+  {key: 'name', title: 'Yetkazib beruvchi'},
+  {key: 'phone', title: 'Telefon raqami'},
+  {key: 'debt', title: 'Yetkazib beruvchiga qarz'},
+  {key: 'lastSale', title: 'Oxirgi xarid'},
+  {key: 'action', title: 'Amallar'},
 ];
 const supplierDefaultWidths = {
   index: 64,
@@ -47,7 +47,7 @@ const supplierMinWidths = {
 export const SupplierInfo = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const { boxRef, apply, picker } = useResizableColumns({
+  const {boxRef, apply, picker} = useResizableColumns({
     keys: supplierColumnKeys,
     defaults: supplierDefaultWidths,
     mins: supplierMinWidths,
@@ -55,7 +55,7 @@ export const SupplierInfo = observer(() => {
   });
   const columns = apply(supplierColumns);
 
-  const { data: supplierData, isLoading: loading } = useQuery({
+  const {data: supplierData, isLoading: loading} = useQuery({
     queryKey: [
       'getSuppliers',
       supplierInfoStore.pageNumber,
@@ -159,13 +159,13 @@ export const SupplierInfo = observer(() => {
             <InputNumber
               placeholder="Qarz miqdorini kiriting"
               onChange={handleDebtValueChange}
-              style={{ width: 460 }}
+              style={{width: 460}}
               defaultValue={0}
               addonAfter={
                 <Select
                   options={supplierDebtFilter}
                   onChange={handleDebtFilterChange}
-                  style={{ width: '240px' }}
+                  style={{width: '240px'}}
                   placeholder="Hammasi"
                   value={supplierInfoStore.debtType}
                 />

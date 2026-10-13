@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import { observer } from 'mobx-react';
-import { useQuery } from '@tanstack/react-query';
-import { Table, Typography } from 'antd';
+import React, {useEffect} from 'react';
+import {observer} from 'mobx-react';
+import {useQuery} from '@tanstack/react-query';
+import {Table, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
-import { AddEditModal } from './AddEditModal';
+import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {currencyStore} from '@/stores/workers';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {AddEditModal} from './AddEditModal';
+import {clientsColumns} from './constants';
 import styles from './currency.scss';
-import { clientsColumns } from './constants';
-import { currencyStore } from '@/stores/workers';
-import { useMediaQuery } from '@/utils/mediaQuery';
 
 const cn = classNames.bind(styles);
 
 const currencyColumnKeys = ['index', 'name', 'rate', 'actions'];
 const currencyColumnTitles = [
-  { key: 'index', title: '#' },
-  { key: 'name', title: 'Valyuta' },
-  { key: 'rate', title: 'Qiymat' },
-  { key: 'actions', title: 'Amallar' },
+  {key: 'index', title: '#'},
+  {key: 'name', title: 'Valyuta'},
+  {key: 'rate', title: 'Qiymat'},
+  {key: 'actions', title: 'Amallar'},
 ];
 const currencyDefaultWidths = {
   index: 64,
@@ -35,14 +35,14 @@ const currencyMinWidths = {
 
 export const Currency = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const { boxRef, apply, picker } = useResizableColumns({
+  const {boxRef, apply, picker} = useResizableColumns({
     keys: currencyColumnKeys,
     defaults: currencyDefaultWidths,
     mins: currencyMinWidths,
     titles: currencyColumnTitles,
   });
   const columns = apply(clientsColumns);
-  const { data: currencyData, isLoading: loading } = useQuery({
+  const {data: currencyData, isLoading: loading} = useQuery({
     queryKey: ['getCurrency'],
     queryFn: () =>
       currencyStore.getCurrency(),

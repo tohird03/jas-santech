@@ -1,11 +1,11 @@
-import { AxiosResponse } from 'axios';
-import { Endpoints, umsStages } from '../endpoints';
-import { INetworkConfig, Instance } from '../instance';
-import { IResponse } from '../types';
+import {AxiosResponse} from 'axios';
+import {Endpoints, umsStages} from '../endpoints';
+import {INetworkConfig, Instance} from '../instance';
+import {IResponse} from '../types';
 import {
   IAddEditClientInfo,
-  IClientStatistic,
   IClientsInfo,
+  IClientStatistic,
   IGetClientDeedExcelParams,
   IGetClientsInfoParams,
   IGetClientsStatisticParams,
@@ -23,19 +23,19 @@ class ClientsInfoApi extends Instance {
   }
 
   getClientsInfo = (params: IGetClientsInfoParams): Promise<IResponse<IClientsInfo[]>> =>
-    this.get(Endpoints.ClientsMany, { params });
+    this.get(Endpoints.ClientsMany, {params});
 
   addClients = (params: IAddEditClientInfo): Promise<AxiosResponse> =>
     this.post(Endpoints.ClientOne, params);
 
   updateClient = (params: IAddEditClientInfo): Promise<AxiosResponse> =>
-    this.patch(`${Endpoints.ClientOne}`, params, { params: { id: params?.id } });
+    this.patch(`${Endpoints.ClientOne}`, params, {params: {id: params?.id}});
 
   deleteClient = (id: string): Promise<AxiosResponse> =>
-    this.delete(`${Endpoints.ClientOne}`, { params: { id } });
+    this.delete(`${Endpoints.ClientOne}`, {params: {id}});
 
-  getSingleClient = (params: IGetSingleClientParams): Promise<{ data: IClientsInfo }> =>
-    this.get(Endpoints.ClientOne, { params });
+  getSingleClient = (params: IGetSingleClientParams): Promise<{data: IClientsInfo}> =>
+    this.get(Endpoints.ClientOne, {params});
 
   getClientsStatistic = (params: IGetClientsStatisticParams): Promise<IResponse<IClientStatistic[]>> => {
     const {search, ...rest} = params;

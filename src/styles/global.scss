@@ -341,11 +341,11 @@ input::-webkit-inner-spin-button {
 .staff-list__name {
   display: block;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
   color: rgba(0, 0, 0, 0.88);
   text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .staff-list__name:hover {
@@ -472,15 +472,15 @@ input::-webkit-inner-spin-button {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .name-clip {
   width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .person-link.name-clip .person-link__name,
@@ -643,6 +643,38 @@ input::-webkit-inner-spin-button {
   overflow: hidden;
 }
 
+.content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) {
+  flex: 1 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  overflow: auto;
+}
+
+.content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-container,
+.content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-content {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.content .payment-table.ant-table-wrapper .ant-table:has(.ant-table-summary) .ant-table-summary {
+  position: static;
+  display: table-footer-group;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  table-layout: auto;
+  background: #fff;
+}
+
+.content .payment-table.ant-table-wrapper .ant-table-summary > tr > td {
+  overflow: visible;
+  height: auto;
+  background: #fafafa;
+}
+
 .content .ant-table-container {
   border: none !important;
 }
@@ -713,10 +745,10 @@ input::-webkit-inner-spin-button {
 .ant-table-row:not(.error__row):not(.warning__row) .product-card .person-link__phone {
   display: block;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
   color: #434343;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   cursor: default;
 }
 

@@ -1,37 +1,37 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { observer } from 'mobx-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Checkbox, DatePicker, Form, Image, Input, InputNumber, Modal, Popconfirm, Select, Space, Spin, Tag } from 'antd';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {CheckOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {Button, Checkbox, DatePicker, Form, Image, Input, InputNumber, Modal, Popconfirm, Select, Spin, Tag} from 'antd';
+import {CheckboxChangeEvent} from 'antd/es/checkbox';
+import Table, {ColumnType} from 'antd/es/table';
 import classNames from 'classnames';
-import { addNotification } from '@/utils';
-import { ordersStore, productsListStore } from '@/stores/products';
-import { priceFormat } from '@/utils/priceFormat';
-import { CheckOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import dayjs, { Dayjs } from 'dayjs';
-import { clientsInfoStore, singleClientStore } from '@/stores/clients';
-import { ordersApi } from '@/api/order';
-import styles from '../orders.scss';
+import dayjs, {Dayjs} from 'dayjs';
+import {IClientsInfo} from '@/api/clients';
+import {ordersApi} from '@/api/order';
 import {
   IAddOrder,
   IAddOrderModalForm,
   IAddOrderProducts,
   IOrderProductAdd,
-  IOrderProductUpdate,
   IOrderProducts,
+  IOrderProductUpdate,
   IOrderStatus,
 } from '@/api/order/types';
-import Table, { ColumnType } from 'antd/es/table';
-import { OrderStatus, OrderStatusColor, PRICE_TYPE_OPTIONS } from '../constants';
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { useParams } from 'react-router-dom';
-import { IClientsInfo } from '@/api/clients';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
-import { authStore } from '@/stores/auth';
-import { currencyTagUi } from '@/constants/payment';
-import { imageUrlWithBase } from '@/utils/image';
-import { IProducts } from '@/api/product/types';
-import { DeletedOrderProduct } from './DeletedOrderProducts';
+import {IProducts} from '@/api/product/types';
+import {currencyTagUi} from '@/constants/payment';
+import {authStore} from '@/stores/auth';
+import {clientsInfoStore, singleClientStore} from '@/stores/clients';
+import {ordersStore, productsListStore} from '@/stores/products';
+import {addNotification} from '@/utils';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {PriceWithCurrency} from '@/utils/hooks/valuteConversition';
+import {imageUrlWithBase} from '@/utils/image';
+import {priceFormat} from '@/utils/priceFormat';
+import {OrderStatus, OrderStatusColor, PRICE_TYPE_OPTIONS} from '../constants';
+import styles from '../orders.scss';
+import {DeletedOrderProduct} from './DeletedOrderProducts';
 
 const cn = classNames.bind(styles);
 
@@ -47,7 +47,7 @@ export const AddEditModal = observer(() => {
   const countInputRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<any>(null);
   const clientRef = useRef<any>(null);
-  const { clientId } = useParams();
+  const {clientId} = useParams();
   const changeCostRef = useRef<any>(null);
   const changeCountRef = useRef<any>(null);
   const changeDiscountRef = useRef<any>(null);
@@ -56,7 +56,7 @@ export const AddEditModal = observer(() => {
   const [selectedProduct, setSelectedProduct] = useState<IProducts | null>(null);
 
   // GET DATAS
-  const { data: clientsData, isLoading: loadingClients } = useQuery({
+  const {data: clientsData, isLoading: loadingClients} = useQuery({
     queryKey: ['getClients', searchClients],
     queryFn: () =>
       clientsInfoStore.getClients({
@@ -66,17 +66,13 @@ export const AddEditModal = observer(() => {
       }),
   });
 
-  const {
-    data: singleOrderData,
-    isLoading,
-    isError,
-  } = useQuery({
+  const {data: singleOrderData} = useQuery({
     queryKey: ['getSingleOrder', ordersStore?.orderId],
 
     queryFn: () => ordersApi.getSingleOrder(ordersStore?.orderId!),
   });
 
-  const { data: productsData, isLoading: loadingProducts } = useQuery({
+  const {data: productsData, isLoading: loadingProducts} = useQuery({
     queryKey: ['getProducts', searchProducts, selectedClient?.id],
     queryFn: () =>
       productsListStore.getProducts({
@@ -87,7 +83,7 @@ export const AddEditModal = observer(() => {
       }),
   });
 
-  const { data: currencyMany } = useQuery({
+  const {data: currencyMany} = useQuery({
     queryKey: ['getCurrencyMany'],
     queryFn: () =>
       authStore.getCurrencyMany(),
@@ -116,9 +112,9 @@ export const AddEditModal = observer(() => {
       description: form.getFieldValue('description'),
     })
       .then(() => {
-        queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+        queryClient.invalidateQueries({queryKey: ['getOrders']});
         if (clientId) {
-          singleClientStore.getSingleClient({ id: clientId });
+          singleClientStore.getSingleClient({id: clientId});
         }
         handleModalClose();
       })
@@ -180,13 +176,13 @@ export const AddEditModal = observer(() => {
 
               fieldInstance?.focus();
             });
-          queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+          queryClient.invalidateQueries({queryKey: ['getOrders']});
         })
         .catch(addNotification)
         .finally(() => {
           setLoading(false);
           if (clientId) {
-            singleClientStore.getSingleClient({ id: clientId });
+            singleClientStore.getSingleClient({id: clientId});
           }
         });
 
@@ -214,13 +210,13 @@ export const AddEditModal = observer(() => {
         } else {
           ordersStore.setOrder(res?.data);
         }
-        queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+        queryClient.invalidateQueries({queryKey: ['getOrders']});
       })
       .catch(addNotification)
       .finally(() => {
         setLoading(false);
         if (clientId) {
-          singleClientStore.getSingleClient({ id: clientId });
+          singleClientStore.getSingleClient({id: clientId});
         }
       });
   };
@@ -233,7 +229,7 @@ export const AddEditModal = observer(() => {
         deedStartDate: singleClientStore.startDate!,
       });
     }
-    queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+    queryClient.invalidateQueries({queryKey: ['getOrders']});
     ordersStore.setSingleOrder(null);
     ordersStore.setOrderId(null);
     ordersStore.setOrder(null);
@@ -335,8 +331,8 @@ export const AddEditModal = observer(() => {
     }
   }, [singleOrderData, singleClientStore.activeClient]);
 
-  const countColor = (count: number, min_amount: number): string =>
-    count < 0 ? 'red' : count < min_amount ? 'orange' : 'green';
+  const countColor = (count: number, minAmount: number): string =>
+    count < 0 ? 'red' : count < minAmount ? 'orange' : 'green';
 
   // TABLE ACTIONS
   const handleEditProduct = (orderProduct: IOrderProducts) => {
@@ -354,28 +350,28 @@ export const AddEditModal = observer(() => {
           .finally(() => {
             setLoading(false);
             if (clientId) {
-              singleClientStore.getSingleClient({ id: clientId });
+              singleClientStore.getSingleClient({id: clientId});
             }
           });
       })
       .catch(addNotification)
       .finally(() => {
         if (clientId) {
-          singleClientStore.getSingleClient({ id: clientId });
+          singleClientStore.getSingleClient({id: clientId});
         }
       });
   };
 
   const handleChangePrice = (value: number | null) => {
-    setIsUpdatingProduct({ ...isUpdatingProduct!, price: value || 0 });
+    setIsUpdatingProduct({...isUpdatingProduct!, price: value || 0});
   };
 
   const handleChangeDiscount = (value: number | null) => {
-    setIsUpdatingProduct({ ...isUpdatingProduct!, discount: value || 0 });
+    setIsUpdatingProduct({...isUpdatingProduct!, discount: value || 0});
   };
 
   const handleChangeCount = (value: number | null) => {
-    setIsUpdatingProduct({ ...isUpdatingProduct!, count: value || 0 });
+    setIsUpdatingProduct({...isUpdatingProduct!, count: value || 0});
   };
 
   const handleSaveAndUpdateOrderProduct = () => {
@@ -397,12 +393,12 @@ export const AddEditModal = observer(() => {
               });
             addNotification('Mahsulot muvaffaqiyatli o\'zgartildi!');
           }
-          queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+          queryClient.invalidateQueries({queryKey: ['getOrders']});
         })
         .catch(addNotification)
         .finally(() => {
           if (clientId) {
-            singleClientStore.getSingleClient({ id: clientId });
+            singleClientStore.getSingleClient({id: clientId});
           }
         });
     }
@@ -519,7 +515,7 @@ export const AddEditModal = observer(() => {
           </span>
         ) : (
           <Tag
-            style={{ fontSize: '20px', fontWeight: 'bold' }}
+            style={{fontSize: '20px', fontWeight: 'bold'}}
             color="orange"
             onDoubleClick={handleDoubleClickChangeProduct?.bind(
               null,
@@ -559,12 +555,12 @@ export const AddEditModal = observer(() => {
       title: 'Amallar',
       align: 'center',
       render: (value, record) => (
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
           {isUpdatingProduct?.id === record?.id ? (
             <Button
               onClick={handleSaveAndUpdateOrderProduct}
               type="primary"
-              style={{ backgroundColor: 'green' }}
+              style={{backgroundColor: 'green'}}
               icon={<CheckOutlined />}
             />
           ) : (
@@ -580,7 +576,7 @@ export const AddEditModal = observer(() => {
             description="Rostdan ham bu mahsulotni o'chirishni xohlaysizmi?"
             onConfirm={handleDeleteProduct.bind(null, record?.id)}
             okText="Ha"
-            okButtonProps={{ style: { background: 'red' } }}
+            okButtonProps={{style: {background: 'red'}}}
             cancelText="Yo'q"
           >
             <Button type="primary" icon={<DeleteOutlined />} danger />
@@ -594,7 +590,7 @@ export const AddEditModal = observer(() => {
     clientsInfoStore.setIsOpenAddEditClientModal(true);
   };
 
-  const handleChaneOrderDate = (value: Dayjs | null, dateString: string) => {
+  const handleChaneOrderDate = (value: Dayjs | null) => {
     if (ordersStore?.order?.id) {
       ordersApi.updateOrder({
         id: ordersStore?.order?.id!,
@@ -602,9 +598,9 @@ export const AddEditModal = observer(() => {
         send: ordersStore?.isSendUser,
       })
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ['getOrders'] });
+          queryClient.invalidateQueries({queryKey: ['getOrders']});
           if (clientId) {
-            singleClientStore.getSingleClient({ id: clientId });
+            singleClientStore.getSingleClient({id: clientId});
           }
           handleModalClose();
         })
@@ -758,13 +754,13 @@ export const AddEditModal = observer(() => {
         <div className={cn('order__add-products-header')}>
           <div className={cn('order__add-products-header-left')}>
             {ordersStore?.order?.id ? 'Sotuvni tahrirlash' : 'Yangi sotuv'}
-            <p style={{ margin: 0 }}>
+            <p style={{margin: 0}}>
               {selectedClient && (
                 <>
                   Mijoz qarzi:{' '}
                   {selectedClient?.debtByCurrency?.length ? (
                     selectedClient.debtByCurrency.map(debt => (
-                      <span key={debt?.currency?.id} style={{ marginRight: '8px' }}>
+                      <span key={debt?.currency?.id} style={{marginRight: '8px'}}>
                         {priceFormat(debt?.amount)}
                         {currencyTagUi(debt?.currency?.symbol)}
                       </span>
@@ -778,7 +774,7 @@ export const AddEditModal = observer(() => {
             {ordersStore?.order?.id && (
               <Button
                 type="primary"
-                style={{ backgroundColor: 'green' }}
+                style={{backgroundColor: 'green'}}
                 onClick={handleSaveAccepted}
                 loading={createLoading}
               >
@@ -795,7 +791,7 @@ export const AddEditModal = observer(() => {
             <Button
               type="primary"
               onClick={handleOpenPaymentModal}
-              style={{ marginRight: '8px' }}
+              style={{marginRight: '8px'}}
             >
               Mijoz to&lsquo;lovi
             </Button>
@@ -805,7 +801,7 @@ export const AddEditModal = observer(() => {
       onCancel={handleModalClose}
       cancelText="Bekor qilish"
       centered
-      style={{ top: 0, padding: 0 }}
+      style={{top: 0, padding: 0}}
       bodyStyle={{
         overflow: 'auto',
         height: '100dvh',
@@ -816,7 +812,7 @@ export const AddEditModal = observer(() => {
           {!ordersStore?.order?.status && (
             <Button
               type="primary"
-              style={{ backgroundColor: '#ff7700' }}
+              style={{backgroundColor: '#ff7700'}}
               onClick={handleModalClose}
             >
               Tasdiqlamasdan saqlash
@@ -834,11 +830,11 @@ export const AddEditModal = observer(() => {
         className="order__add-products-form"
         onKeyPress={handleKeyPress}
       >
-        <div className={cn('form__row')} style={{ display: 'flex' }}>
+        <div className={cn('form__row')} style={{display: 'flex'}}>
           <Form.Item
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
             name="clientId"
-            style={{ flex: 1, width: '100%' }}
+            style={{flex: 1, width: '100%'}}
             help={selectedClient?.lastSellingDate ? `Oxirgi sotuv: ${getFullDateFormat(selectedClient?.lastSellingDate)}` : ''}
           >
             <Select
@@ -846,7 +842,7 @@ export const AddEditModal = observer(() => {
               ref={clientRef}
               placeholder="Mijoz"
               loading={loadingClients}
-              notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
+              notFoundContent={loadingClients ? <Spin style={{margin: '10px'}} /> : null}
               filterOption={false}
               onSearch={handleSearchSupplier}
               onClear={handleClearClient}
@@ -859,16 +855,16 @@ export const AddEditModal = observer(() => {
               }}
               onSelect={(value) => handleSelectChange(value, 'clientId')}
               allowClear
-              style={{ flex: 1, width: '100%' }}
+              style={{flex: 1, width: '100%'}}
             >
               {clientsData?.data?.data.map((client) => (
                 <Select.Option key={client.id} value={client.id}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start'}}>
                     <div>
-                      <div style={{ fontWeight: 600 }}>
+                      <div style={{fontWeight: 600}}>
                         {client.fullname}
                       </div>
-                      <div style={{ fontSize: 12, color: '#999' }}>
+                      <div style={{fontSize: 12, color: '#999'}}>
                         {client.phone}
                       </div>
 
@@ -876,7 +872,7 @@ export const AddEditModal = observer(() => {
                     <div>
                       {client.debtByCurrency?.length
                         ? client.debtByCurrency.map((debt) => (
-                          <span key={debt.currency?.id} style={{ marginRight: 6 }}>
+                          <span key={debt.currency?.id} style={{marginRight: 6}}>
                             {priceFormat(debt.amount)}
                             {currencyTagUi(debt.currency?.symbol)}
                           </span>
@@ -898,15 +894,15 @@ export const AddEditModal = observer(() => {
           <DatePicker
             defaultValue={dayjs()}
             format="DD.MM.YYYY"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             onChange={handleChaneOrderDate}
           />
         </Form.Item>
-        <div className={cn('form__row')} style={{ display: 'flex' }}>
+        <div className={cn('form__row')} style={{display: 'flex'}}>
           <Form.Item
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
             name="productId"
-            style={{ flex: 1, width: '100%' }}
+            style={{flex: 1, width: '100%'}}
             help={
               selectedProduct?.lastSelling ? (
                 <span>
@@ -924,7 +920,7 @@ export const AddEditModal = observer(() => {
               placeholder="Mahsulot"
               loading={loadingProducts}
               optionFilterProp="children"
-              notFoundContent={loadingProducts ? <Spin style={{ margin: '10px' }} /> : null}
+              notFoundContent={loadingProducts ? <Spin style={{margin: '10px'}} /> : null}
               filterOption={false}
               onSearch={handleSearchProducts}
               onChange={handleChangeProduct}
@@ -956,7 +952,7 @@ export const AddEditModal = observer(() => {
                           {priceFormat(product?.prices?.selling?.price)} {currencyTagUi(product?.prices?.selling?.currency?.symbol)}
                         </p>
                         <p
-                          style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
+                          style={{backgroundColor: `${countColor(product?.count, product?.minAmount)}`}}
                           className={cn('income-order__add-product-count')}
                         >
                           {product?.count} dona
@@ -991,7 +987,7 @@ export const AddEditModal = observer(() => {
             placeholder="Sotuv haqida ma'lumot"
             rows={4}
             showCount
-            autoSize={{ minRows: 2, maxRows: 6 }}
+            autoSize={{minRows: 2, maxRows: 6}}
           />
         </Form.Item>
         <div>
@@ -1005,7 +1001,7 @@ export const AddEditModal = observer(() => {
             currencyOptions={currencyManyData}
             addonBefore={
               <Select
-                style={{ width: '30%' }}
+                style={{width: '30%'}}
                 options={PRICE_TYPE_OPTIONS}
                 value={priceType}
                 onChange={(val) => {
@@ -1024,25 +1020,25 @@ export const AddEditModal = observer(() => {
         >
           <InputNumber
             placeholder="Chegirma qiymatini kiriting"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
         <Form.Item
           label="Mahsulot soni"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
           name="count"
           className={cn('form__row')}
         >
           <InputNumber
             placeholder="Mahsulot sonini kiriting"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             ref={countInputRef}
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
-        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-          <div style={{ fontSize: '18px', fontWeight: '700px', marginTop: '-10px', marginBottom: '10px', width: '300px' }}>
+        <div style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+          <div style={{fontSize: '18px', fontWeight: '700px', marginTop: '-10px', marginBottom: '10px', width: '300px'}}>
             Umumiy narx: {priceFormat(totalPrice)}{' '}
             {currencyTagUi(currencyManyData.find(c => c.value === form.getFieldValue('currencyId'))?.code!)}
           </div>
@@ -1067,14 +1063,14 @@ export const AddEditModal = observer(() => {
         columns={addOrderProductsColumns}
         dataSource={ordersStore?.order?.products || []}
         pagination={false}
-        scroll={{ x: 500 }}
+        scroll={{x: 500}}
         rowClassName={rowClassName}
       />
 
       <div>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-          <p style={{ margin: '0' }}>Umumiy qiymati:</p>
-          <div style={{ textAlign: 'end' }}>
+        <div style={{fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px'}}>
+          <p style={{margin: '0'}}>Umumiy qiymati:</p>
+          <div style={{textAlign: 'end'}}>
             {ordersStore?.order?.totalPrices?.map(price =>
               <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
           </div>

@@ -2,20 +2,20 @@
 
 import './layout.scss';
 
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Outlet} from 'react-router-dom';
 import {Layout as AntdLayout} from 'antd';
 import {useBoolean} from 'usehooks-ts';
 import {useMediaQuery} from '@/utils/mediaQuery';
+import {ChatBadgeBridge} from './ChatBadgeBridge';
 import {Content} from './Content';
 import {Header} from './Header';
-import {ChatBadgeBridge} from './ChatBadgeBridge';
 import {Menu} from './Menu';
 
 export const Layout = () => {
   const isTablet = useMediaQuery('(max-width: 1200px)');
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const {value, setValue, toggle} = useBoolean(true);
+  const {value, toggle} = useBoolean(true);
 
   return (
     <AntdLayout className="layout" hasSider>

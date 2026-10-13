@@ -1,13 +1,12 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
+import {IClientsPayments} from '@/api/payment/types';
 import {ClipText} from '@/components/ClipText';
-import {IClientsInfo} from '@/api/clients';
+import {currencyTagUi} from '@/constants/payment';
+import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
 import {Action} from './Action';
-import { priceFormat } from '@/utils/priceFormat';
-import { IClientsPayments } from '@/api/payment/types';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
-import { currencyTagUi } from '@/constants/payment';
 
 export const paymentsColumns: ColumnType<IClientsPayments>[] = [
   {
@@ -22,7 +21,6 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'client',
     title: 'Mijoz',
     align: 'center',
-    onCell: () => ({style: {maxWidth: 0}}),
     render: (value, record) => <ClientNameLink client={record?.client} plain clip />,
   },
   {
@@ -46,7 +44,6 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    onCell: () => ({style: {maxWidth: 0}}),
     render: (value, record) => {
       const description = record?.description || '';
 
@@ -73,7 +70,6 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'seller',
     title: 'Sotuvchi',
     align: 'center',
-    onCell: () => ({style: {maxWidth: 0}}),
     render: (value, record) => {
       const fullname = record?.staff?.fullname || '';
 

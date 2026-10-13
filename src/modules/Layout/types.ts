@@ -1,5 +1,5 @@
-import { EPageAccess } from '@/api/staffs';
 import {ReactNode} from 'react';
+import {EPageAccess} from '@/api/staffs';
 
 export interface IMenuItems {
   children?: IMenuItems[] | [];

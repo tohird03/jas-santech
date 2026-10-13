@@ -1,10 +1,9 @@
-import { ICurrency } from '@/api/auth/types';
-import { IClientsInfo } from '@/api/clients';
+import {ICurrency} from '@/api/auth/types';
 
 
 export function calculateSettlement(
-  debts: { amount: number, currency: ICurrency }[],
-  payments: { currencyId: string, amount: number }[],
+  debts: {amount: number, currency: ICurrency}[],
+  payments: {currencyId: string, amount: number}[],
   currencies: ICurrency[],
   defaultCurrencySymbol: 'UZS' | 'USD'
 ) {

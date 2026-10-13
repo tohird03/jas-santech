@@ -1,15 +1,15 @@
-import { ICurrency } from "../auth/types";
-import { IAddEditPaymentParams } from "../payment-income/types";
-import { IProducts } from "../product/types"
-import { IStaffs } from "../staffs";
-import { ISupplierInfo } from "../supplier/types";
-import { IPagination, IPayment, IPaymentType } from "../types";
+import {ICurrency} from '../auth/types';
+import {IAddEditPaymentParams} from '../payment-income/types';
+import {IProducts} from '../product/types';
+import {IStaffs} from '../staffs';
+import {ISupplierInfo} from '../supplier/types';
+import {IPagination} from '../types';
 
 export interface IIncomeOrder {
-  id: string,
-  accepted: boolean,
-  supplier: ISupplierInfo,
-  staff: IStaffs,
+  id: string;
+  accepted: boolean;
+  supplier: ISupplierInfo;
+  staff: IStaffs;
   products: IIncomeProduct[];
   createdAt: string;
   date: string;
@@ -33,8 +33,8 @@ export interface IIncomeOrderTotalPrice {
 }
 
 export interface IIncomeProduct {
-  id: string,
-  count: number,
+  id: string;
+  count: number;
   prices: {
     selling: {
       price: number;
@@ -46,8 +46,8 @@ export interface IIncomeProduct {
       totalPrice: number;
       currency: ICurrency;
     };
-  },
-  wholesale_price: number,
+  };
+  wholesale_price: number;
   product: IProducts;
 }
 

@@ -1,19 +1,19 @@
 import React from 'react';
-import { observer } from 'mobx-react';
-import { ColumnsType } from 'antd/es/table';
-import { DataTable } from '@/components/Datatable/datatable';
-import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
-import { IClientStatistic } from '@/api/clients';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { staffsWorkingTimeReportsColumns } from './constants';
-import { DatePicker, DatePickerProps, Input, Typography } from 'antd';
-import styles from './styles.scss';
+import {observer} from 'mobx-react';
+import {useQuery} from '@tanstack/react-query';
+import {DatePicker, DatePickerProps, Input, Typography} from 'antd';
+import {ColumnsType} from 'antd/es/table';
 import classNames from 'classnames/bind';
 import dayjs from 'dayjs';
-import { clientsStatisticStore } from '@/stores/clients';
-import { useQuery } from '@tanstack/react-query';
-import { useDebounce } from 'usehooks-ts';
+import {useDebounce} from 'usehooks-ts';
+import {IClientStatistic} from '@/api/clients';
+import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {clientsStatisticStore} from '@/stores/clients';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {staffsWorkingTimeReportsColumns} from './constants';
+import styles from './styles.scss';
 
 const cn = classNames.bind(styles);
 
@@ -38,17 +38,17 @@ const reportColumnKeys = [
   'debt',
 ];
 const reportColumnTitles = [
-  { key: 'index', title: '#' },
-  { key: 'name', title: 'Mijoz' },
-  { key: 'sellingCount', title: 'Sotuv soni' },
-  { key: 'sellingSum', title: 'Sotuv summa' },
-  { key: 'sellingPaymentCount', title: 'Sotuv to\'lovi soni' },
-  { key: 'sellingPaymentSum', title: 'Sotuv to\'lovi summa' },
-  { key: 'clientPaymentCount', title: 'Alohida to\'lov soni' },
-  { key: 'clientPaymentSum', title: 'Alohida to\'lov summa' },
-  { key: 'returningCount', title: 'Qaytaruv soni' },
-  { key: 'returningSum', title: 'Qaytaruv to\'lov' },
-  { key: 'debt', title: 'Qarz' },
+  {key: 'index', title: '#'},
+  {key: 'name', title: 'Mijoz'},
+  {key: 'sellingCount', title: 'Sotuv soni'},
+  {key: 'sellingSum', title: 'Sotuv summa'},
+  {key: 'sellingPaymentCount', title: 'Sotuv to\'lovi soni'},
+  {key: 'sellingPaymentSum', title: 'Sotuv to\'lovi summa'},
+  {key: 'clientPaymentCount', title: 'Alohida to\'lov soni'},
+  {key: 'clientPaymentSum', title: 'Alohida to\'lov summa'},
+  {key: 'returningCount', title: 'Qaytaruv soni'},
+  {key: 'returningSum', title: 'Qaytaruv to\'lov'},
+  {key: 'debt', title: 'Qarz'},
 ];
 const reportDefaultWidths = {
   index: 64,
@@ -79,7 +79,7 @@ const reportMinWidths = {
 
 export const ClientStatistic = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const { boxRef, apply, picker } = useResizableColumns({
+  const {boxRef, apply, picker} = useResizableColumns({
     keys: reportColumnKeys,
     defaults: reportDefaultWidths,
     mins: reportMinWidths,
@@ -94,7 +94,7 @@ export const ClientStatistic = observer(() => {
     title: titleByKey[String(column.key)] || column.title,
   }));
   const search = useDebounce(clientsStatisticStore.search || '', 400);
-  const { data: clientsStatisticData, isLoading: loading, isError } = useQuery({
+  const {data: clientsStatisticData, isLoading: loading, isError} = useQuery({
     queryKey: [
       'clientReport',
       clientsStatisticStore?.pageNumber,

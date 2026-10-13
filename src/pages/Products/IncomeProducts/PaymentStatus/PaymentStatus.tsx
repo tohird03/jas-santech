@@ -1,15 +1,14 @@
-import { IIncomeOrder } from '@/api/income-products/types';
-import { IOrder } from '@/api/order/types';
-import { incomeProductsStore, ordersStore } from '@/stores/products';
-import { Tag } from 'antd';
-import { observer } from 'mobx-react';
 import React from 'react';
+import {observer} from 'mobx-react';
+import {Tag} from 'antd';
+import {IIncomeOrder} from '@/api/income-products/types';
+import {incomeProductsStore} from '@/stores/products';
 
 type Props = {
   incomeOrder: IIncomeOrder | null;
 };
 
-export const PaymentStatus = observer(({ incomeOrder }: Props) => {
+export const PaymentStatus = observer(({incomeOrder}: Props) => {
 
   const handleOpenPaymentModal = () => {
     if (incomeOrder?.id) {

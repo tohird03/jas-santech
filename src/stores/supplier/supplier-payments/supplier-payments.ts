@@ -1,7 +1,7 @@
 import {makeAutoObservable} from 'mobx';
+import {incomePaymentApi} from '@/api/payment-income';
+import {IIncomeGetClientsPaymentsParams, ISupplierPayments} from '@/api/payment-income/types';
 import {addNotification} from '@/utils';
-import { IIncomeGetClientsPaymentsParams, ISupplierPayments } from '@/api/payment-income/types';
-import { incomePaymentApi } from '@/api/payment-income';
 
 class SupplierPaymentsStore {
   #today = new Date();

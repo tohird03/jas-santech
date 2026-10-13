@@ -1,14 +1,13 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { IClientDebtFilter, IClientsInfo } from '@/api/clients';
-import { Action } from './Action';
-import { formatPhoneNumber } from '@/utils/phoneFormat';
-import { priceFormat } from '@/utils/priceFormat';
-import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { Tooltip } from 'antd';
-import { CheckCircleFilled, MinusOutlined } from '@ant-design/icons';
-import { CurrencyAmountZero, currencyTagUi } from '@/constants/payment';
+import {CheckCircleFilled, MinusOutlined} from '@ant-design/icons';
+import {Tooltip} from 'antd';
+import {ColumnType} from 'antd/es/table';
+import {IClientDebtFilter, IClientsInfo} from '@/api/clients';
+import {CurrencyAmountZero, currencyTagUi} from '@/constants/payment';
+import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {formatPhoneNumber} from '@/utils/phoneFormat';
+import {Action} from './Action';
 
 export const clientsColumns: ColumnType<IClientsInfo>[] = [
   {
@@ -23,7 +22,6 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
     dataIndex: 'name',
     title: 'Mijoz',
     align: 'center',
-    onCell: () => ({ style: { maxWidth: 0 } }),
     render: (value, record) => <ClientNameLink client={record} rowHover clip />,
   },
   {

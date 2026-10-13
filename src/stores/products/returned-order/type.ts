@@ -1,5 +1,5 @@
-import { IClientsInfo } from "@/api/clients";
-import { IReturnedOrderPaymentParams } from "@/api/returned-order/types";
+import {IClientsInfo} from '@/api/clients';
+import {IReturnedOrderPaymentParams} from '@/api/returned-order/types';
 
 export interface ISingleReturnedOrderPayment {
   client?: IClientsInfo;

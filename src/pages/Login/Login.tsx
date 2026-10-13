@@ -1,21 +1,22 @@
 'use client';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { observer } from 'mobx-react';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Button, Form, Input } from 'antd';
-import classNames from 'classnames';
-import { useLocalStorage } from 'usehooks-ts';
-import { ILoginForm } from '@/api/auth/types';
-import { ROUTES } from '@/constants';
-import { authStore, TokenType } from '@/stores/auth';
-import { addNotification } from '@/utils/addNotification';
-import styles from './login.scss';
 // @ts-ignore
 import 'react-phone-input-2/lib/style.css';
+
+import React, {useState} from 'react';
 // @ts-ignore
 import PhoneInput from 'react-phone-input-2';
+import {useNavigate} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {EyeInvisibleOutlined, EyeTwoTone} from '@ant-design/icons';
+import {Button, Form, Input} from 'antd';
+import classNames from 'classnames';
+import {useLocalStorage} from 'usehooks-ts';
 import JasImg from '/public/images/jas-logo.jpg';
+import {ILoginForm} from '@/api/auth/types';
+import {ROUTES} from '@/constants';
+import {authStore, TokenType} from '@/stores/auth';
+import {addNotification} from '@/utils/addNotification';
+import styles from './login.scss';
 
 const cn = classNames.bind(styles);
 

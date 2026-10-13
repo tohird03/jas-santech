@@ -1,31 +1,28 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Form, Input, InputNumber, Modal, Select, Spin, message, notification } from 'antd';
-import { observer } from 'mobx-react';
-import { priceFormat } from '@/utils/priceFormat';
-import { IPaymentType } from '@/api/types';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { clientsInfoStore, paymentsStore, singleClientStore } from '@/stores/clients';
-import { useParams } from 'react-router-dom';
-import { authStore } from '@/stores/auth';
-import { PaymentTypeOptions, currencyTagUi } from '@/constants/payment';
-import { PaymentTypes } from '@/constants/types';
-import { calculateSettlement } from '../../utils';
-import { IClientsInfo, clientsInfoApi } from '@/api/clients';
-import { clientsPaymentApi } from '@/api/payment';
-import { addNotification } from '@/utils';
-import { IAddEditPaymentForm, IAddEditPaymentParams } from '@/api/payment/types';
+import React, {useEffect, useMemo, useState} from 'react';
+import {observer} from 'mobx-react';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {Button, Card, Form, Input, InputNumber, Modal, notification, Select, Spin} from 'antd';
+import {IClientsInfo} from '@/api/clients';
+import {clientsPaymentApi} from '@/api/payment';
+import {IAddEditPaymentForm, IAddEditPaymentParams} from '@/api/payment/types';
+import {currencyTagUi, PaymentTypeOptions} from '@/constants/payment';
+import {PaymentTypes} from '@/constants/types';
+import {authStore} from '@/stores/auth';
+import {clientsInfoStore, paymentsStore} from '@/stores/clients';
+import {addNotification} from '@/utils';
+import {priceFormat} from '@/utils/priceFormat';
+import {calculateSettlement} from '../../utils';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
-  const { clientId } = useParams();
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [prevCurrencies, setPrevCurrencies] = useState<Record<number, string>>({});
   const paymentsForm = Form.useWatch('paymentMethods', form) || [];
   const [searchClients, setSearchClients] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<IClientsInfo | null>(null);
 
-  const { data: clientsData, isLoading: loadingClients } = useQuery({
+  const {data: clientsData, isLoading: loadingClients} = useQuery({
     queryKey: ['getClients', searchClients],
     queryFn: () =>
       clientsInfoStore.getClients({
@@ -35,7 +32,7 @@ export const AddEditModal = observer(() => {
       }),
   });
 
-  const { data: currencyMany } = useQuery({
+  const {data: currencyMany} = useQuery({
     queryKey: ['getCurrencyMany'],
     queryFn: () =>
       authStore.getCurrencyMany(),
@@ -111,7 +108,7 @@ export const AddEditModal = observer(() => {
       })
         .then(() => {
           addNotification('To\'lov muvaffaqiyatli tahrirlandi!');
-          queryClient.invalidateQueries({ queryKey: ['getPayments'] });
+          queryClient.invalidateQueries({queryKey: ['getPayments']});
           handleModalClose();
         })
         .catch(addNotification)
@@ -125,7 +122,7 @@ export const AddEditModal = observer(() => {
     clientsPaymentApi.addPayment(addEditPaymentValues)
       .then(() => {
         addNotification('To\'lov muvaffaqiyatli qo\'shildi!');
-        queryClient.invalidateQueries({ queryKey: ['getPayments'] });
+        queryClient.invalidateQueries({queryKey: ['getPayments']});
         handleModalClose();
       })
       .catch(addNotification)
@@ -180,10 +177,10 @@ export const AddEditModal = observer(() => {
   const settlement = useMemo(() => {
     if (!currencyMany?.data) {
       return {
-        debt: { uzs: 0, usd: 0 },
-        payment: { uzs: 0, usd: 0 },
-        order: { uzs: 0, usd: 0 },
-        change: { uzs: 0, usd: 0, default: 0 },
+        debt: {uzs: 0, usd: 0},
+        payment: {uzs: 0, usd: 0},
+        order: {uzs: 0, usd: 0},
+        change: {uzs: 0, usd: 0, default: 0},
       };
     }
 
@@ -293,11 +290,11 @@ export const AddEditModal = observer(() => {
     <Modal
       open={paymentsStore.isOpenAddEditPaymentModal}
       title={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <p style={{ margin: 0 }}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
+          <p style={{margin: 0}}>
             To&apos;lov
           </p>
-          <p style={{ margin: 0 }}>
+          <p style={{margin: 0}}>
             {clientDebt?.length > 0 && `Mijoz qarzi: ${paymentsStore?.singlePayment?.client?.debtByCurrency?.map(debt => (
               <span key={debt?.currency?.id}>
                 {debt?.amount}{currencyTagUi(debt?.currency?.symbol)}
@@ -310,7 +307,7 @@ export const AddEditModal = observer(() => {
       cancelText="Bekor qilish"
       centered
       keyboard
-      style={{ top: 0, padding: '20px' }}
+      style={{top: 0, padding: '20px'}}
       bodyStyle={{
         height: '85vh',
         overflow: 'auto',
@@ -353,14 +350,14 @@ export const AddEditModal = observer(() => {
         >
           <Form.Item
             label="Mijoz"
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
             name="clientId"
           >
             <Select
               showSearch
               placeholder="Mijoz"
               loading={loadingClients}
-              notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
+              notFoundContent={loadingClients ? <Spin style={{margin: '10px'}} /> : null}
               filterOption={false}
               onSearch={handleSearchClients}
               onClear={handleClearClient}
@@ -376,17 +373,17 @@ export const AddEditModal = observer(() => {
             />
           </Form.Item>
           <Form.List name="paymentMethods">
-            {(fields, { add, remove }) => (
+            {(fields, {add, remove}) => (
               <div>
-                {fields.map(({ key, name }) => (
+                {fields.map(({key, name}) => (
                   <div
                     key={key}
-                    style={{ display: 'flex', marginBottom: 10 }}
+                    style={{display: 'flex', marginBottom: 10}}
                   >
                     <Form.Item
                       name={[name, 'type']}
-                      rules={[{ required: true, message: 'Turini tanlang' }]}
-                      style={{ width: '20%' }}
+                      rules={[{required: true, message: 'Turini tanlang'}]}
+                      style={{width: '20%'}}
                     >
                       <Select
                         placeholder="To'lov turi"
@@ -395,12 +392,12 @@ export const AddEditModal = observer(() => {
                     </Form.Item>
                     <Form.Item
                       name={[name, 'amount']}
-                      rules={[{ required: true, message: 'Summa kiriting' }]}
-                      style={{ width: '40%' }}
+                      rules={[{required: true, message: 'Summa kiriting'}]}
+                      style={{width: '40%'}}
                     >
                       <InputNumber
                         key={form.getFieldValue(['paymentMethods', name, 'currencyId'])}
-                        style={{ width: '100%' }}
+                        style={{width: '100%'}}
                         formatter={(value) => priceFormat(value!)}
                         placeholder="0"
                       />
@@ -408,8 +405,8 @@ export const AddEditModal = observer(() => {
                     <Form.Item
                       name={[name, 'currencyId']}
                       initialValue={authStore?.staffInfo?.currency?.id}
-                      rules={[{ required: true, message: 'Valyuta tanlang' }]}
-                      style={{ width: '25%' }}
+                      rules={[{required: true, message: 'Valyuta tanlang'}]}
+                      style={{width: '25%'}}
                     >
                       <Select
                         options={currencyManyData}
@@ -453,17 +450,17 @@ export const AddEditModal = observer(() => {
           >
             <Input.TextArea
               placeholder="To'lov haqida ma'lumot"
-              style={{ width: '100%' }}
+              style={{width: '100%'}}
               rows={4}
               maxLength={100}
               showCount
-              autoSize={{ minRows: 2, maxRows: 6 }}
+              autoSize={{minRows: 2, maxRows: 6}}
             />
           </Form.Item>
 
           <div>
             {(settlement.change.uzs > 0 || settlement.change.usd > 0) && (
-              <div style={{ marginTop: 20 }}>
+              <div style={{marginTop: 20}}>
                 <h3>Mijoz hisobidan ayirish</h3>
 
                 {settlement.change.uzs > 0 && (
@@ -473,7 +470,7 @@ export const AddEditModal = observer(() => {
                     initialValue={settlement.change.uzs}
                   >
                     <InputNumber
-                      style={{ width: '100%' }}
+                      style={{width: '100%'}}
                       formatter={(value) => priceFormat(value)}
                       onChange={(val) => handleChangeUpdate('uzs', Number(val || 0))}
                     />
@@ -487,7 +484,7 @@ export const AddEditModal = observer(() => {
                     initialValue={settlement.change.usd}
                   >
                     <InputNumber
-                      style={{ width: '100%' }}
+                      style={{width: '100%'}}
                       formatter={(value) => priceFormat(value)}
                       onChange={(val) => handleChangeUpdate('usd', Number(val || 0))}
                     />
@@ -499,7 +496,7 @@ export const AddEditModal = observer(() => {
             {uzsChange < settlement.change.uzs && (
               <Form.Item name="uzsCash" label="Kassadan ayirish UZS">
                 <InputNumber
-                  style={{ width: '100%' }}
+                  style={{width: '100%'}}
                   min={0}
                   max={settlement.change.uzs}
                   formatter={(v) => priceFormat(v)}
@@ -511,7 +508,7 @@ export const AddEditModal = observer(() => {
             {settlement.change.usd > 0 && usdChange < settlement.change.usd && (
               <Form.Item name="usdCash" label="Kassadan ayirish USD">
                 <InputNumber
-                  style={{ width: '100%' }}
+                  style={{width: '100%'}}
                   min={0}
                   max={settlement.change.usd}
                   formatter={(v) => priceFormat(v)}
@@ -521,43 +518,43 @@ export const AddEditModal = observer(() => {
             )}
           </div>
         </Form>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <Card style={{ background: '#F5F5F5' }}>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-              <p style={{ margin: '0' }}>Umumiy qarzi:</p>
-              <div style={{ textAlign: 'end' }}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+          <Card style={{background: '#F5F5F5'}}>
+            <div style={{fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px'}}>
+              <p style={{margin: '0'}}>Umumiy qarzi:</p>
+              <div style={{textAlign: 'end'}}>
                 {selectedClient?.debtByCurrency?.map(price =>
                   <div key={price?.currency?.id}>{priceFormat(price?.amount)}{currencyTagUi(price?.currency?.symbol)}</div>)}
               </div>
             </div>
           </Card>
-          <Card style={{ background: '#F5F5F5' }}>
+          <Card style={{background: '#F5F5F5'}}>
             <div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-                <p style={{ margin: '0' }}>To&apos;lov:</p>
-                <div style={{ textAlign: 'end' }}>
+              <div style={{fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px'}}>
+                <p style={{margin: '0'}}>To&apos;lov:</p>
+                <div style={{textAlign: 'end'}}>
                   {paymentTotals?.map(price =>
                     <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price.symbol!)}</div>)}
                 </div>
               </div>
             </div>
           </Card>
-          <Card style={{ background: '#F5F5F5' }}>
+          <Card style={{background: '#F5F5F5'}}>
             <div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-                <p style={{ margin: '0' }}>Qarzga:</p>
-                <div style={{ textAlign: 'end' }}>
+              <div style={{fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px'}}>
+                <p style={{margin: '0'}}>Qarzga:</p>
+                <div style={{textAlign: 'end'}}>
                   <div>{priceFormat(settlement?.debt?.uzs)}{currencyTagUi('UZS')}</div>
                   <div>{priceFormat(settlement?.debt?.usd)}{currencyTagUi('USD')}</div>
                 </div>
               </div>
             </div>
           </Card>
-          <Card style={{ background: '#F5F5F5' }}>
+          <Card style={{background: '#F5F5F5'}}>
             <div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-                <p style={{ margin: '0' }}>Qaytim:</p>
-                <div style={{ textAlign: 'end' }}>
+              <div style={{fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px'}}>
+                <p style={{margin: '0'}}>Qaytim:</p>
+                <div style={{textAlign: 'end'}}>
                   <div>{priceFormat(settlement?.change?.uzs)}{currencyTagUi('UZS')}</div>
                   <div>{priceFormat(settlement?.change?.usd)}{currencyTagUi('USD')}</div>
                 </div>

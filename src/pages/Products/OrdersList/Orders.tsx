@@ -1,37 +1,37 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, DatePickerProps, Input, Pagination, Select, Tooltip, Typography } from 'antd';
+import React, {useEffect, useMemo, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, DatePicker, DatePickerProps, Input, Select, Tooltip, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal as AddEditOrder } from './AddEditModal';
-import styles from './orders.scss';
-import { FilterOrderStatusOptions, ordersColumns, ordersTotalCalc } from './constants';
-import { ordersStore, productsListStore } from '@/stores/products';
 import dayjs from 'dayjs';
-import { OrderShowInfoModal } from './OrderShowInfoModal';
-import { PaymentModal } from './PaymentModal';
-import { clientsInfoStore } from '@/stores/clients';
-import { useParams } from 'react-router-dom';
-import { ordersApi } from '@/api/order';
-import { addNotification } from '@/utils';
-import { AddEditModal as AddEditClientModal } from '@/pages/Clients/ClientsInfo/AddEditModal';
-import { AddEditModal } from '../ProductsList/AddEditModal';
-import { dateFormat } from '@/utils/getDateFormat';
-import { staffsApi } from '@/api/staffs';
-import { IOrderStatus } from '@/api/order/types';
+import {ordersApi} from '@/api/order';
+import {IOrderStatus} from '@/api/order/types';
+import {staffsApi} from '@/api/staffs';
+import {DataTable} from '@/components/Datatable/datatable';
+import {AddEditModal as AddEditClientModal} from '@/pages/Clients/ClientsInfo/AddEditModal';
+import {clientsInfoStore} from '@/stores/clients';
+import {ordersStore, productsListStore} from '@/stores/products';
+import {addNotification} from '@/utils';
+import {dateFormat} from '@/utils/getDateFormat';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {AddEditModal} from '../ProductsList/AddEditModal';
+import {AddEditModal as AddEditOrder} from './AddEditModal';
+import {FilterOrderStatusOptions, ordersColumns, ordersTotalCalc} from './constants';
+import styles from './orders.scss';
+import {OrderShowInfoModal} from './OrderShowInfoModal';
+import {PaymentModal} from './PaymentModal';
 
 const cn = classNames.bind(styles);
 
 export const Orders = observer(() => {
-  const { clientId } = useParams();
+  const {clientId} = useParams();
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
 
-  const { data: ordersData, isLoading: loading } = useQuery({
+  const {data: ordersData, isLoading: loading} = useQuery({
     queryKey: [
       'getOrders',
       ordersStore.pageNumber,
@@ -56,7 +56,7 @@ export const Orders = observer(() => {
       }),
   });
 
-  const { data: sellerData, isLoading: loadingSeller } = useQuery({
+  const {data: sellerData, isLoading: loadingSeller} = useQuery({
     queryKey: ['getSellers'],
     queryFn: () =>
       staffsApi.getStaffs({
@@ -231,7 +231,7 @@ export const Orders = observer(() => {
           data={[ordersData?.data?.calcPage || {}]}
           isMobile
           loading={loading}
-          cardStyle={{ width: '500px' }}
+          cardStyle={{width: '500px'}}
           className="total-calc"
           loadingLength={1}
           rowKey="1"

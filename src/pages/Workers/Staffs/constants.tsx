@@ -1,7 +1,7 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
-import {ClipText} from '@/components/ClipText';
 import {EPageAccess, IStaffs} from '@/api/staffs';
+import {ClipText} from '@/components/ClipText';
 import {formatPhoneNumber} from '@/utils/phoneFormat';
 import {Action} from './Action';
 import {ActiveStatus} from './AvtiveStatus/ActiveStatus';

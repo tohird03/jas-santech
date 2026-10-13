@@ -1,17 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { observer } from 'mobx-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, DatePicker, Form, Image, Input, InputNumber, Modal, Popconfirm, Select, Spin } from 'antd';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {CheckOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {Button, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Select, Spin} from 'antd';
+import Table, {ColumnType} from 'antd/es/table';
 import classNames from 'classnames';
-import { addNotification } from '@/utils';
-import { incomeProductsStore, productsListStore } from '@/stores/products';
-import { priceFormat } from '@/utils/priceFormat';
-import { CheckOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { useMediaQuery } from '@/utils/mediaQuery';
 import dayjs from 'dayjs';
-import styles from '../income-products.scss';
-import Table, { ColumnType } from 'antd/es/table';
-import { incomeProductsApi } from '@/api/income-products';
+import {incomeProductsApi} from '@/api/income-products';
 import {
   IAddEditIncomeOrder,
   IAddIncomeOrderForm,
@@ -20,26 +16,21 @@ import {
   IIncomeProduct,
   IUpdateIncomeProduct,
 } from '@/api/income-products/types';
-import { singleSupplierStore, supplierInfoStore } from '@/stores/supplier';
-import { ISupplierInfo } from '@/api/supplier/types';
-import { currencyTagUi } from '@/constants/payment';
-import { authStore } from '@/stores/auth';
-import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
-import { useParams } from 'react-router-dom';
-import { IProducts } from '@/api/product/types';
+import {IProducts} from '@/api/product/types';
+import {ISupplierInfo} from '@/api/supplier/types';
+import {currencyTagUi} from '@/constants/payment';
+import {authStore} from '@/stores/auth';
+import {incomeProductsStore, productsListStore} from '@/stores/products';
+import {singleSupplierStore, supplierInfoStore} from '@/stores/supplier';
+import {addNotification} from '@/utils';
+import {PriceWithCurrency} from '@/utils/hooks/valuteConversition';
+import {priceFormat} from '@/utils/priceFormat';
+import styles from '../income-products.scss';
 
 const cn = classNames.bind(styles);
 
-const filterOption = (input: string, option?: { label: string, value: string }) => {
-  if (!input) return true;
-  const formattedInput = input.trim().toLowerCase();
-  const formattedLabel = option?.label?.toLowerCase() || '';
-
-  return formattedLabel.includes(formattedInput);
-};
-
-const countColor = (count: number, min_amount: number): string =>
-  count < 0 ? 'red' : count < min_amount ? 'orange' : 'green';
+const countColor = (count: number, minAmount: number): string =>
+  count < 0 ? 'red' : count < minAmount ? 'orange' : 'green';
 
 const getNextFieldName = (currentFieldName: string) => {
   const fieldNames = [
@@ -65,13 +56,13 @@ export const AddEditIncomeOrderModal = observer(() => {
   const countInputRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<any>(null);
   const clientRef = useRef<any>(null);
-  const { supplierId } = useParams();
+  const {supplierId} = useParams();
   const [createLoading, setCreateLoading] = useState(false);
   const [selectedSupplier, setSelectedSupplier] = useState<ISupplierInfo | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<IProducts | null>(null);
 
   // GET DATAS
-  const { data: supplierData, isLoading: loadingClients } = useQuery({
+  const {data: supplierData, isLoading: loadingClients} = useQuery({
     queryKey: ['getSuppliers', searchClients],
     queryFn: () =>
       supplierInfoStore.getSuppliers({
@@ -81,7 +72,7 @@ export const AddEditIncomeOrderModal = observer(() => {
       }),
   });
 
-  const { data: productsData, isLoading: loadingProducts } = useQuery({
+  const {data: productsData, isLoading: loadingProducts} = useQuery({
     queryKey: ['getProducts', searchProducts],
     queryFn: () =>
       productsListStore.getProducts({
@@ -91,17 +82,13 @@ export const AddEditIncomeOrderModal = observer(() => {
       }),
   });
 
-  const { data: currencyMany } = useQuery({
+  const {data: currencyMany} = useQuery({
     queryKey: ['getCurrencyMany'],
     queryFn: () =>
       authStore.getCurrencyMany(),
   });
 
-  const {
-    data: singleIncomeOrder,
-    isLoading,
-    isError,
-  } = useQuery({
+  const {data: singleIncomeOrder} = useQuery({
     queryKey: ['getSingleIncomeOrder', incomeProductsStore?.incomeOrderId],
 
     queryFn: () => incomeProductsApi.getSingleIncomeOrder(incomeProductsStore?.incomeOrderId!),
@@ -129,9 +116,9 @@ export const AddEditIncomeOrderModal = observer(() => {
       date: form.getFieldValue('date'),
     })
       .then(() => {
-        queryClient.invalidateQueries({ queryKey: ['getIncomeOrders'] });
+        queryClient.invalidateQueries({queryKey: ['getIncomeOrders']});
         if (supplierId) {
-          singleSupplierStore.getSingleSupplier({ id: supplierId });
+          singleSupplierStore.getSingleSupplier({id: supplierId});
         }
         handleModalClose();
       })
@@ -183,7 +170,7 @@ export const AddEditIncomeOrderModal = observer(() => {
 
               fieldInstance?.focus();
             });
-          queryClient.invalidateQueries({ queryKey: ['getIncomeOrders'] });
+          queryClient.invalidateQueries({queryKey: ['getIncomeOrders']});
         })
         .catch(addNotification)
         .finally(() => {
@@ -213,7 +200,7 @@ export const AddEditIncomeOrderModal = observer(() => {
         } else {
           incomeProductsStore.setIncomeOrder(res?.data);
         }
-        queryClient.invalidateQueries({ queryKey: ['getIncomeOrders'] });
+        queryClient.invalidateQueries({queryKey: ['getIncomeOrders']});
       })
       .catch(addNotification)
       .finally(() => {
@@ -255,13 +242,6 @@ export const AddEditIncomeOrderModal = observer(() => {
   const handleClearClient = () => {
     setSearchClients(null);
   };
-
-  const supplierOptions = useMemo(() => (
-    supplierData?.data?.data.map((supplier) => ({
-      value: supplier?.id,
-      label: `${supplier?.fullname}: +${supplier?.phone}`,
-    }))
-  ), [supplierData]);
 
   useEffect(() => {
     if (singleIncomeOrder?.data) {
@@ -319,15 +299,15 @@ export const AddEditIncomeOrderModal = observer(() => {
   };
 
   const handleChangePrice = (value: number | null) => {
-    setIsUpdatingProduct({ ...isUpdatingProduct!, cost: value || 0 });
+    setIsUpdatingProduct({...isUpdatingProduct!, cost: value || 0});
   };
 
   const handleChangeCount = (value: number | null) => {
-    setIsUpdatingProduct({ ...isUpdatingProduct!, count: value || 0 });
+    setIsUpdatingProduct({...isUpdatingProduct!, count: value || 0});
   };
 
   const handleChangeSellingPrice = (value: number | null) => {
-    setIsUpdatingProduct({ ...isUpdatingProduct!, price: value || 0 });
+    setIsUpdatingProduct({...isUpdatingProduct!, price: value || 0});
   };
 
   const handleSaveAndUpdateOrderProduct = () => {
@@ -435,12 +415,12 @@ export const AddEditIncomeOrderModal = observer(() => {
       title: 'Amallar',
       align: 'center',
       render: (value, record) => (
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
           {isUpdatingProduct?.id === record?.id ? (
             <Button
               onClick={handleSaveAndUpdateOrderProduct}
               type="primary"
-              style={{ backgroundColor: 'green' }}
+              style={{backgroundColor: 'green'}}
               icon={<CheckOutlined />}
             />
           ) : (
@@ -456,7 +436,7 @@ export const AddEditIncomeOrderModal = observer(() => {
             description="Rostdan ham bu mahsulotni o'chirishni xohlaysizmi?"
             onConfirm={handleDeleteProduct.bind(null, record?.id)}
             okText="Ha"
-            okButtonProps={{ style: { background: 'red' } }}
+            okButtonProps={{style: {background: 'red'}}}
             cancelText="Yo'q"
           >
             <Button type="primary" icon={<DeleteOutlined />} danger />
@@ -609,14 +589,14 @@ export const AddEditIncomeOrderModal = observer(() => {
       open={incomeProductsStore.isOpenAddEditIncomeProductsModal}
       title={(
         <div className={cn('order__add-products-header')}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <p style={{ margin: 0 }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
+            <p style={{margin: 0}}>
               {selectedSupplier && (
                 <>
                   Yetkazib beruvchi qarzi:{' '}
                   {selectedSupplier?.debtByCurrency?.length ? (
                     selectedSupplier.debtByCurrency.map(debt => (
-                      <span key={debt?.currency?.id} style={{ marginRight: '8px' }}>
+                      <span key={debt?.currency?.id} style={{marginRight: '8px'}}>
                         {priceFormat(debt?.amount)}
                         {currencyTagUi(debt?.currency?.symbol)}
                       </span>
@@ -630,7 +610,7 @@ export const AddEditIncomeOrderModal = observer(() => {
             {incomeProductsStore?.incomeOrder?.id && (
               <Button
                 type="primary"
-                style={{ backgroundColor: 'green' }}
+                style={{backgroundColor: 'green'}}
                 onClick={handleSaveAccepted}
                 loading={createLoading}
               >
@@ -651,7 +631,7 @@ export const AddEditIncomeOrderModal = observer(() => {
       onCancel={handleModalClose}
       cancelText="Bekor qilish"
       centered
-      style={{ top: 0, padding: 0 }}
+      style={{top: 0, padding: 0}}
       bodyStyle={{
         height: '85vh',
         overflow: 'auto',
@@ -666,18 +646,18 @@ export const AddEditIncomeOrderModal = observer(() => {
         className="order__add-products-form"
         onKeyPress={handleKeyPress}
       >
-        <div className={cn('form__row')} style={{ display: 'flex' }}>
+        <div className={cn('form__row')} style={{display: 'flex'}}>
           <Form.Item
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
             name="supplierId"
-            style={{ flex: 1, width: '100%' }}
+            style={{flex: 1, width: '100%'}}
           >
             <Select
               showSearch
               ref={clientRef}
               placeholder="Yetkazib beruvchi"
               loading={loadingClients}
-              notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
+              notFoundContent={loadingClients ? <Spin style={{margin: '10px'}} /> : null}
               filterOption={false}
               onSearch={handleSearchSupplier}
               onClear={handleClearClient}
@@ -690,17 +670,17 @@ export const AddEditIncomeOrderModal = observer(() => {
                 }
               }}
               onSelect={(value) => handleSelectChange(value, 'supplierId')}
-              style={{ flex: 1, width: '100%' }}
+              style={{flex: 1, width: '100%'}}
 
             >
               {supplierData?.data?.data.map((supplier) => (
                 <Select.Option key={supplier.id} value={supplier.id}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <div>
-                      <div className={cn('income-order__add-product-name')} style={{ fontWeight: 600 }}>
+                      <div className={cn('income-order__add-product-name')} style={{fontWeight: 600}}>
                         {supplier.fullname}
                       </div>
-                      <div style={{ fontSize: 12, color: '#999' }}>
+                      <div style={{fontSize: 12, color: '#999'}}>
                         {supplier.phone}
                       </div>
 
@@ -708,7 +688,7 @@ export const AddEditIncomeOrderModal = observer(() => {
                     <div>
                       {supplier.debtByCurrency?.length
                         ? supplier.debtByCurrency.map((debt) => (
-                          <span key={debt.currency?.id} style={{ marginRight: 6 }}>
+                          <span key={debt.currency?.id} style={{marginRight: 6}}>
                             {priceFormat(debt.amount)}
                             {currencyTagUi(debt.currency?.symbol)}
                           </span>
@@ -724,28 +704,28 @@ export const AddEditIncomeOrderModal = observer(() => {
         </div>
 
         <Form.Item
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
           name="date"
           initialValue={dayjs()}
         >
           <DatePicker
             defaultValue={dayjs()}
             format="DD.MM.YYYY"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
           />
         </Form.Item>
-        <div className={cn('form__row')} style={{ display: 'flex' }}>
+        <div className={cn('form__row')} style={{display: 'flex'}}>
           <Form.Item
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
             name="productId"
-            style={{ flex: 1, width: '100%' }}
+            style={{flex: 1, width: '100%'}}
           >
             <Select
               showSearch
               placeholder="Mahsulot"
               loading={loadingProducts}
               optionFilterProp="children"
-              notFoundContent={loadingProducts ? <Spin style={{ margin: '10px' }} /> : null}
+              notFoundContent={loadingProducts ? <Spin style={{margin: '10px'}} /> : null}
               filterOption={false}
               onSearch={handleSearchProducts}
               open={isOpenProductSelect}
@@ -772,7 +752,7 @@ export const AddEditIncomeOrderModal = observer(() => {
                           {priceFormat(product?.prices?.selling?.price)} {currencyTagUi(product?.prices?.selling?.currency?.symbol)}
                         </p>
                         <p
-                          style={{ backgroundColor: `${countColor(product?.count, product?.minAmount)}` }}
+                          style={{backgroundColor: `${countColor(product?.count, product?.minAmount)}`}}
                           className={cn('income-order__add-product-count')}
                         >
                           {product?.count} dona
@@ -817,17 +797,17 @@ export const AddEditIncomeOrderModal = observer(() => {
             placeholder="Tushum haqida ma'lumot"
             rows={4}
             showCount
-            autoSize={{ minRows: 2, maxRows: 6 }}
+            autoSize={{minRows: 2, maxRows: 6}}
           />
         </Form.Item>
         <Form.Item
           label="Mahsulot soni"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
           name="count"
         >
           <InputNumber
             placeholder="Tushuriladigan mahsulot sonini kiriting"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             ref={countInputRef}
             formatter={(value) => priceFormat(value!)}
           />
@@ -846,14 +826,14 @@ export const AddEditIncomeOrderModal = observer(() => {
         columns={addOrderProductsColumns}
         dataSource={incomeProductsStore?.incomeOrder?.products || []}
         pagination={false}
-        scroll={{ x: 500 }}
+        scroll={{x: 500}}
         rowClassName={rowClassName}
       />
 
       <div>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px' }}>
-          <p style={{ margin: '0' }}>Umumiy qiymati:</p>
-          <div style={{ textAlign: 'end' }}>
+        <div style={{fontSize: '24px', fontWeight: 'bold', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', gap: '20px'}}>
+          <p style={{margin: '0'}}>Umumiy qiymati:</p>
+          <div style={{textAlign: 'end'}}>
             {incomeProductsStore?.incomeOrder?.totalPrices?.cost?.map(price =>
               <div key={price?.currencyId}>{priceFormat(price?.total)}{currencyTagUi(price?.currency?.symbol)}</div>)}
           </div>

@@ -31,16 +31,16 @@ export type TStage = {
 };
 
 export interface IPayment extends IPaymentType {
-  id: string,
+  id: string;
   createdAt: string;
   updatedAt: string;
-  totalPay: number,
+  totalPay: number;
 }
 
 export interface IPaymentType {
-  card: number,
-  cash: number,
-  transfer: number,
-  other: number,
-  description: string,
+  card: number;
+  cash: number;
+  transfer: number;
+  other: number;
+  description: string;
 }

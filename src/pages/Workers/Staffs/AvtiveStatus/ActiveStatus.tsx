@@ -1,19 +1,18 @@
-import React, { FC } from 'react';
-import { observer } from 'mobx-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Popconfirm, Switch } from 'antd';
-
-import { IStaffs, staffsApi } from '@/api/staffs';
-import { addNotification } from '@/utils';
+import React, {FC} from 'react';
+import {observer} from 'mobx-react';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {Popconfirm, Switch} from 'antd';
+import {IStaffs, staffsApi} from '@/api/staffs';
+import {addNotification} from '@/utils';
 
 type Props = {
   staff: IStaffs;
 };
 
-export const ActiveStatus: FC<Props> = observer(({ staff }) => {
+export const ActiveStatus: FC<Props> = observer(({staff}) => {
   const queryClient = useQueryClient();
 
-  const { mutate: updateStaff, isPending } = useMutation({
+  const {mutate: updateStaff, isPending} = useMutation({
     mutationKey: ['updateStaff'],
     mutationFn: (data: {isActive: boolean}) =>
       staffsApi.updateStaff({
@@ -22,7 +21,7 @@ export const ActiveStatus: FC<Props> = observer(({ staff }) => {
         actionsToConnect: [],
         actionsToDisconnect: [],
       }),
-    onSuccess: (_, variables) => {
+    onSuccess: (result, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['getStaffs'],
       });

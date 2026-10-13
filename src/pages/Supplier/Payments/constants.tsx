@@ -1,12 +1,12 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { ClipText } from '@/components/ClipText';
-import { Action } from './Action';
-import { priceFormat } from '@/utils/priceFormat';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { ISupplierPayments } from '@/api/payment-income/types';
-import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
-import { currencyTagUi } from '@/constants/payment';
+import {ColumnType} from 'antd/es/table';
+import {ISupplierPayments} from '@/api/payment-income/types';
+import {ClipText} from '@/components/ClipText';
+import {currencyTagUi} from '@/constants/payment';
+import {SupplierNameLink} from '@/pages/ActionComponents/SupplierNameLink';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
 
 export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
   {
@@ -21,7 +21,6 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'client',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    onCell: () => ({ style: { maxWidth: 0 } }),
     render: (value, record) => <SupplierNameLink supplier={record?.supplier} plain clip />,
   },
   {
@@ -45,7 +44,6 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    onCell: () => ({ style: { maxWidth: 0 } }),
     render: (value, record) => {
       const description = record?.description || '';
 

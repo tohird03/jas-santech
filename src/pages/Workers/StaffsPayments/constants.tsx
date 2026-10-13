@@ -1,8 +1,8 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
-import {ClipText} from '@/components/ClipText';
 import classNames from 'classnames';
 import {IStaffsPayments} from '@/api/staffs-payments/types';
+import {ClipText} from '@/components/ClipText';
 import {currencyTagUi} from '@/constants/payment';
 import {getFullDateFormat} from '@/utils/getDateFormat';
 import {priceFormat} from '@/utils/priceFormat';
@@ -60,7 +60,6 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     title: 'Ma\'lumot',
     align: 'center',
     width: 280,
-    onCell: () => ({style: {maxWidth: 0}}),
     render: (value, record) => {
       const description = record?.description || '';
 

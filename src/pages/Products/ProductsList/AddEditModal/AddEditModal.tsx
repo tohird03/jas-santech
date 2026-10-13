@@ -1,18 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { observer } from 'mobx-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Form, Image, Input, InputNumber, Modal, Select, Upload, UploadFile, UploadProps } from 'antd';
-import { addNotification } from '@/utils';
-import { productsListStore } from '@/stores/products';
-import { priceFormat } from '@/utils/priceFormat';
-import { productsApi } from '@/api/product/product';
-import { IAddEditProduct, IAddEditProductForm } from '@/api/product/types';
-import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
-import { RcFile } from 'antd/es/upload';
-import { PlusOutlined } from '@ant-design/icons';
-import { UPLOAD_ACCEPT } from '@/constants/img';
-import { authStore } from '@/stores/auth';
-import { warehouseApi } from '@/api/warehouse';
+import React, {useEffect, useMemo, useState} from 'react';
+import {observer} from 'mobx-react';
+import {PlusOutlined} from '@ant-design/icons';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {Form, Image, Input, InputNumber, Modal, Select, Upload, UploadFile, UploadProps} from 'antd';
+import {RcFile} from 'antd/es/upload';
+import {productsApi} from '@/api/product/product';
+import {IAddEditProduct, IAddEditProductForm} from '@/api/product/types';
+import {warehouseApi} from '@/api/warehouse';
+import {UPLOAD_ACCEPT} from '@/constants/img';
+import {authStore} from '@/stores/auth';
+import {productsListStore} from '@/stores/products';
+import {addNotification} from '@/utils';
+import {PriceWithCurrency} from '@/utils/hooks/valuteConversition';
+import {priceFormat} from '@/utils/priceFormat';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
@@ -22,28 +22,28 @@ export const AddEditModal = observer(() => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
 
-  const { data: currencyMany, isLoading: loadingClients } = useQuery({
+  const {data: currencyMany} = useQuery({
     queryKey: ['getCurrencyMany'],
     queryFn: () =>
       authStore.getCurrencyMany(),
   });
 
-  const { data: getSingleProductData } = useQuery({
+  const {data: getSingleProductData} = useQuery({
     queryKey: ['getSingleProduct', productsListStore.productId],
     queryFn: () => productsApi.getSingleProducts(productsListStore.productId!),
   });
 
-  const { data: warehousesData, isLoading: warehousesLoading } = useQuery({
+  const {data: warehousesData, isLoading: warehousesLoading} = useQuery({
     queryKey: ['getWarehouses'],
     queryFn: () => warehouseApi.getWarehouses(),
   });
 
-  const { mutate: addNewProduct } =
+  const {mutate: addNewProduct} =
     useMutation({
       mutationKey: ['addNewProduct'],
       mutationFn: (params: IAddEditProduct) => productsApi.addNewProduct(params),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getProducts'] });
+        queryClient.invalidateQueries({queryKey: ['getProducts']});
         addNotification('Maxsulot tahrirlandi!');
         handleModalClose();
       },
@@ -53,13 +53,13 @@ export const AddEditModal = observer(() => {
       },
     });
 
-  const { mutate: updateProduct } =
+  const {mutate: updateProduct} =
     useMutation({
       mutationKey: ['updateProduct'],
-      mutationFn: ({ id, formData }: { id: string, formData: FormData }) => productsApi.updateProduct(id, formData),
+      mutationFn: ({id, formData}: {id: string, formData: FormData}) => productsApi.updateProduct(id, formData),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getProducts'] });
-        queryClient.invalidateQueries({ queryKey: ['getSingleOrder'] });
+        queryClient.invalidateQueries({queryKey: ['getProducts']});
+        queryClient.invalidateQueries({queryKey: ['getSingleOrder']});
         handleModalClose();
       },
       onError: addNotification,
@@ -236,7 +236,7 @@ export const AddEditModal = observer(() => {
           </Upload>
           {previewImage && (
             <Image
-              wrapperStyle={{ display: 'none' }}
+              wrapperStyle={{display: 'none'}}
               preview={{
                 visible: previewOpen,
                 onVisibleChange: (visible) => setPreviewOpen(visible),
@@ -249,19 +249,19 @@ export const AddEditModal = observer(() => {
 
         <Form.Item
           label="Mahsulot nomi"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
           name="name"
         >
           <Input placeholder="Mahsulot nomi" />
         </Form.Item>
         <Form.Item
           label="Mahsulot soni"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
           name="count"
         >
           <InputNumber
             placeholder="Qoldiq mahsulot"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
@@ -271,7 +271,7 @@ export const AddEditModal = observer(() => {
         >
           <InputNumber
             placeholder="Ushbu sondan kam qolgan mahsulot haqida sizni ogohlantiramiz!"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             formatter={(value) => priceFormat(value!)}
           />
         </Form.Item>
@@ -320,10 +320,10 @@ export const AddEditModal = observer(() => {
         >
           <Input.TextArea
             placeholder="Mahsulot haqida ma'lumot"
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             rows={4}
             showCount
-            autoSize={{ minRows: 2, maxRows: 6 }}
+            autoSize={{minRows: 2, maxRows: 6}}
           />
         </Form.Item>
       </Form>

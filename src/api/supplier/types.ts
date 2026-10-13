@@ -1,5 +1,5 @@
-import { ICurrency } from '../auth/types';
-import { IPagination } from '../types';
+import {ICurrency} from '../auth/types';
+import {IPagination} from '../types';
 
 export interface ISupplierDebtByCurrency {
   amount: number;

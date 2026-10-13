@@ -49,7 +49,6 @@ export const staffsWorkingTimeReportsColumns: ColumnsType<IClientStatistic> = [
     title: 'Mijoz',
     align: 'center',
     width: 320,
-    onCell: () => ({style: {maxWidth: 0}}),
     render: (value, record) => <ClientNameLink client={record} plain centered clip />,
   },
   {

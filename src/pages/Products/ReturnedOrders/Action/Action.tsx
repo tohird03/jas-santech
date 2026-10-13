@@ -1,35 +1,28 @@
-import React, { FC, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Popconfirm, Tooltip } from 'antd';
-import { addNotification } from '@/utils';
-import { returnedOrdersStore } from '@/stores/products';
-import { IReturnedOrder } from '@/api/returned-order/types';
-import { returnedOrderApi } from '@/api/returned-order/returned-order';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { authStore } from '@/stores/auth';
+import React, {FC, useState} from 'react';
+import {observer} from 'mobx-react';
+import {DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined} from '@ant-design/icons';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {Button, Popconfirm, Tooltip} from 'antd';
+import {returnedOrderApi} from '@/api/returned-order/returned-order';
+import {IReturnedOrder} from '@/api/returned-order/types';
+import {returnedOrdersStore} from '@/stores/products';
+import {addNotification} from '@/utils';
+import {getFullDateFormat} from '@/utils/getDateFormat';
 
 type Props = {
   returnedOrder: IReturnedOrder;
 };
 
-export const Action: FC<Props> = observer(({ returnedOrder }) => {
+export const Action: FC<Props> = observer(({returnedOrder}) => {
   const queryClient = useQueryClient();
   const [downloadLoading, setDownLoadLoading] = useState(false);
 
-  const { isCloseDay } = authStore;
-
-  const today = new Date().toISOString().split('T')[0];
-  const checkDate = returnedOrder?.date?.split('T')[0]?.split(' ')[0];
-  const isToday = checkDate === today && !isCloseDay;
-
-  const { mutate: deleteReturnedOrder } =
+  const {mutate: deleteReturnedOrder} =
     useMutation({
       mutationKey: ['deleteReturnedOrder'],
       mutationFn: (id: string) => returnedOrderApi.deleteReturnedOrder(id!),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getReturnedOrders'] });
+        queryClient.invalidateQueries({queryKey: ['getReturnedOrders']});
       },
       onError: addNotification,
     });
@@ -68,7 +61,7 @@ export const Action: FC<Props> = observer(({ returnedOrder }) => {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
+    <div style={{display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
       <Tooltip placement="top" title="Qaytaruvni ko'rish">
         <Button onClick={handleShowOrder} icon={<EyeOutlined />} />
       </Tooltip>
@@ -83,7 +76,7 @@ export const Action: FC<Props> = observer(({ returnedOrder }) => {
         description="Rostdan ham bu qaytuvni o'chirishni xohlaysizmi?"
         onConfirm={handleDelete}
         okText="Ha"
-        okButtonProps={{ style: { background: 'red' } }}
+        okButtonProps={{style: {background: 'red'}}}
         cancelText="Yo'q"
       >
         <Button type="primary" icon={<DeleteOutlined />} danger />

@@ -1,18 +1,15 @@
-import React, { useEffect } from 'react';
-import { Button, Modal, Table, notification } from 'antd';
-import { observer } from 'mobx-react';
-import { incomeProductsStore } from '@/stores/products';
-import { DataTable } from '@/components/Datatable/datatable';
-import { ordersInfoColumns, ordersInfoPaymentColumns, ordersInfoProductsColumns } from '../constants';
-import styles from '../income-products.scss';
+import React, {useEffect} from 'react';
+import {observer} from 'mobx-react';
+import {Button, Modal, notification, Table} from 'antd';
 import classNames from 'classnames';
-import { useMediaQuery } from '@/utils/mediaQuery';
+import {DataTable} from '@/components/Datatable/datatable';
+import {incomeProductsStore} from '@/stores/products';
+import {ordersInfoColumns, ordersInfoPaymentColumns, ordersInfoProductsColumns} from '../constants';
+import styles from '../income-products.scss';
 
 const cn = classNames.bind(styles);
 
 export const OrderShowInfoModal = observer(() => {
-  const isMobile = useMediaQuery('(max-width: 800px)');
-
   const handleModalClose = () => {
     incomeProductsStore.setsingleIncomeOrder(null);
     incomeProductsStore.setIsOpenShowIncomeOrderModal(false);
@@ -35,7 +32,7 @@ export const OrderShowInfoModal = observer(() => {
       onCancel={handleModalClose}
       cancelText="Bekor qilish"
       centered
-      style={{ top: 0, padding: '20px' }}
+      style={{top: 0, padding: '20px'}}
       bodyStyle={{
         height: '85vh',
         overflow: 'auto',

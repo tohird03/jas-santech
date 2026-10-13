@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, DatePickerProps, Input, Tooltip, Typography } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {observer} from 'mobx-react';
+import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, DatePicker, DatePickerProps, Input, Tooltip, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditReturnedOrderModal } from './AddEditModal';
-import styles from './returned-orders.scss';
-import { returnedOrdersColumns } from './constants';
-import { returnedOrdersStore } from '@/stores/products';
 import dayjs from 'dayjs';
-import { PaymentModal } from './PaymentModal';
-import { returnedOrderApi } from '@/api/returned-order/returned-order';
-import { addNotification } from '@/utils';
-import { ReturnedOrderShowInfoModal } from './OrderShowInfoModal';
+import {returnedOrderApi} from '@/api/returned-order/returned-order';
+import {DataTable} from '@/components/Datatable/datatable';
+import {returnedOrdersStore} from '@/stores/products';
+import {addNotification} from '@/utils';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {AddEditReturnedOrderModal} from './AddEditModal';
+import {returnedOrdersColumns} from './constants';
+import {ReturnedOrderShowInfoModal} from './OrderShowInfoModal';
+import {PaymentModal} from './PaymentModal';
+import styles from './returned-orders.scss';
 
 const cn = classNames.bind(styles);
 
@@ -23,7 +23,7 @@ export const ReturnedOrders = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
 
-  const { data: returnedOrdersData, isLoading: loading } = useQuery({
+  const {data: returnedOrdersData, isLoading: loading} = useQuery({
     queryKey: [
       'getReturnedOrders',
       returnedOrdersStore.pageNumber,

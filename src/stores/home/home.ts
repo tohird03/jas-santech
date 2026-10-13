@@ -1,7 +1,7 @@
-import { makeAutoObservable } from 'mobx';
-import { addNotification } from '@/utils';
-import { statisticApi } from '@/api/statistic/statistic';
-import { IOrderGraphStatisticType } from '@/api/statistic/types';
+import {makeAutoObservable} from 'mobx';
+import {statisticApi} from '@/api/statistic/statistic';
+import {IOrderGraphStatisticType} from '@/api/statistic/types';
+import {addNotification} from '@/utils';
 
 class HomeStore {
   constructor() {
@@ -19,6 +19,7 @@ class HomeStore {
       .catch(addNotification);
 
   reset() {
+    return undefined;
   }
 }
 

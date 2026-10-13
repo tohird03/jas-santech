@@ -1,6 +1,5 @@
-import { IClientsInfo } from "@/api/clients";
-import { IAddEditPaymentParams } from "@/api/payment/types";
-import { IPayment } from "@/api/types";
+import {IClientsInfo} from '@/api/clients';
+import {IAddEditPaymentParams} from '@/api/payment/types';
 
 export interface IOrderPayment {
   client?: IClientsInfo;

@@ -1,11 +1,8 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Action } from './Action';
-import { priceFormat } from '@/utils/priceFormat';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { IStaffsPayments } from '@/api/staffs-payments/types';
-import { currencyTagUi } from '@/constants/payment';
-import { ICurrency } from '@/api/auth/types';
+import {ColumnType} from 'antd/es/table';
+import {ICurrency} from '@/api/auth/types';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
 
 export const clientsColumns: ColumnType<ICurrency>[] = [
   {

@@ -1,8 +1,8 @@
 import './chat.scss';
 
 import React, {useEffect, useRef, useState} from 'react';
-import {ArrowLeftOutlined, CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
 import {observer} from 'mobx-react';
+import {ArrowLeftOutlined, CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {Button, Empty, Input, notification, Popconfirm, Spin, Tag, Typography} from 'antd';
 import {AxiosError} from 'axios';

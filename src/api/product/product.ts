@@ -1,10 +1,10 @@
-import { AxiosResponse } from 'axios';
-import { Endpoints, umsStages } from '../endpoints';
-import { INetworkConfig, Instance } from '../instance';
-import { IResponse } from '../types';
+import {AxiosResponse} from 'axios';
+import {Endpoints, umsStages} from '../endpoints';
+import {INetworkConfig, Instance} from '../instance';
+import {IResponse} from '../types';
 import {
   IAddEditProduct,
-  IGetProductsParams, IGetSingleProductParams, IGetSingleProducts, IProductTotalCalc, IProducts, ISingleProductStory, ISingleProductStoryCount } from './types';
+  IGetProductsParams, IGetSingleProductParams, IProducts, IProductTotalCalc, ISingleProductStory, ISingleProductStoryCount} from './types';
 
 const config: INetworkConfig = {
   baseURL: Endpoints.Base,
@@ -17,30 +17,30 @@ class ProductsApi extends Instance {
   }
 
   getProducts = (params: IGetProductsParams): Promise<IResponse<IProducts[], IProductTotalCalc>> =>
-    this.get(Endpoints.ProductsMany, { params });
+    this.get(Endpoints.ProductsMany, {params});
 
-  getSingleProducts = (productId: string): Promise<{ data: IProducts }> =>
-    this.get(Endpoints.ProductsOne, { params: { id: productId } });
+  getSingleProducts = (productId: string): Promise<{data: IProducts}> =>
+    this.get(Endpoints.ProductsOne, {params: {id: productId}});
 
   addNewProduct = (params: IAddEditProduct): Promise<AxiosResponse> =>
     this.post(Endpoints.ProductsOne, params);
 
   updateProduct = (id: string, formData: FormData): Promise<AxiosResponse> =>
     this.patch(`${Endpoints.ProductsOne}`, formData, {
-      params: { id },
+      params: {id},
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
 
   deleteProduct = (id: string): Promise<AxiosResponse> =>
-    this.delete(`${Endpoints.ProductsOne}`, { params: { id } });
+    this.delete(`${Endpoints.ProductsOne}`, {params: {id}});
 
   getSingleProductStory = (params: IGetSingleProductParams): Promise<IResponse<ISingleProductStory[]>> =>
-    this.get(Endpoints.ProductStatistic, { params });
+    this.get(Endpoints.ProductStatistic, {params});
 
   getSingleProductStoryCounts = (params: IGetSingleProductParams): Promise<{data: ISingleProductStoryCount[]}> =>
-    this.get(Endpoints.ProductStatisticCounts, { params });
+    this.get(Endpoints.ProductStatisticCounts, {params});
 
   getProductsToExcel = (params: IGetProductsParams): Promise<any> =>
     this.get(Endpoints.GetProductsToExcel, {

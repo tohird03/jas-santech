@@ -1,6 +1,5 @@
 import React from 'react';
-import { Tag } from 'antd';
-import { PaymentTypes } from './types';
+import {PaymentTypes} from './types';
 
 export const orderPaymentType: Record<PaymentTypes, string> = {
   [PaymentTypes.CASH]: 'Naqd',

@@ -62,12 +62,12 @@
 
   &__name {
     max-width: 168px;
-    overflow: hidden;
+    overflow: visible;
     color: #fff;
     font-size: 14px;
     font-weight: 600;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   &__phone {
@@ -85,9 +85,8 @@
 .header .layout__logo-text {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .header-currency {

@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {observer} from 'mobx-react';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {Form, Input, InputNumber, Modal} from 'antd';
+import {clientsInfoApi, IAddEditClientInfo} from '@/api/clients';
 import {clientsInfoStore} from '@/stores/clients';
 import {addNotification} from '@/utils';
 import {regexPhoneNumber} from '@/utils/phoneFormat';
-import { IAddEditClientInfo, IUpdateUser, clientsInfoApi } from '@/api/clients';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();

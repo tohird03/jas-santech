@@ -1,36 +1,36 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, DatePickerProps, Input, Select, Table, Tooltip, Typography } from 'antd';
+import React, {useEffect, useMemo, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, DatePicker, DatePickerProps, Input, Select, Table, Tooltip, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
-import styles from './payments.scss';
-import { paymentsColumns } from './constants';
-import { paymentsStore } from '@/stores/clients';
 import dayjs from 'dayjs';
-import { addNotification } from '@/utils';
-import { staffsApi } from '@/api/staffs';
-import { priceFormat } from '@/utils/priceFormat';
-import { clientsPaymentApi } from '@/api/payment/payment';
-import { useParams } from 'react-router-dom';
-import { currencyTagUi } from '@/constants/payment';
+import {clientsPaymentApi} from '@/api/payment/payment';
+import {staffsApi} from '@/api/staffs';
+import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {currencyTagUi} from '@/constants/payment';
+import {paymentsStore} from '@/stores/clients';
+import {addNotification} from '@/utils';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {priceFormat} from '@/utils/priceFormat';
+import {AddEditModal} from './AddEditModal';
+import {paymentsColumns} from './constants';
+import styles from './payments.scss';
 
 const cn = classNames.bind(styles);
 
 const paymentColumnKeys = ['index', 'client', 'cash', 'description', 'createdAt', 'seller', 'action'];
 const paymentColumnTitles = [
-  { key: 'index', title: '#' },
-  { key: 'client', title: 'Mijoz' },
-  { key: 'cash', title: 'Jami to\'lov' },
-  { key: 'description', title: 'Ma\'lumot' },
-  { key: 'createdAt', title: 'To\'lov vaqti' },
-  { key: 'seller', title: 'Sotuvchi' },
-  { key: 'action', title: 'Amallar' },
+  {key: 'index', title: '#'},
+  {key: 'client', title: 'Mijoz'},
+  {key: 'cash', title: 'Jami to\'lov'},
+  {key: 'description', title: 'Ma\'lumot'},
+  {key: 'createdAt', title: 'To\'lov vaqti'},
+  {key: 'seller', title: 'Sotuvchi'},
+  {key: 'action', title: 'Amallar'},
 ];
 const paymentDefaultWidths = {
   index: 64,
@@ -54,8 +54,8 @@ const paymentMinWidths = {
 export const ClientsPayments = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const { clientId } = useParams();
-  const { boxRef, apply, picker } = useResizableColumns({
+  const {clientId} = useParams();
+  const {boxRef, apply, picker} = useResizableColumns({
     keys: paymentColumnKeys,
     defaults: paymentDefaultWidths,
     mins: paymentMinWidths,
@@ -64,7 +64,7 @@ export const ClientsPayments = observer(() => {
   });
   const columns = apply(paymentsColumns);
 
-  const { data: paymentsData, isLoading: loading } = useQuery({
+  const {data: paymentsData, isLoading: loading} = useQuery({
     queryKey: [
       'getPayments',
       paymentsStore.pageNumber,
@@ -87,7 +87,7 @@ export const ClientsPayments = observer(() => {
       }),
   });
 
-  const { data: sellerData, isLoading: loadingSeller } = useQuery({
+  const {data: sellerData, isLoading: loadingSeller} = useQuery({
     queryKey: ['getSellers'],
     queryFn: () =>
       staffsApi.getStaffs({
@@ -257,6 +257,7 @@ export const ClientsPayments = observer(() => {
       ) : (
         <Table
           {...resizableTableProps}
+          className="resizable-table payment-table"
           columns={columns}
           dataSource={paymentsData?.data?.data || []}
           loading={loading}
@@ -274,7 +275,7 @@ export const ClientsPayments = observer(() => {
                 if (column.key === 'cash') {
                   return (
                     <Table.Summary.Cell key={column.key} index={index}>
-                      <div className="currency-row" style={{ fontWeight: 'bold' }}>
+                      <div className="currency-row" style={{fontWeight: 'bold'}}>
                         {paymentsData?.data?.calcByCurrency?.map(payment => (
                           <span className="currency-item" key={payment?.currency?.id}>
                             {priceFormat(payment?.total)}

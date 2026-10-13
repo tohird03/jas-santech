@@ -1,6 +1,6 @@
 import './content.scss';
 
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {Layout as AntdLayout} from 'antd';
 
 type Props = {
@@ -113,7 +113,7 @@ export const Content = ({children, isTablet}: Props) => {
     let frame = 0;
     let retries = 0;
     const observed = new Set<Element>();
-    let schedule = () => {};
+    let schedule: () => void = () => undefined;
     const resizeObserver = new ResizeObserver(() => schedule());
     const observeColumns = () => {
       root.querySelectorAll('.ant-table-thead th').forEach((cell) => {

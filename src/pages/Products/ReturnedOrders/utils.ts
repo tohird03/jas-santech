@@ -1,11 +1,10 @@
-import { ICurrency } from '@/api/auth/types';
-import { IOrder } from '@/api/order/types';
-import { IReturnedOrder } from '@/api/returned-order/types';
+import {ICurrency} from '@/api/auth/types';
+import {IReturnedOrder} from '@/api/returned-order/types';
 
 
 export function calculateSettlement(
   order: IReturnedOrder,
-  payments: { currencyId: string, amount: number }[],
+  payments: {currencyId: string, amount: number}[],
   currencies: ICurrency[],
   defaultCurrencySymbol: 'UZS' | 'USD'
 ) {

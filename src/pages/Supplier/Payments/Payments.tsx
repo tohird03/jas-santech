@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, DatePickerProps, Input, Table, Tooltip, Typography } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {observer} from 'mobx-react';
+import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import {useQuery} from '@tanstack/react-query';
+import {Button, DatePicker, DatePickerProps, Input, Table, Tooltip, Typography} from 'antd';
 import classNames from 'classnames';
-import { DataTable } from '@/components/Datatable/datatable';
-import { resizableTableProps, useResizableColumns } from '@/components/Datatable/use-resizable-columns';
-import { getPaginationParams } from '@/utils/getPaginationParams';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { AddEditModal } from './AddEditModal';
-import styles from './payments.scss';
-import { paymentsColumns } from './constants';
-import { supplierPaymentsStore } from '@/stores/supplier';
-import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { priceFormat } from '@/utils/priceFormat';
-import { currencyTagUi } from '@/constants/payment';
-import { addNotification } from '@/utils';
-import { incomePaymentApi } from '@/api/payment-income';
+import {incomePaymentApi} from '@/api/payment-income';
+import {DataTable} from '@/components/Datatable/datatable';
+import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
+import {currencyTagUi} from '@/constants/payment';
+import {supplierPaymentsStore} from '@/stores/supplier';
+import {addNotification} from '@/utils';
+import {getPaginationParams} from '@/utils/getPaginationParams';
+import {useMediaQuery} from '@/utils/mediaQuery';
+import {priceFormat} from '@/utils/priceFormat';
+import {AddEditModal} from './AddEditModal';
+import {paymentsColumns} from './constants';
+import styles from './payments.scss';
 
 const cn = classNames.bind(styles);
 
 const paymentColumnKeys = ['index', 'client', 'totalPayment', 'description', 'createdAt', 'action'];
 const paymentColumnTitles = [
-  { key: 'index', title: '#' },
-  { key: 'client', title: 'Yetkazib beruvchi' },
-  { key: 'totalPayment', title: 'Jami to\'lov' },
-  { key: 'description', title: 'Ma\'lumot' },
-  { key: 'createdAt', title: 'To\'lov vaqti' },
-  { key: 'action', title: 'Amallar' },
+  {key: 'index', title: '#'},
+  {key: 'client', title: 'Yetkazib beruvchi'},
+  {key: 'totalPayment', title: 'Jami to\'lov'},
+  {key: 'description', title: 'Ma\'lumot'},
+  {key: 'createdAt', title: 'To\'lov vaqti'},
+  {key: 'action', title: 'Amallar'},
 ];
 const paymentDefaultWidths = {
   index: 64,
@@ -49,9 +49,9 @@ const paymentMinWidths = {
 
 export const SupplierPayments = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const { supplierId } = useParams();
+  const {supplierId} = useParams();
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const { boxRef, apply, picker } = useResizableColumns({
+  const {boxRef, apply, picker} = useResizableColumns({
     keys: paymentColumnKeys,
     defaults: paymentDefaultWidths,
     mins: paymentMinWidths,
@@ -60,7 +60,7 @@ export const SupplierPayments = observer(() => {
   });
   const columns = apply(paymentsColumns);
 
-  const { data: supplierPaymentsData, isLoading: loading } = useQuery({
+  const {data: supplierPaymentsData, isLoading: loading} = useQuery({
     queryKey: [
       'getPayments',
       supplierPaymentsStore.pageNumber,
@@ -218,6 +218,7 @@ export const SupplierPayments = observer(() => {
       ) : (
         <Table
           {...resizableTableProps}
+          className="resizable-table payment-table"
           columns={columns}
           dataSource={supplierPaymentsData?.data?.data || []}
           loading={loading}
@@ -235,7 +236,7 @@ export const SupplierPayments = observer(() => {
                 if (column.key === 'totalPayment') {
                   return (
                     <Table.Summary.Cell key={column.key} index={index}>
-                      <div className="currency-row" style={{ fontWeight: 'bold' }}>
+                      <div className="currency-row" style={{fontWeight: 'bold'}}>
                         {supplierPaymentsData?.data?.calcByCurrency?.map(payment => (
                           <span className="currency-item" key={payment?.currency?.id}>
                             {priceFormat(payment?.total)}

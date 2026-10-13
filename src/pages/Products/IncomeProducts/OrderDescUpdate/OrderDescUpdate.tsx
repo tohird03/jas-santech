@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
 import {incomeProductsApi} from '@/api/income-products';
 import {IIncomeOrder} from '@/api/income-products/types';
-import {ordersApi} from '@/api/order';
-import {IOrder} from '@/api/order/types';
 import {ClipText} from '@/components/ClipText';
 import {addNotification} from '@/utils';
 

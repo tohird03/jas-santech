@@ -1,26 +1,22 @@
-import React, { useEffect } from 'react';
-import { Button, Modal, Table, notification } from 'antd';
-import { observer } from 'mobx-react';
-import { ordersStore } from '@/stores/products';
-import { DataTable } from '@/components/Datatable/datatable';
-import { ordersInfoColumns, ordersInfoPaymentColumns, ordersInfoProductsColumns } from '../constants';
-import styles from '../orders.scss';
+import React, {useEffect} from 'react';
+import {observer} from 'mobx-react';
+import {useQuery} from '@tanstack/react-query';
+import {Button, Modal, notification, Table} from 'antd';
 import classNames from 'classnames';
-import { useMediaQuery } from '@/utils/mediaQuery';
-import { useQuery } from '@tanstack/react-query';
-import { ordersApi } from '@/api/order';
-import { DeletedOrderProduct } from '../AddEditModal/DeletedOrderProducts';
+import {ordersApi} from '@/api/order';
+import {DataTable} from '@/components/Datatable/datatable';
+import {ordersStore} from '@/stores/products';
+import {DeletedOrderProduct} from '../AddEditModal/DeletedOrderProducts';
+import {ordersInfoColumns, ordersInfoPaymentColumns, ordersInfoProductsColumns} from '../constants';
+import styles from '../orders.scss';
 
 const cn = classNames.bind(styles);
 
 export const OrderShowInfoModal = observer(() => {
-  const isMobile = useMediaQuery('(max-width: 800px)');
-
   const singleOrderId = ordersStore.singleOrder?.id;
 
   const {
     data: singleOrderData,
-    isLoading,
     isError,
   } = useQuery({
     queryKey: ['getSingleOrder', singleOrderId],
@@ -51,7 +47,7 @@ export const OrderShowInfoModal = observer(() => {
       onCancel={handleModalClose}
       cancelText="Bekor qilish"
       centered
-      style={{ top: 0, padding: 0 }}
+      style={{top: 0, padding: 0}}
       bodyStyle={{
         height: '85vh',
         overflow: 'auto',

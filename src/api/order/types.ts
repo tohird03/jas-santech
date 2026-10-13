@@ -1,8 +1,8 @@
-import { ICurrency } from '../auth/types';
-import { IClientsInfo, ISeller } from '../clients';
-import { IAddEditPaymentParams } from '../payment/types';
-import { IProducts } from '../product/types';
-import { IPagination, IPayment, IPaymentType } from '../types';
+import {ICurrency} from '../auth/types';
+import {IClientsInfo, ISeller} from '../clients';
+import {IAddEditPaymentParams} from '../payment/types';
+import {IProducts} from '../product/types';
+import {IPagination} from '../types';
 
 export interface IOrder {
   id: string;

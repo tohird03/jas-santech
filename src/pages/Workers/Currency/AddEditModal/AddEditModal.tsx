@@ -1,24 +1,24 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { observer } from 'mobx-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Form, Input, InputNumber, Modal, Select } from 'antd';
-import { addNotification } from '@/utils';
-import { priceFormat } from '@/utils/priceFormat';
-import { IEditCurrency } from '@/api/auth/types';
-import { currencyStore } from '@/stores/workers';
-import { authApi } from '@/api';
+import React, {useEffect, useState} from 'react';
+import {observer} from 'mobx-react';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {Form, Input, InputNumber, Modal} from 'antd';
+import {authApi} from '@/api';
+import {IEditCurrency} from '@/api/auth/types';
+import {currencyStore} from '@/stores/workers';
+import {addNotification} from '@/utils';
+import {priceFormat} from '@/utils/priceFormat';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
 
-  const { mutate: updateCurrency } =
+  const {mutate: updateCurrency} =
     useMutation({
       mutationKey: ['updateCurrency'],
       mutationFn: (params: IEditCurrency) => authApi.currencyEdit(params),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getCurrency'] });
+        queryClient.invalidateQueries({queryKey: ['getCurrency']});
         addNotification('Valyuta muvaffaqiyatli tahrirlandi');
         handleModalClose();
       },
@@ -77,17 +77,17 @@ export const AddEditModal = observer(() => {
         <Form.Item
           name="name"
           label="Valyuta"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
         >
           <Input disabled />
         </Form.Item>
         <Form.Item
           name="exchangeRate"
           label="Qiymat"
-          rules={[{ required: true }]}
+          rules={[{required: true}]}
         >
           <InputNumber
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             formatter={(value) => priceFormat(value)}
           />
         </Form.Item>

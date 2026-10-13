@@ -1,8 +1,8 @@
 import React from 'react';
 import {Tag} from 'antd';
-import {ClipText} from '@/components/ClipText';
 import {ColumnType} from 'antd/es/table';
 import {ISupplierDeed, ISupplierDeedAction, ISupplierDeedType} from '@/api/supplier/types';
+import {ClipText} from '@/components/ClipText';
 import {currencyTagUi} from '@/constants/payment';
 import {getFullDateFormat} from '@/utils/getDateFormat';
 import {priceFormat} from '@/utils/priceFormat';

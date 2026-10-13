@@ -1,7 +1,6 @@
-import { makeAutoObservable } from 'mobx';
-import { IGetStaffsParams, IStaffs, staffsApi } from '@/api/staffs';
-import { addNotification } from '@/utils';
-import { IGetClientsStatisticParams, clientsInfoApi } from '@/api/clients';
+import {makeAutoObservable} from 'mobx';
+import {clientsInfoApi, IGetClientsStatisticParams} from '@/api/clients';
+import {addNotification} from '@/utils';
 
 class ClientsStatisticStore {
   #today = new Date();

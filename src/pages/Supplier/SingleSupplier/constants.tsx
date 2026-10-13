@@ -1,8 +1,8 @@
 import React from 'react';
-import { Deed } from './Deed';
-import { IncomeProducts } from '@/pages/Products';
-import { ISingleSupplierTabs } from '@/stores/supplier';
-import { SupplierPayments } from '../Payments';
+import {IncomeProducts} from '@/pages/Products';
+import {ISingleSupplierTabs} from '@/stores/supplier';
+import {SupplierPayments} from '../Payments';
+import {Deed} from './Deed';
 
 export const singleSupplierTabOptions = [
   {

@@ -1,14 +1,14 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { Action } from './Action';
-import { IProducts } from '@/api/product/types';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { priceFormat } from '@/utils/priceFormat';
-import { NavLink } from 'react-router-dom';
-import { currencyTagUi } from '@/constants/payment';
-import { Image } from 'antd';
-import { ClipText } from '@/components/ClipText';
-import { imageUrlWithBase } from '@/utils/image';
+import {NavLink} from 'react-router-dom';
+import {Image} from 'antd';
+import {ColumnType} from 'antd/es/table';
+import {IProducts} from '@/api/product/types';
+import {ClipText} from '@/components/ClipText';
+import {currencyTagUi} from '@/constants/payment';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {imageUrlWithBase} from '@/utils/image';
+import {priceFormat} from '@/utils/priceFormat';
+import {Action} from './Action';
 
 const unitTitle = (label: string) => (
   <span className="unit-head">
@@ -31,7 +31,7 @@ export const productsListColumn: ColumnType<IProducts>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     render: (value, record) => (
-      <div className="person-link product-card name-clip" style={{ cursor: 'default' }}>
+      <div className="person-link product-card name-clip" style={{cursor: 'default'}}>
         <ClipText text={record?.name}>
           <NavLink to={`/products/${record?.id}`} className="person-link__name cell-ellipsis">
             {record?.name}
@@ -56,7 +56,7 @@ export const productsListColumn: ColumnType<IProducts>[] = [
         width={32}
         height={32}
         alt="basic"
-        style={{ objectFit: 'cover', borderRadius: 4 }}
+        style={{objectFit: 'cover', borderRadius: 4}}
         src={imageUrlWithBase(record?.image)}
       />
     ),

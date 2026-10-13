@@ -1,11 +1,11 @@
 import React from 'react';
-import { ColumnType } from 'antd/es/table';
-import { priceFormat } from '@/utils/priceFormat';
-import { getFullDateFormat } from '@/utils/getDateFormat';
-import { IClientDeed, IClientDeedAction, IClientDeedType } from '@/api/clients';
-import { Tag } from 'antd';
-import { ClipText } from '@/components/ClipText';
-import { currencyTagUi } from '@/constants/payment';
+import {Tag} from 'antd';
+import {ColumnType} from 'antd/es/table';
+import {IClientDeed, IClientDeedAction, IClientDeedType} from '@/api/clients';
+import {ClipText} from '@/components/ClipText';
+import {currencyTagUi} from '@/constants/payment';
+import {getFullDateFormat} from '@/utils/getDateFormat';
+import {priceFormat} from '@/utils/priceFormat';
 
 export const deedColumns: ColumnType<IClientDeed>[] = [
   {

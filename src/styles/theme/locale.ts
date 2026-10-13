@@ -1,4 +1,4 @@
-import type { Locale } from 'antd/es/locale';
+import type {Locale} from 'antd/es/locale';
 import enUS from 'antd/locale/en_US';
 
 export const uzLocale: Locale = {
