@@ -288,37 +288,37 @@ export const Orders = observer(() => {
       </div>
 
       {isMobile ? (
-        <>
-          <div className={cn('orders__total')}>
-            <div className={cn('orders__total-item')}>
-              <span>Jami narxi</span>
-              <div>{orderMoney(calc?.totalPrices)}</div>
+        <DataTable
+          className="orders-page__cards"
+          columns={columns}
+          data={ordersData?.data?.data || []}
+          loading={loading}
+          isMobile
+          summary={(
+            <div className={cn('orders__total')}>
+              <div className={cn('orders__total-item')}>
+                <span>Jami narxi</span>
+                <div>{orderMoney(calc?.totalPrices)}</div>
+              </div>
+              <div className={cn('orders__total-item')}>
+                <span>Jami to&apos;lov</span>
+                <div>{orderMoney(calc?.totalPayments)}</div>
+              </div>
+              <div className={cn('orders__total-item')}>
+                <span>Qarzga</span>
+                <div>{orderMoney(calc?.totalDebts)}</div>
+              </div>
             </div>
-            <div className={cn('orders__total-item')}>
-              <span>Jami to&apos;lov</span>
-              <div>{orderMoney(calc?.totalPayments)}</div>
-            </div>
-            <div className={cn('orders__total-item')}>
-              <span>Qarzga</span>
-              <div>{orderMoney(calc?.totalDebts)}</div>
-            </div>
-          </div>
-          <DataTable
-            className="orders-page__cards"
-            columns={columns}
-            data={ordersData?.data?.data || []}
-            loading={loading}
-            isMobile
-            pagination={{
-              total: ordersData?.data?.totalCount,
-              current: ordersStore?.pageNumber,
-              pageSize: ordersStore?.pageSize,
-              showSizeChanger: true,
-              onChange: handlePageChange,
-              ...getPaginationParams(ordersData?.data?.totalCount),
-            }}
-          />
-        </>
+          )}
+          pagination={{
+            total: ordersData?.data?.totalCount,
+            current: ordersStore?.pageNumber,
+            pageSize: ordersStore?.pageSize,
+            showSizeChanger: true,
+            onChange: handlePageChange,
+            ...getPaginationParams(ordersData?.data?.totalCount),
+          }}
+        />
       ) : (
         <Table
           {...resizableTableProps}

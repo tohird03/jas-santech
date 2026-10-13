@@ -52,7 +52,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 16px;
-  margin-bottom: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
   padding: 10px 12px;
   border: 1px solid #d9d9d9;
   background: #fafafa;
@@ -107,6 +109,10 @@
   font-variant-numeric: tabular-nums;
 }
 
+.orders-money__line p {
+  margin: 0;
+}
+
 .orders-date {
   display: flex;
   flex-direction: column;
@@ -153,9 +159,15 @@
   .orders__actions,
   .orders__actions > *,
   .orders__actions .ant-btn {
+    flex: none;
     width: 100% !important;
+    height: auto;
     max-width: none;
     min-width: 0;
+  }
+
+  .orders-page .ant-card .orders-money {
+    align-items: flex-end;
   }
 
   .orders__actions {

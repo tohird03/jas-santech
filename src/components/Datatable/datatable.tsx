@@ -45,6 +45,7 @@ type DataTableProps = {
   };
   components?: React.ComponentProps<typeof Table>['components'];
   tableLayout?: 'auto' | 'fixed';
+  summary?: React.ReactNode;
 };
 
 export const DataTable = (props: DataTableProps) => {
@@ -64,6 +65,7 @@ export const DataTable = (props: DataTableProps) => {
     cardTextStyle,
     components,
     tableLayout,
+    summary,
   } = props;
 
   const onChange: PaginationProps['onChange'] = (page, pageSize) => {
@@ -102,7 +104,10 @@ export const DataTable = (props: DataTableProps) => {
       ))}
     </div>
   ) : data.length === 0 ? (
-    <Empty />
+    <>
+      <Empty />
+      {summary}
+    </>
   ) : (
     <div className={`${styles.card_wrapper} ${className}`}>
       {data?.map((d, index) => (
@@ -155,6 +160,7 @@ export const DataTable = (props: DataTableProps) => {
           })}
         </Card>
       ))}
+      {summary}
       <div className={styles.pagination}>
         {pagination && (
           <Pagination
