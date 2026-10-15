@@ -56,4 +56,6 @@ export const EPageAccessLabel: Record<EPageAccess, string> = {
   [EPageAccess.SUPPLIERPAYMENT]: 'Yetkazib beruvchilarga to\'lovlar',
   [EPageAccess.STUFF]: 'Xodimlar',
   [EPageAccess.STUFFPAYMENT]: 'Xodimlarga to\'lovlar',
+  [EPageAccess.CHAT]: 'Chat',
+  [EPageAccess.REMINDER]: 'Eslatmalar',
 };
