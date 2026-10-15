@@ -1,66 +1,29 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {observer} from 'mobx-react';
-import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
-import {Button, DatePicker, DatePickerProps, Select, Table, Tooltip, Typography} from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react';
+import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import { Button, DatePicker, DatePickerProps, Select, Table, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
-import dayjs from 'dayjs';
-import {staffsApi} from '@/api/staffs';
-import {staffsPaymentsApi} from '@/api/staffs-payments/staffs-payments';
-import {IStaffPaymentsTotal} from '@/api/staffs-payments/types';
-import {DataTable} from '@/components/Datatable/datatable';
-import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
-import {currencyTagUi} from '@/constants/payment';
-import {staffsPaymentStore} from '@/stores/workers/staffs-payments';
-import {addNotification} from '@/utils';
-import {dateFormat} from '@/utils/getDateFormat';
-import {getPaginationParams} from '@/utils/getPaginationParams';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {priceFormat} from '@/utils/priceFormat';
-import {AddEditModal} from './AddEditModal';
-import {clientsColumns} from './constants';
+import { getPaginationParams } from '@/utils/getPaginationParams';
+import { AddEditModal } from './AddEditModal';
 import styles from './staffs-payments.scss';
+import { clientsColumns } from './constants';
+import { staffsPaymentStore } from '@/stores/workers/staffs-payments';
+import dayjs from 'dayjs';
+import { staffsApi } from '@/api/staffs';
+import { priceFormat } from '@/utils/priceFormat';
+import { addNotification } from '@/utils';
+import { dateFormat } from '@/utils/getDateFormat';
+import { staffsPaymentsApi } from '@/api/staffs-payments/staffs-payments';
+import { IStaffPaymentsTotal } from '@/api/staffs-payments/types';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
-const paymentColumnKeys = ['index', 'name', 'amount', 'note', 'date', 'actions'];
-const paymentColumnTitles = [
-  {key: 'index', title: '#'},
-  {key: 'name', title: 'Xodim'},
-  {key: 'amount', title: 'To\'lov qiymati'},
-  {key: 'note', title: 'Ma\'lumot'},
-  {key: 'date', title: 'To\'lov vaqti'},
-  {key: 'actions', title: 'Amallar'},
-];
-const paymentDefaultWidths = {
-  index: 64,
-  name: 440,
-  amount: 300,
-  note: 280,
-  date: 200,
-  actions: 120,
-};
-const paymentMinWidths = {
-  index: 56,
-  name: 180,
-  amount: 160,
-  note: 120,
-  date: 150,
-  actions: 112,
-};
-
 export const StaffsPayments = observer(() => {
-  const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const {boxRef, apply, picker} = useResizableColumns({
-    keys: paymentColumnKeys,
-    defaults: paymentDefaultWidths,
-    mins: paymentMinWidths,
-    titles: paymentColumnTitles,
-  });
-  const columns = apply(clientsColumns);
 
-  const {data: staffPaymentsData, isLoading: loading} = useQuery({
+  const { data: staffPaymentsData, isLoading: loading } = useQuery({
     queryKey: [
       'getStaffsPayments',
       staffsPaymentStore.pageNumber,
@@ -79,7 +42,7 @@ export const StaffsPayments = observer(() => {
       }),
   });
 
-  const {data: sellerData, isLoading: loadingSeller} = useQuery({
+  const { data: sellerData, isLoading: loadingSeller } = useQuery({
     queryKey: ['getSellers'],
     queryFn: () =>
       staffsApi.getStaffs({
@@ -157,14 +120,14 @@ export const StaffsPayments = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef} className="staff-payments-page">
-      <div className={cn('staff-payments__head')}>
+    <main>
+      <div className={cn('client-info__head')}>
         <Typography.Title level={3}>Xodimlar hisoboti</Typography.Title>
-        <div className={cn('staff-payments__filter')}>
+        <div className={cn('client-info__filter')}>
           <Select
             options={sellerOptions}
             onChange={handleChangeSeller}
-            className={cn('staff-payments__seller')}
+            style={{ width: '200px' }}
             placeholder="Sotuvchilar"
             loading={loadingSeller}
             allowClear
@@ -183,7 +146,6 @@ export const StaffsPayments = observer(() => {
             defaultValue={dayjs(staffsPaymentStore.endDate)}
             allowClear={false}
           />
-          {picker}
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -191,7 +153,7 @@ export const StaffsPayments = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Excelga yuklash
+              Exelda Yuklash
             </Button>
           </Tooltip>
           <Button
@@ -204,81 +166,34 @@ export const StaffsPayments = observer(() => {
         </div>
       </div>
 
-      {isMobile ? (
-        <>
-          <div className={cn('staff-payments__total')}>
-            <span className={cn('staff-payment__name')}>Jami</span>
-            <div className="currency-row">
-              {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
-                <span className="currency-item" key={total?.currency?.id}>
-                  {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
-                </span>
-              ))}
-            </div>
-          </div>
-          <DataTable
-            className={cn('staff-payments__cards')}
-            isMobile
-            columns={columns}
-            data={staffPaymentsData?.data?.data || []}
-            loading={loading}
-            pagination={{
-              total: staffPaymentsData?.data?.totalCount,
-              current: staffsPaymentStore?.pageNumber,
-              pageSize: staffsPaymentStore?.pageSize,
-              showSizeChanger: true,
-              onChange: handlePageChange,
-              ...getPaginationParams(staffPaymentsData?.data?.totalCount),
-            }}
-          />
-        </>
-      ) : (
-        <Table
-          {...resizableTableProps}
-          className="resizable-table payment-table"
-          columns={columns}
-          dataSource={staffPaymentsData?.data?.data || []}
-          loading={loading}
-          pagination={{
-            total: staffPaymentsData?.data?.totalCount,
-            current: staffsPaymentStore?.pageNumber,
-            pageSize: staffsPaymentStore?.pageSize,
-            showSizeChanger: true,
-            onChange: handlePageChange,
-            ...getPaginationParams(staffPaymentsData?.data?.totalCount),
-          }}
-          tableLayout="fixed"
-          summary={() => (
-            <Table.Summary.Row>
-              {columns.map((column, index) => {
-                if (column.key === 'name') {
-                  return (
-                    <Table.Summary.Cell key={column.key} index={index} align="center">
-                      <span className={cn('staff-payment__name')}>Jami</span>
-                    </Table.Summary.Cell>
-                  );
-                }
-
-                if (column.key === 'amount') {
-                  return (
-                    <Table.Summary.Cell key={column.key} index={index}>
-                      <div className="currency-row" style={{fontWeight: 600}}>
-                        {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
-                          <span className="currency-item" key={total?.currency?.id}>
-                            {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
-                          </span>
-                        ))}
-                      </div>
-                    </Table.Summary.Cell>
-                  );
-                }
-
-                return <Table.Summary.Cell key={String(column.key)} index={index} />;
-              })}
-            </Table.Summary.Row>
-          )}
-        />
-      )}
+      <Table
+        columns={clientsColumns}
+        dataSource={staffPaymentsData?.data?.data || []}
+        loading={loading}
+        pagination={{
+          total: staffPaymentsData?.data?.totalCount,
+          current: staffsPaymentStore?.pageNumber,
+          pageSize: staffsPaymentStore?.pageSize,
+          showSizeChanger: true,
+          onChange: handlePageChange,
+          ...getPaginationParams(staffPaymentsData?.data?.totalCount),
+        }}
+        summary={() => (
+          <Table.Summary.Row>
+            <Table.Summary.Cell colSpan={2} index={1} />
+            <Table.Summary.Cell index={2}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                Jami: {staffPaymentsData?.data?.calcByCurrency?.map((total: IStaffPaymentsTotal) => (
+                  <span key={total?.currency?.id}>
+                    {priceFormat(total?.total)}{currencyTagUi(total?.currency?.symbol)}
+                  </span>
+                ))}
+              </div>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell colSpan={3} index={1} />
+          </Table.Summary.Row>
+        )}
+      />
 
       {staffsPaymentStore.isOpenAddEditStaffPaymentsModal && <AddEditModal />}
     </main>

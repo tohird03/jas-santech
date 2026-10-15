@@ -2,7 +2,7 @@
 
 import './layout.scss';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Outlet} from 'react-router-dom';
 import {Layout as AntdLayout} from 'antd';
 import {useBoolean} from 'usehooks-ts';
@@ -15,7 +15,7 @@ import {Menu} from './Menu';
 export const Layout = () => {
   const isTablet = useMediaQuery('(max-width: 1200px)');
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const {value, toggle} = useBoolean(true);
+  const {value, setValue, toggle} = useBoolean(true);
 
   return (
     <AntdLayout className="layout" hasSider>

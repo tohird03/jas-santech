@@ -1,13 +1,14 @@
-import React, {forwardRef} from 'react';
-import {Document, Font, Image, Page, StyleSheet, Text, View} from '@react-pdf/renderer';
-import {IOrder} from '@/api/order/types';
+import React, { forwardRef } from 'react';
+import { Document, Page, Text, View, StyleSheet, Font, Image, Path } from '@react-pdf/renderer';
+import { IOrder } from '@/api/order/types';
+import { priceFormat } from '@/utils/priceFormat';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import LogoImg from '@/assets/img/jas-logo.jpg';
 import CheckmarkIcon from '@/assets/img/check-mark.png';
-import Insta from '@/assets/img/insta.png'; // Instagram QR kodi rasmi
 import TelegramQr from '@/assets/img/telegram.jpg'; // Telegram/kanal QR kodi rasmi
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {imageUrlWithBase} from '@/utils/image';
-import {phoneFormat} from '@/utils/phoneFormat';
-import {priceFormat} from '@/utils/priceFormat';
+import Insta from '@/assets/img/insta.png'; // Instagram QR kodi rasmi
+import { phoneFormat } from '@/utils/phoneFormat';
+import { imageUrlWithBase } from '@/utils/image';
 
 Font.register({
   family: 'NotoSans',
@@ -25,7 +26,7 @@ type Props = {
   order: IOrder;
 };
 
-export const MyDocument = forwardRef<any, Props>(({order}, ref) => (
+export const MyDocument = forwardRef<any, Props>(({ order }, ref) => (
   <Document ref={ref}>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
@@ -92,7 +93,7 @@ export const MyDocument = forwardRef<any, Props>(({order}, ref) => (
             <View style={[styles.tableCellWrap, styles.colCheck]}>
               <Image
                 src={CheckmarkIcon}
-                style={{width: 10, height: 10}}
+                style={{ width: 10, height: 10 }}
               />
             </View>
 
@@ -104,7 +105,7 @@ export const MyDocument = forwardRef<any, Props>(({order}, ref) => (
               <Text style={styles.tableHeaderText}>Нархи</Text>
             </View>
 
-            <View style={[styles.tableCellWrap, styles.colTotal, {borderRightWidth: 0}]}>
+            <View style={[styles.tableCellWrap, styles.colTotal, { borderRightWidth: 0 }]}>
               <Text style={styles.tableHeaderText}>Суммаси</Text>
             </View>
           </View>
@@ -181,7 +182,7 @@ export const MyDocument = forwardRef<any, Props>(({order}, ref) => (
                   style={[
                     styles.tableCellWrap,
                     styles.colTotal,
-                    {borderRightWidth: 0},
+                    { borderRightWidth: 0 },
                   ]}
                 >
                   <Text style={styles.tableCellTextRight}>

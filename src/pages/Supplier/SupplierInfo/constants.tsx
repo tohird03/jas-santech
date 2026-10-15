@@ -1,12 +1,13 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import {ISupplierDebtFilter, ISupplierInfo} from '@/api/supplier/types';
-import {CurrencyAmountZero, currencyTagUi} from '@/constants/payment';
-import {SupplierNameLink} from '@/pages/ActionComponents/SupplierNameLink';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {formatPhoneNumber} from '@/utils/phoneFormat';
-import {priceFormat} from '@/utils/priceFormat';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
+import { formatPhoneNumber } from '@/utils/phoneFormat';
+import { priceFormat } from '@/utils/priceFormat';
+import { dateFormatterWithStringMonth } from '@/utils/dateFormat';
+import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { ISupplierDebtFilter, ISupplierInfo } from '@/api/supplier/types';
+import { currencyTagUi } from '@/constants/payment';
 
 export const supplierColumns: ColumnType<ISupplierInfo>[] = [
   {
@@ -21,7 +22,7 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
     dataIndex: 'name',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    render: (value, record) => <SupplierNameLink supplier={record} showPhone={false} rowHover clip />,
+    render: (value, record) => <SupplierNameLink supplier={record} />,
   },
   {
     key: 'phone',
@@ -37,13 +38,9 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
     align: 'center',
     render: (value, record) => (
       record?.debtByCurrency?.length > 0
-        ? (
-          <span className="currency-row">
-            {record?.debtByCurrency?.map(debt => (
-              <span className="currency-item" key={debt?.currency?.id}>{priceFormat(debt?.amount)}{currencyTagUi(debt?.currency?.symbol)}</span>
-            ))}
-          </span>
-        ) : <CurrencyAmountZero />
+        ? record?.debtByCurrency?.map(debt => (
+          <span key={debt?.currency?.id}>{priceFormat(debt?.amount)}{currencyTagUi(debt?.currency?.symbol)}</span>
+        )) : 0
     ),
   },
   {
@@ -56,7 +53,7 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     render: (value, record) => <Action supplier={record} />,
   },
@@ -65,7 +62,7 @@ export const supplierColumns: ColumnType<ISupplierInfo>[] = [
 export const supplierDebtFilter = [
   {
     value: null,
-    label: 'Hammasi',
+    label: 'Hamma mijozlar',
   },
   {
     value: ISupplierDebtFilter.EQUAL,

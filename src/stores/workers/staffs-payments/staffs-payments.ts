@@ -1,7 +1,7 @@
-import {makeAutoObservable} from 'mobx';
-import {staffsPaymentsApi} from '@/api/staffs-payments/staffs-payments';
-import {IGetStaffsPaymentsParams, IStaffsPayments} from '@/api/staffs-payments/types';
-import {addNotification} from '@/utils';
+import { makeAutoObservable } from 'mobx';
+import { addNotification } from '@/utils';
+import { IGetStaffsPaymentsParams, IStaffsPayments } from '@/api/staffs-payments/types';
+import { staffsPaymentsApi } from '@/api/staffs-payments/staffs-payments';
 
 class StaffsPayments {
   #today = new Date();
@@ -58,7 +58,7 @@ class StaffsPayments {
 
   reset = () => {
     this.pageNumber = 1;
-    this.pageSize = 20;
+    this.pageSize = 10;
     this.search = null;
     this.isOpenAddEditStaffPaymentsModal = false;
   };

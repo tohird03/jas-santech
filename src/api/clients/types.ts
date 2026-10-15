@@ -1,5 +1,5 @@
-import {ICurrency} from '../auth/types';
-import {IPagination} from '../types';
+import { ICurrency } from '../auth/types';
+import { IPagination, IPayment } from '../types';
 
 export interface IClientDebtByCurrency {
   amount: number;
@@ -96,37 +96,40 @@ export interface IGetClientsStatisticParams extends IPagination{
   startDate?: Date;
   endDate?: Date;
   search?: string;
-  pagination?: boolean;
-}
-
-export interface IReportAmount {
-  amount: string | number;
-  currency?: {
-    id?: string;
-    name?: string;
-    symbol?: string;
-  };
+  debtType?: 'gt' | 'lt' | 'eq';
 }
 
 export interface IClientStatistic {
   id: string;
   fullname: string;
+  address: string;
   phone: string;
+  debtByCurrency: {
+    amount: number;
+    currency: ICurrency;
+  }[];
+  deedInfo: IClientDeedInfo;
+  lastSellingDate: string;
   calc: {
     selling: {
       count: number;
-      totalPriceByCurrency: IReportAmount[];
-      paymentCount: number;
-      paymentByCurrency: IReportAmount[];
-    };
-    clientPayment: {
-      count: number;
-      totalByCurrency: IReportAmount[];
+      totalPrice: number;
+      payment: {
+        count: number;
+        total: number;
+        totalCard: number;
+        totalCash: number;
+        totalTransfer: number;
+        totalOther: number;
+      };
     };
     returning: {
       count: number;
-      paymentByCurrency: IReportAmount[];
+      totalPrice: number;
+      payment: {
+        totalFromBalance: number;
+        totalCash: number;
+      };
     };
-    debtByCurrency: IReportAmount[];
   };
 }

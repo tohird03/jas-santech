@@ -1,27 +1,27 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {observer} from 'mobx-react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {Form, Input, Modal, Select} from 'antd';
-import {staffsApi} from '@/api/staffs';
-import {staffsPaymentsApi} from '@/api/staffs-payments/staffs-payments';
-import {IAddEditStaffsPayment, IAddEditStafPaymentForm} from '@/api/staffs-payments/types';
-import {authStore} from '@/stores/auth';
-import {staffsPaymentStore} from '@/stores/workers/staffs-payments';
+import {Form, Input, InputNumber, Modal, Select} from 'antd';
 import {addNotification} from '@/utils';
-import {PriceWithCurrency} from '@/utils/hooks/valuteConversition';
-import {priceFormat} from '@/utils/priceFormat';
+import { priceFormat } from '@/utils/priceFormat';
+import { staffsApi } from '@/api/staffs';
+import { staffsPaymentStore } from '@/stores/workers/staffs-payments';
+import { IAddEditStafPaymentForm, IAddEditStaffsPayment } from '@/api/staffs-payments/types';
+import { staffsPaymentsApi } from '@/api/staffs-payments/staffs-payments';
+import { authStore } from '@/stores/auth';
+import { PriceWithCurrency } from '@/utils/hooks/valuteConversition';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  const {data: currencyMany} = useQuery({
+  const { data: currencyMany, isLoading: loadingClients } = useQuery({
     queryKey: ['getCurrencyMany'],
     queryFn: () =>
       authStore.getCurrencyMany(),
   });
 
-  const {data: sellerData, isLoading: loadingSeller} = useQuery({
+  const { data: sellerData, isLoading: loadingSeller } = useQuery({
     queryKey: ['getSellers'],
     queryFn: () =>
       staffsApi.getStaffs({
@@ -143,7 +143,7 @@ export const AddEditModal = observer(() => {
         >
           <Select
             options={sellerOptions}
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             placeholder="Xodim"
             loading={loadingSeller}
             allowClear
@@ -165,11 +165,11 @@ export const AddEditModal = observer(() => {
         >
           <Input.TextArea
             placeholder="To'lov haqida ma'lumot"
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             rows={4}
             maxLength={100}
             showCount
-            autoSize={{minRows: 2, maxRows: 6}}
+            autoSize={{ minRows: 2, maxRows: 6 }}
           />
         </Form.Item>
       </Form>

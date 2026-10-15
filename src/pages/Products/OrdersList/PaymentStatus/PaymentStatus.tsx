@@ -1,14 +1,14 @@
+import { IOrder } from '@/api/order/types';
+import { ordersStore } from '@/stores/products';
+import { Tag } from 'antd';
+import { observer } from 'mobx-react';
 import React from 'react';
-import {observer} from 'mobx-react';
-import {Tag} from 'antd';
-import {IOrder} from '@/api/order/types';
-import {ordersStore} from '@/stores/products';
 
 type Props = {
   order: IOrder | null;
 };
 
-export const PaymentStatus = observer(({order}: Props) => {
+export const PaymentStatus = observer(({ order }: Props) => {
 
   const handleOpenPaymentModal = () => {
     if (order?.id) {
@@ -28,7 +28,7 @@ export const PaymentStatus = observer(({order}: Props) => {
       onClick={handleOpenPaymentModal}
       style={{cursor: 'pointer'}}
     >
-      {order?.payment ? 'Ko\'rish' : 'Tasdiqlash'}
+      {order?.payment ? 'To\'lovni ko\'rish' : 'To\'lovni tasdiqlash'}
     </Tag>
   );
 });

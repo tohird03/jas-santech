@@ -1,4 +1,4 @@
-import {ICurrency} from '../auth/types';
+import { ICurrency } from '../auth/types';
 
 export interface IOrderStatistic {
   dailyByCurrency: IUserStatisticData[];

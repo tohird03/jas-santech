@@ -1,66 +1,27 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
-import {Button, DatePicker, DatePickerProps, Input, Table, Tooltip, Typography} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react';
+import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import { Button, DatePicker, DatePickerProps, Input, Table, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
-import dayjs from 'dayjs';
-import {incomePaymentApi} from '@/api/payment-income';
-import {DataTable} from '@/components/Datatable/datatable';
-import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
-import {currencyTagUi} from '@/constants/payment';
-import {supplierPaymentsStore} from '@/stores/supplier';
-import {addNotification} from '@/utils';
-import {getPaginationParams} from '@/utils/getPaginationParams';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {priceFormat} from '@/utils/priceFormat';
-import {AddEditModal} from './AddEditModal';
-import {paymentsColumns} from './constants';
+import { getPaginationParams } from '@/utils/getPaginationParams';
+import { AddEditModal } from './AddEditModal';
 import styles from './payments.scss';
+import { paymentsColumns } from './constants';
+import { supplierPaymentsStore } from '@/stores/supplier';
+import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { priceFormat } from '@/utils/priceFormat';
+import { addNotification } from '@/utils';
+import { incomePaymentApi } from '@/api/payment-income';
 
 const cn = classNames.bind(styles);
 
-const paymentColumnKeys = ['index', 'client', 'totalPayment', 'description', 'createdAt', 'action'];
-const paymentColumnTitles = [
-  {key: 'index', title: '#'},
-  {key: 'client', title: 'Yetkazib beruvchi'},
-  {key: 'totalPayment', title: 'Jami to\'lov'},
-  {key: 'description', title: 'Ma\'lumot'},
-  {key: 'createdAt', title: 'To\'lov vaqti'},
-  {key: 'action', title: 'Amallar'},
-];
-const paymentDefaultWidths = {
-  index: 64,
-  client: 360,
-  totalPayment: 260,
-  description: 240,
-  createdAt: 180,
-  action: 120,
-};
-const paymentMinWidths = {
-  index: 56,
-  client: 160,
-  totalPayment: 160,
-  description: 120,
-  createdAt: 150,
-  action: 112,
-};
-
 export const SupplierPayments = observer(() => {
-  const isMobile = useMediaQuery('(max-width: 800px)');
-  const {supplierId} = useParams();
+  const { supplierId } = useParams();
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const {boxRef, apply, picker} = useResizableColumns({
-    keys: paymentColumnKeys,
-    defaults: paymentDefaultWidths,
-    mins: paymentMinWidths,
-    titles: paymentColumnTitles,
-    flexKey: 'client',
-  });
-  const columns = apply(paymentsColumns);
 
-  const {data: supplierPaymentsData, isLoading: loading} = useQuery({
+  const { data: supplierPaymentsData, isLoading: loading } = useQuery({
     queryKey: [
       'getPayments',
       supplierPaymentsStore.pageNumber,
@@ -139,15 +100,15 @@ export const SupplierPayments = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef} className="supplier-payments-page">
-      <div className={cn('supplier-payments__head')}>
+    <main>
+      <div className={cn('clients-payments__head')}>
         <Typography.Title level={3}>To&apos;langan qarzlar ro&apos;yxati</Typography.Title>
-        <div className={cn('supplier-payments__filter')}>
+        <div className={cn('clients-payments__filter')}>
           <Input
             placeholder="Yetkazib beruvchilarni qidirish"
             allowClear
             onChange={handleSearch}
-            className={cn('supplier-payments__search')}
+            className={cn('clients-payments__search')}
           />
           <DatePicker
             className={cn('promotion__datePicker')}
@@ -163,97 +124,64 @@ export const SupplierPayments = observer(() => {
             defaultValue={dayjs(supplierPaymentsStore.endDate)}
             allowClear={false}
           />
-          <div className={cn('supplier-payments__actions')}>
-            {picker}
-            <Tooltip placement="top" title="Excelda yuklash">
-              <Button
-                onClick={handleDownloadExcel}
-                type="primary"
-                icon={<DownloadOutlined />}
-                loading={downloadLoading}
-              >
-                Excelga yuklash
-              </Button>
-            </Tooltip>
+          <Button
+            onClick={handleAddNewPayment}
+            type="primary"
+            icon={<PlusCircleOutlined />}
+          >
+            Yangi to&apos;lov
+          </Button>
+          <Tooltip placement="top" title="Excelda yuklash">
             <Button
-              onClick={handleAddNewPayment}
+              onClick={handleDownloadExcel}
               type="primary"
-              icon={<PlusCircleOutlined />}
+              icon={<DownloadOutlined />}
+              loading={downloadLoading}
             >
-              Yangi to&apos;lov
+              Exelda Yuklash
             </Button>
-          </div>
+          </Tooltip>
         </div>
       </div>
 
-      {isMobile ? (
-        <>
-          <div className={cn('supplier-payments__total')}>
-            <span className="staff-payment__name">Jami</span>
-            <div className="currency-row">
-              {supplierPaymentsData?.data?.calcByCurrency?.map(payment => (
-                <span className="currency-item" key={payment?.currency?.id}>
-                  {priceFormat(payment?.total)}
-                  {currencyTagUi(payment?.currency?.symbol)}
-                </span>
-              ))}
-            </div>
-          </div>
-          <DataTable
-            className="supplier-payments__cards"
-            isMobile
-            columns={columns}
-            data={supplierPaymentsData?.data?.data || []}
-            loading={loading}
-            pagination={{
-              total: supplierPaymentsData?.data?.totalCount,
-              current: supplierPaymentsStore?.pageNumber,
-              pageSize: supplierPaymentsStore?.pageSize,
-              showSizeChanger: true,
-              onChange: handlePageChange,
-              ...getPaginationParams(supplierPaymentsData?.data?.totalCount),
-            }}
-          />
-        </>
-      ) : (
-        <Table
-          {...resizableTableProps}
-          className="resizable-table payment-table"
-          columns={columns}
-          dataSource={supplierPaymentsData?.data?.data || []}
-          loading={loading}
-          pagination={{
-            total: supplierPaymentsData?.data?.totalCount,
-            current: supplierPaymentsStore?.pageNumber,
-            pageSize: supplierPaymentsStore?.pageSize,
-            showSizeChanger: true,
-            onChange: handlePageChange,
-            ...getPaginationParams(supplierPaymentsData?.data?.totalCount),
-          }}
-          summary={() => (
-            <Table.Summary.Row>
-              {columns.map((column, index) => {
-                if (column.key === 'totalPayment') {
-                  return (
-                    <Table.Summary.Cell key={column.key} index={index}>
-                      <div className="currency-row" style={{fontWeight: 'bold'}}>
-                        {supplierPaymentsData?.data?.calcByCurrency?.map(payment => (
-                          <span className="currency-item" key={payment?.currency?.id}>
-                            {priceFormat(payment?.total)}
-                            {currencyTagUi(payment?.currency?.symbol)}
-                          </span>
-                        ))}
-                      </div>
-                    </Table.Summary.Cell>
-                  );
-                }
-
-                return <Table.Summary.Cell key={String(column.key)} index={index} />;
-              })}
-            </Table.Summary.Row>
-          )}
-        />
-      )}
+      <Table
+        columns={paymentsColumns}
+        dataSource={supplierPaymentsData?.data?.data || []}
+        loading={loading}
+        pagination={{
+          total: supplierPaymentsData?.data?.totalCount,
+          current: supplierPaymentsStore?.pageNumber,
+          pageSize: supplierPaymentsStore?.pageSize,
+          showSizeChanger: true,
+          onChange: handlePageChange,
+          ...getPaginationParams(supplierPaymentsData?.data?.totalCount),
+        }}
+        summary={() => (
+          <Table.Summary.Row>
+            <Table.Summary.Cell colSpan={2} index={1} />
+            <Table.Summary.Cell index={2}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalCash)}
+              </div>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalCard)}
+              </div>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalTransfer)}
+              </div>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                Jami: {priceFormat(supplierPaymentsData?.data?.calc?.totalOther)}
+              </div>
+            </Table.Summary.Cell>
+          </Table.Summary.Row>
+        )}
+      />
 
       {supplierPaymentsStore.isOpenAddEditPaymentModal && <AddEditModal />}
     </main>

@@ -8,48 +8,26 @@
 .product-list__filter {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 16px;
 }
 
 .product-list__search {
   width: 250px;
-}
-
-.products-list__total {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding: 12px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-}
-
-.products-list__total div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  margin-right: 10px;
 }
 
 @media only screen and (max-width: 800px) {
   .product-list__head {
     flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
   }
 
   .product-list__filter {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: 10px !important;
+    gap: 15px !important;
     width: 100%;
   }
 
-  .product-list__search,
-  .product-list__filter .ant-btn {
+  .product-list__search {
     width: 100%;
   }
 }

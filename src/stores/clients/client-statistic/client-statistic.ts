@@ -1,13 +1,14 @@
-import {makeAutoObservable} from 'mobx';
-import {clientsInfoApi, IGetClientsStatisticParams} from '@/api/clients';
-import {addNotification} from '@/utils';
+import { makeAutoObservable } from 'mobx';
+import { IGetStaffsParams, IStaffs, staffsApi } from '@/api/staffs';
+import { addNotification } from '@/utils';
+import { IGetClientsStatisticParams, clientsInfoApi } from '@/api/clients';
 
 class ClientsStatisticStore {
   #today = new Date();
 
   search: string | null = null;
   pageNumber = 1;
-  pageSize = 20;
+  pageSize = 5000;
   startDate: Date | null = this.#today;
   endDate: Date | null = this.#today;
 

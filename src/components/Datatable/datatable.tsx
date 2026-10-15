@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ComponentProps} from 'react';
 import {
   Card,
   Divider,
@@ -12,7 +12,7 @@ import {ColumnType} from 'antd/es/table';
 import styles from './datatable.module.css';
 
 export interface DataTableColumnsType<T> extends ColumnType<T> {
-  colStyle?: (value: any, record: T, index: number) => object;
+  colStyle?: (value: any, record: T, index: number) => Object;
 }
 
 type DataTableProps = {
@@ -20,7 +20,7 @@ type DataTableProps = {
   loadingLength?: number;
   scroll?: {
     y?: number;
-    x?: number | string | true;
+    x?: number;
   };
   isMobile?: boolean;
   columns: any[];
@@ -28,8 +28,8 @@ type DataTableProps = {
   className?: string;
   rowClassName?: any;
   loading?: boolean;
-  cardStyle?: object;
-  cardTextStyle?: object;
+  cardStyle?: Object;
+  cardTextStyle?: Object;
   pagination?:
   | {
     pageSize?: number;
@@ -43,9 +43,8 @@ type DataTableProps = {
     selectedRowKeys: React.Key[];
     onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => void;
   };
-  components?: React.ComponentProps<typeof Table>['components'];
+  components?: ComponentProps<typeof Table>['components'];
   tableLayout?: 'auto' | 'fixed';
-  summary?: React.ReactNode;
 };
 
 export const DataTable = (props: DataTableProps) => {
@@ -65,7 +64,6 @@ export const DataTable = (props: DataTableProps) => {
     cardTextStyle,
     components,
     tableLayout,
-    summary,
   } = props;
 
   const onChange: PaginationProps['onChange'] = (page, pageSize) => {
@@ -77,6 +75,8 @@ export const DataTable = (props: DataTableProps) => {
   return !isMobile ? (
     <Table
       className={className}
+      components={components}
+      tableLayout={tableLayout}
       pagination={{
         ...pagination,
         pageSizeOptions: [20, 50, 100, 500, 1000],
@@ -89,25 +89,20 @@ export const DataTable = (props: DataTableProps) => {
       rowSelection={rowSelection}
       rowKey={rowKey}
       scroll={scroll}
-      components={components}
-      tableLayout={tableLayout}
     />
   ) : loading ? (
     <div className={styles.loading__container}>
-      {Array.from({length: loadingLength ?? 4}, (entry, slot) => `skeleton-${slot}`).map((skeletonKey) => (
+      {[...new Array(loadingLength ?? 4)].map((item: any, index: number) => (
         <Skeleton
           paragraph={{rows: 7}}
           className={styles.loading__skeleton}
-          key={skeletonKey}
+          key={index}
           active
         />
       ))}
     </div>
   ) : data.length === 0 ? (
-    <>
-      <Empty />
-      {summary}
-    </>
+    <Empty />
   ) : (
     <div className={`${styles.card_wrapper} ${className}`}>
       {data?.map((d, index) => (
@@ -160,7 +155,6 @@ export const DataTable = (props: DataTableProps) => {
           })}
         </Card>
       ))}
-      {summary}
       <div className={styles.pagination}>
         {pagination && (
           <Pagination

@@ -1,26 +1,28 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Chart from 'react-apexcharts';
-import {useNavigate} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {CalendarOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
-import {Card} from 'antd';
+import { observer } from 'mobx-react';
+import { Card } from 'antd';
 import classNames from 'classnames';
-import {IClientDebtFilter} from '@/api/clients';
-import {IOrderGraphStatisticType} from '@/api/statistic/types';
-import {ISupplierDebtFilter} from '@/api/supplier/types';
-import {ROUTES} from '@/constants';
-import {currencyTagUi} from '@/constants/payment';
-import {authStore} from '@/stores/auth';
-import {clientsInfoStore} from '@/stores/clients';
-import {homeStore} from '@/stores/home/home';
-import {ordersStore} from '@/stores/products';
-import {supplierInfoStore} from '@/stores/supplier';
-import {getStartAndEndDate, getStartMonthEndDate} from '@/utils/getDateFormat';
-import {priceFormat} from '@/utils/priceFormat';
 import styles from './statistic.scss';
+import { CalendarOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import { ordersStore } from '@/stores/products';
+import { getStartAndEndDate, getStartMonthEndDate } from '@/utils/getDateFormat';
+import CountUp from 'react-countup';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/constants';
+import { clientsInfoStore } from '@/stores/clients';
+import { IClientDebtFilter } from '@/api/clients';
+import { supplierInfoStore } from '@/stores/supplier';
+import { ISupplierDebtFilter } from '@/api/supplier/types';
+import { homeStore } from '@/stores/home/home';
+import { IOrderGraphStatisticType } from '@/api/statistic/types';
+import { authStore } from '@/stores/auth';
+import { priceFormat } from '@/utils/priceFormat';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
+const formatter = (value: number) => <CountUp duration={2} end={value} separator=" " />;
 
 const graphTypes = [
   IOrderGraphStatisticType.DAY,
@@ -34,12 +36,12 @@ export const Statistic = observer(() => {
   const timeRange = graphTypes[timeRangeIndex];
 
   const navigate = useNavigate();
-  const {data: ordersStatisticData} = useQuery({
+  const { data: ordersStatisticData, isLoading: loading } = useQuery({
     queryKey: ['getOrdersStatistic'],
     queryFn: () => homeStore.getOrdersStatistic(),
   });
 
-  const {data: ordersGraphStatisticData, isLoading: loadingGraph} = useQuery({
+  const { data: ordersGraphStatisticData, isLoading: loadingGraph } = useQuery({
     queryKey: ['getOrdersGraphStatistic', timeRange],
     queryFn: () => homeStore.getOrdersGraphStatistic(timeRange),
   });
@@ -56,11 +58,15 @@ export const Statistic = observer(() => {
     }
   };
 
-  const chartData: number[] = (ordersGraphStatisticData ?? []).map(item => (item.byCurrency ?? []).reduce((acc, curr) => {
-    const converted = convertToDefault(curr.total, curr.currency?.symbol);
+  const chartData: number[] = (ordersGraphStatisticData ?? []).map(item => {
+    const name = '';
 
-    return acc + converted;
-  }, 0));
+    return (item.byCurrency ?? []).reduce((acc, curr) => {
+      const converted = convertToDefault(curr.total, curr.currency?.symbol);
+
+      return acc + converted;
+    }, 0);
+  });
 
 
   const chartOptions = {
@@ -218,13 +224,13 @@ export const Statistic = observer(() => {
 
 
   return (
-    <div style={{backgroundColor: '#F5F5F5', padding: '30px'}}>
+    <div style={{ backgroundColor: '#F5F5F5', padding: '30px' }}>
       <div className={cn('statistic__top-wrapper')}>
         <div className={cn('statistic__top-order')}>
           <h3 className={cn('statistic__top-heading')}>Sotuvlar</h3>
           <div className={cn('statistic__top-order-card')}>
             <Card onClick={handleClickTodayOrder} className={cn('statistic__top-card')}>
-              <CalendarOutlined style={{fontSize: '40px', color: '#f18024', marginBottom: 5}} />
+              <CalendarOutlined style={{ fontSize: '40px', color: '#f18024', marginBottom: 5 }} />
               <p className={cn('statistic__top-card-info')}>Bugun</p>
               {ordersStatisticData?.dailyByCurrency?.map(dailySelling => (
                 <p key={dailySelling?.currency?.id} className={cn('statistic__top-card-value')}>
@@ -234,7 +240,7 @@ export const Statistic = observer(() => {
               ))}
             </Card>
             <Card onClick={handleClickTodayWeek} className={cn('statistic__top-card')}>
-              <CalendarOutlined style={{fontSize: '40px', color: '#f18024', marginBottom: 5}} />
+              <CalendarOutlined style={{ fontSize: '40px', color: '#f18024', marginBottom: 5 }} />
               <p className={cn('statistic__top-card-info')}>Shu hafta</p>
               {ordersStatisticData?.weeklyByCurrency?.map(weeklySelling => (
                 <p key={weeklySelling?.currency?.id} className={cn('statistic__top-card-value')}>
@@ -244,7 +250,7 @@ export const Statistic = observer(() => {
               ))}
             </Card>
             <Card onClick={handleClickMonth} className={cn('statistic__top-card')}>
-              <CalendarOutlined style={{fontSize: '40px', color: '#f18024', marginBottom: 5}} />
+              <CalendarOutlined style={{ fontSize: '40px', color: '#f18024', marginBottom: 5 }} />
               <p className={cn('statistic__top-card-info')}>Shu oy</p>
               {ordersStatisticData?.monthlyByCurrency?.map(monthSelling => (
                 <p key={monthSelling?.currency?.id} className={cn('statistic__top-card-value')}>

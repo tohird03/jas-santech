@@ -7,29 +7,23 @@
 .staffs__filter {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 10px;
 }
 .staffs__search {
   width: 250px;
+  margin-right: 10px;
 }
 
 @media only screen and (max-width: 800px) {
   .staffs__head {
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 12px;
   }
   .staffs__filter {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: 10px !important;
+    gap: 15px !important;
     width: 100%;
   }
-  .staffs__search,
-  .staffs__filter .ant-btn {
+  .staffs__search {
     width: 100%;
   }
 }

@@ -1,11 +1,10 @@
 import React from 'react';
-import {Tag} from 'antd';
-import {ColumnType} from 'antd/es/table';
-import {ISupplierDeed, ISupplierDeedAction, ISupplierDeedType} from '@/api/supplier/types';
-import {ClipText} from '@/components/ClipText';
-import {currencyTagUi} from '@/constants/payment';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {priceFormat} from '@/utils/priceFormat';
+import { ColumnType } from 'antd/es/table';
+import { priceFormat } from '@/utils/priceFormat';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { ISupplierDeed, ISupplierDeedAction, ISupplierDeedType } from '@/api/supplier/types';
+import { Tag } from 'antd';
+import { currencyTagUi } from '@/constants/payment';
 
 export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
@@ -34,7 +33,7 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
     key: 'debt',
     dataIndex: 'debt',
-    title: 'Debet',
+    title: 'Дебит',
     align: 'center',
     width: '50px',
     className: 'green-col',
@@ -54,7 +53,7 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
   {
     key: 'data',
     dataIndex: 'data',
-    title: 'Kredit',
+    title: 'Кредит',
     align: 'center',
     width: '50px',
     className: 'red-col',
@@ -77,15 +76,7 @@ export const deedColumns: ColumnType<ISupplierDeed>[] = [
     title: 'Ma\'lumot',
     align: 'center',
     width: '200px',
-    render: (value, record) => (
-      record?.description ? (
-        <ClipText text={record.description}>
-          <div className="clip-box">
-            <span className="cell-ellipsis">{record.description}</span>
-          </div>
-        </ClipText>
-      ) : null
-    ),
+    render: (value, record) => <span>{record?.description}</span>,
   },
 ];
 

@@ -1,38 +1,38 @@
-import React, {FC, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, MoreOutlined, PrinterOutlined} from '@ant-design/icons';
-import {pdf, PDFDownloadLink} from '@react-pdf/renderer';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {Button, Dropdown, Menu, Popconfirm, Tooltip} from 'antd';
+import React, { FC, useState } from 'react';
+import { observer } from 'mobx-react';
+import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, MoreOutlined, PrinterOutlined } from '@ant-design/icons';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button, Dropdown, Menu, Popconfirm, Tooltip } from 'antd';
+import { addNotification } from '@/utils';
+import { IOrder } from '@/api/order/types';
+import { ordersStore } from '@/stores/products';
+import { ordersApi } from '@/api/order';
 import Item from 'antd/es/list/Item';
-import {ordersApi} from '@/api/order';
-import {IOrder} from '@/api/order/types';
-import {singleClientStore} from '@/stores/clients';
-import {ordersStore} from '@/stores/products';
-import {addNotification} from '@/utils';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {MyDocument} from './Pdf-save';
+import { MyDocument } from './Pdf-save';
+import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { useParams } from 'react-router-dom';
+import { singleClientStore } from '@/stores/clients';
 
 type Props = {
   orders: IOrder;
 };
 
-export const Action: FC<Props> = observer(({orders}) => {
+export const Action: FC<Props> = observer(({ orders }) => {
   const queryClient = useQueryClient();
-  const {clientId} = useParams();
+  const { clientId } = useParams();
   const [downloadLoading, setDownLoadLoading] = useState(false);
 
-  const {mutate: deleteOrder} =
+  const { mutate: deleteOrder } =
     useMutation({
       mutationKey: ['deleteOrder'],
       mutationFn: (id: string) => ordersApi.deleteOrder(id!),
       onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: ['getOrders']});
+        queryClient.invalidateQueries({ queryKey: ['getOrders'] });
         addNotification('Sotuv o\'chirildi');
 
         if (clientId) {
-          singleClientStore.getSingleClient({id: clientId});
+          singleClientStore.getSingleClient({ id: clientId });
         }
       },
       onError: addNotification,
@@ -93,7 +93,7 @@ export const Action: FC<Props> = observer(({orders}) => {
   };
 
   const menuSaveOptions = (
-    <Menu style={{padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
+    <Menu style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <Item key="excel">
         <Button
           onClick={handleDownloadExcel}
@@ -126,14 +126,14 @@ export const Action: FC<Props> = observer(({orders}) => {
           document={<MyDocument order={orders} />}
           fileName={orders?.client?.fullname}
         >
-          <DownloadOutlined style={{marginRight: '10px'}} /> Pdfda yuklash
+          <DownloadOutlined style={{ marginRight: '10px' }} /> Pdfda yuklash
         </PDFDownloadLink>
       </Item>
     </Menu>
   );
 
   const menuOrderOptions = (
-    <Menu style={{padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
+    <Menu style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <Item key="edit">
         <Button onClick={handleEditOrder} icon={<EditOutlined />} >
           Sotuvni tahrirlash
@@ -145,7 +145,7 @@ export const Action: FC<Props> = observer(({orders}) => {
           description="Rostdan ham bu sotuvni o'chirishni xohlaysizmi?"
           onConfirm={handleDelete}
           okText="Ha"
-          okButtonProps={{style: {background: 'red'}}}
+          okButtonProps={{ style: { background: 'red' } }}
           cancelText="Yo'q"
         >
           <Button icon={<DeleteOutlined />} danger >
@@ -157,7 +157,7 @@ export const Action: FC<Props> = observer(({orders}) => {
   );
 
   return (
-    <div style={{display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
+    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
       <Tooltip placement="top" title="Sotuvni ko'rish">
         <Button onClick={handleShowOrder} icon={<EyeOutlined />} />
       </Tooltip>

@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {observer} from 'mobx-react';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {Form, Input, Modal} from 'antd';
-import {warehouseApi} from '@/api/warehouse';
-import {IAddEditWarehouse} from '@/api/warehouse/types';
-import {warehouseStore} from '@/stores/products';
-import {addNotification} from '@/utils';
+import React, { useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Form, Input, InputNumber, Modal, Select } from 'antd';
+import { addNotification } from '@/utils';
+import { warehouseStore } from '@/stores/products';
+import { warehouseApi } from '@/api/warehouse';
+import { IAddEditWarehouse } from '@/api/warehouse/types';
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
@@ -28,12 +28,12 @@ export const AddEditModal = observer(() => {
     },
   });
 
-  const {mutate: updateWarehouse} =
+  const { mutate: updateWarehouse } =
     useMutation({
       mutationKey: ['updateWarehouse'],
       mutationFn: (params: IAddEditWarehouse) => warehouseApi.updateWarehouse(params),
       onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: ['getWarehouses']});
+        queryClient.invalidateQueries({ queryKey: ['getWarehouses'] });
         addNotification('Sklad muvaffaqiyatli tahrirlandi');
         handleModalClose();
       },
@@ -94,7 +94,7 @@ export const AddEditModal = observer(() => {
         <Form.Item
           name="name"
           label="Sklad"
-          rules={[{required: true}]}
+          rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>

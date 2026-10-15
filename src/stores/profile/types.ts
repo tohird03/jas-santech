@@ -1,6 +1,6 @@
-import {ICurrency} from '@/api/auth/types';
-import {ISeller} from '@/api/clients';
-import {EPageAccess} from '@/api/staffs';
+import { ICurrency } from '@/api/auth/types';
+import { ISeller } from '@/api/clients';
+import { EPageAccess } from '@/api/staffs';
 
 export interface IStaff extends ISeller {
   permissions: IPemissions[];

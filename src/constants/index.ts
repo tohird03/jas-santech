@@ -1,4 +1,4 @@
-import {priceFormat} from '@/utils/priceFormat';
+import { priceFormat } from '@/utils/priceFormat';
 
 export {ROUTES} from './routes';
 export type {IMenuItems} from './types';

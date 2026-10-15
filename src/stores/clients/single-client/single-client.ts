@@ -1,9 +1,9 @@
-import {makeAutoObservable} from 'mobx';
-import {clientsInfoApi, IClientsInfo, IGetSingleClientParams} from '@/api/clients';
-import {clientsPaymentApi} from '@/api/payment/payment';
-import {IClientsPayments, IGetClientsPaymentsParams} from '@/api/payment/types';
-import {addNotification} from '@/utils';
-import {ISingleClientTabs} from './types';
+import { makeAutoObservable } from 'mobx';
+import { clientsInfoApi, IClientsInfo, IGetSingleClientParams} from '@/api/clients';
+import { addNotification } from '@/utils';
+import { ISingleClientTabs } from './types';
+import { IClientsPayments, IGetClientsPaymentsParams } from '@/api/payment/types';
+import { clientsPaymentApi } from '@/api/payment/payment';
 
 class SingleClientStore {
   activeClient: IClientsInfo | null = null;

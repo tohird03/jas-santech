@@ -1,103 +1,29 @@
-.staff-payments__head {
+.client-info__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
   margin-bottom: 20px;
 }
-.staff-payments__filter {
+.client-info__filter {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 30px;
 }
 .client-info__search {
   width: 250px;
 }
 
-.staff-payments__seller {
-  width: 200px;
-}
-
-.staff-payment__person {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  line-height: 1.35;
-}
-
-.staff-payment__name {
-  margin: 0;
-  font-weight: 600;
-  color: #262626;
-}
-
-.staff-payment__person .staff-payment__name:hover {
-  color: #1d4ed8;
-}
-
-.staff-payment__phone {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 400;
-  color: #8c8c8c;
-}
-
-.staff-payment__note {
-  display: block;
-  max-width: 100%;
-  overflow: visible;
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-.staff-payments__total {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 12px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-}
-
-.staff-payments__cards .staff-payment__person {
-  align-items: flex-end;
-  width: 100%;
-  min-width: 0;
-}
-
-.staff-payments__cards .staff-payment__name,
-.staff-payments__cards .staff-payment__note,
-.staff-payments__cards .currency-row,
-.staff-payments__total .currency-row {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  text-align: right;
-}
-
 @media only screen and (max-width: 800px) {
-  .staff-payments__head {
+  .client-info__head {
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 12px;
   }
-  .staff-payments__filter {
+  .client-info__filter {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
+    gap: 15px !important;
     width: 100%;
   }
-  .staff-payments__seller,
-  .staff-payments__filter .ant-picker,
-  .staff-payments__filter .ant-btn {
+  .client-info__search {
     width: 100%;
   }
 }

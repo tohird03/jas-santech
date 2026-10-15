@@ -1,105 +1,24 @@
 import React from 'react';
-import {observer} from 'mobx-react';
-import {useQuery} from '@tanstack/react-query';
-import {DatePicker, DatePickerProps, Input, Typography} from 'antd';
-import {ColumnsType} from 'antd/es/table';
+import { observer } from 'mobx-react';
+import { DataTable } from '@/components/Datatable/datatable';
+import { getPaginationParams } from '@/utils/getPaginationParams';
+import { staffsWorkingTimeReportsColumns } from './constants';
+import { DatePicker, DatePickerProps, Input, Typography } from 'antd';
+import styles from './styles.scss';
 import classNames from 'classnames/bind';
 import dayjs from 'dayjs';
-import {useDebounce} from 'usehooks-ts';
-import {IClientStatistic} from '@/api/clients';
-import {DataTable} from '@/components/Datatable/datatable';
-import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
-import {clientsStatisticStore} from '@/stores/clients';
-import {getPaginationParams} from '@/utils/getPaginationParams';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {staffsWorkingTimeReportsColumns} from './constants';
-import styles from './styles.scss';
+import { clientsStatisticStore } from '@/stores/clients';
+import { useQuery } from '@tanstack/react-query';
 
 const cn = classNames.bind(styles);
 
-const flattenColumns = (items: ColumnsType<IClientStatistic>): ColumnsType<IClientStatistic> =>
-  items.flatMap((column) => (
-    'children' in column && column.children?.length
-      ? flattenColumns(column.children)
-      : [column]
-  ));
-
-const reportColumnKeys = [
-  'index',
-  'name',
-  'sellingCount',
-  'sellingSum',
-  'sellingPaymentCount',
-  'sellingPaymentSum',
-  'clientPaymentCount',
-  'clientPaymentSum',
-  'returningCount',
-  'returningSum',
-  'debt',
-];
-const reportColumnTitles = [
-  {key: 'index', title: '#'},
-  {key: 'name', title: 'Mijoz'},
-  {key: 'sellingCount', title: 'Sotuv soni'},
-  {key: 'sellingSum', title: 'Sotuv summa'},
-  {key: 'sellingPaymentCount', title: 'Sotuv to\'lovi soni'},
-  {key: 'sellingPaymentSum', title: 'Sotuv to\'lovi summa'},
-  {key: 'clientPaymentCount', title: 'Alohida to\'lov soni'},
-  {key: 'clientPaymentSum', title: 'Alohida to\'lov summa'},
-  {key: 'returningCount', title: 'Qaytaruv soni'},
-  {key: 'returningSum', title: 'Qaytaruv to\'lov'},
-  {key: 'debt', title: 'Qarz'},
-];
-const reportDefaultWidths = {
-  index: 64,
-  name: 320,
-  sellingCount: 80,
-  sellingSum: 180,
-  sellingPaymentCount: 80,
-  sellingPaymentSum: 180,
-  clientPaymentCount: 80,
-  clientPaymentSum: 180,
-  returningCount: 80,
-  returningSum: 180,
-  debt: 180,
-};
-const reportMinWidths = {
-  index: 56,
-  name: 140,
-  sellingCount: 64,
-  sellingSum: 120,
-  sellingPaymentCount: 64,
-  sellingPaymentSum: 120,
-  clientPaymentCount: 64,
-  clientPaymentSum: 120,
-  returningCount: 64,
-  returningSum: 120,
-  debt: 120,
-};
-
 export const ClientStatistic = observer(() => {
-  const isMobile = useMediaQuery('(max-width: 800px)');
-  const {boxRef, apply, picker} = useResizableColumns({
-    keys: reportColumnKeys,
-    defaults: reportDefaultWidths,
-    mins: reportMinWidths,
-    titles: reportColumnTitles,
-    flexKey: 'name',
-    fit: false,
-  });
-  const columns = apply(staffsWorkingTimeReportsColumns);
-  const titleByKey = Object.fromEntries(reportColumnTitles.map((item) => [item.key, item.title]));
-  const cardColumns = flattenColumns(columns).map((column) => ({
-    ...column,
-    title: titleByKey[String(column.key)] || column.title,
-  }));
-  const search = useDebounce(clientsStatisticStore.search || '', 400);
-  const {data: clientsStatisticData, isLoading: loading, isError} = useQuery({
+  const { data: clientsStatisticData, isLoading: loading } = useQuery({
     queryKey: [
-      'clientReport',
+      'getOrders',
       clientsStatisticStore?.pageNumber,
       clientsStatisticStore?.pageSize,
-      search,
+      clientsStatisticStore?.search,
       clientsStatisticStore?.startDate,
       clientsStatisticStore?.endDate,
     ],
@@ -107,25 +26,28 @@ export const ClientStatistic = observer(() => {
       clientsStatisticStore.getClientsStatistic({
         pageNumber: clientsStatisticStore.pageNumber,
         pageSize: clientsStatisticStore.pageSize,
-        search,
-        startDate: clientsStatisticStore.startDate || undefined,
-        endDate: clientsStatisticStore.endDate || undefined,
+        search: clientsStatisticStore.search!,
+        startDate: clientsStatisticStore.startDate!,
+        endDate: clientsStatisticStore.endDate!,
       }),
   });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    clientsStatisticStore.setPageNumber(1);
     clientsStatisticStore.setSearch(e.currentTarget?.value);
   };
 
   const handleStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    clientsStatisticStore.setPageNumber(1);
-    clientsStatisticStore.setStartDate(date && dateString ? new Date(String(dateString)) : null);
+    if (!dateString) {
+      clientsStatisticStore.setStartDate(null);
+    }
+    clientsStatisticStore.setStartDate(new Date(dateString));
   };
 
   const handleEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    clientsStatisticStore.setPageNumber(1);
-    clientsStatisticStore.setEndDate(date && dateString ? new Date(String(dateString)) : null);
+    if (!dateString) {
+      clientsStatisticStore.setEndDate(null);
+    }
+    clientsStatisticStore.setEndDate(new Date(dateString));
   };
 
   const handlePageChange = (page: number, pageSize: number | undefined) => {
@@ -134,7 +56,7 @@ export const ClientStatistic = observer(() => {
   };
 
   return (
-    <main ref={boxRef} className="client-report-page">
+    <main>
       <div className={cn('client-report__head')}>
         <Typography.Title level={3}>Mijozlar hisoboti</Typography.Title>
         <div className={cn('client-report__filter')}>
@@ -158,20 +80,13 @@ export const ClientStatistic = observer(() => {
             defaultValue={dayjs(clientsStatisticStore.endDate)}
             allowClear={false}
           />
-          {picker}
         </div>
       </div>
 
       <DataTable
-        rowKey="id"
-        className={isMobile ? 'client-report__cards' : `${resizableTableProps.className} resizable-table--scroll`}
-        columns={isMobile ? cardColumns : columns}
-        tableLayout={isMobile ? undefined : resizableTableProps.tableLayout}
-        components={isMobile ? undefined : resizableTableProps.components}
-        data={isError ? [] : (clientsStatisticData?.data?.data || [])}
+        columns={staffsWorkingTimeReportsColumns}
+        data={clientsStatisticData?.data?.data || []}
         loading={loading}
-        isMobile={isMobile}
-        scroll={isMobile ? undefined : {x: true}}
         pagination={{
           total: clientsStatisticData?.data?.totalCount,
           current: clientsStatisticStore?.pageNumber,

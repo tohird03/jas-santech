@@ -1,14 +1,18 @@
-import React, {useMemo} from 'react';
-import {observer} from 'mobx-react';
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {Select} from 'antd';
-import {staffsApi} from '@/api/staffs';
-import {authStore} from '@/stores/auth';
-import {addNotification} from '@/utils';
-import {priceFormat} from '@/utils/priceFormat';
+import React, { useMemo, useState } from 'react';
+import { observer } from 'mobx-react';
+import { LogoutOutlined } from '@ant-design/icons';
+import { Button, Modal, Select, Typography } from 'antd';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { authApi } from '@/api';
+import { addNotification } from '@/utils';
+import { authStore } from '@/stores/auth';
+import { priceFormat } from '@/utils/priceFormat';
+import { staffsApi } from '@/api/staffs';
 
 export const DefaultCurrency: React.FC = observer(() => {
-  const {mutate: changeCurrency} =
+  const queryClient = useQueryClient();
+
+  const { mutate: changeCurrency } =
     useMutation({
       mutationKey: ['changeCurrency'],
       mutationFn: (currencyId: string) => staffsApi.updateStaff({
@@ -25,7 +29,7 @@ export const DefaultCurrency: React.FC = observer(() => {
     });
 
   // GET DATAS
-  const {data: currencyMany} = useQuery({
+  const { data: currencyMany, isLoading: loadingClients } = useQuery({
     queryKey: ['getCurrencyMany'],
     queryFn: () =>
       authStore.getCurrencyMany(),
@@ -46,7 +50,7 @@ export const DefaultCurrency: React.FC = observer(() => {
     <div>
       <Select
         options={currencyManyData}
-        className="header-currency"
+        style={{width: '130px'}}
         placeholder="Valyuta"
         value={authStore?.staffInfo?.currency?.id}
         onChange={handleCurrencyChange}

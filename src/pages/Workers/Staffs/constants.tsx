@@ -1,10 +1,9 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
 import {EPageAccess, IStaffs} from '@/api/staffs';
-import {ClipText} from '@/components/ClipText';
-import {formatPhoneNumber} from '@/utils/phoneFormat';
 import {Action} from './Action';
-import {ActiveStatus} from './AvtiveStatus/ActiveStatus';
+import {formatPhoneNumber} from '@/utils/phoneFormat';
+import { ActiveStatus } from './AvtiveStatus/ActiveStatus';
 
 export const staffsColumns: ColumnType<IStaffs>[] = [
   {
@@ -19,11 +18,7 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     dataIndex: 'name',
     title: 'Xodim',
     align: 'center',
-    render: (value, record) => (
-      <ClipText text={record?.fullname}>
-        <span className="staff-list__name">{record?.fullname}</span>
-      </ClipText>
-    ),
+    render: (value, record) => record?.fullname,
   },
   {
     key: 'phone',
@@ -33,16 +28,16 @@ export const staffsColumns: ColumnType<IStaffs>[] = [
     render: (value, record) => `+${formatPhoneNumber(record?.phone)}`,
   },
   {
-    key: 'active',
+    key: 'action',
     dataIndex: 'action',
     title: 'Faolligi',
     align: 'center',
     render: (value, record) => <ActiveStatus staff={record} />,
   },
   {
-    key: 'actions',
+    key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     render: (value, record) => <Action staff={record} />,
   },
@@ -61,6 +56,4 @@ export const EPageAccessLabel: Record<EPageAccess, string> = {
   [EPageAccess.SUPPLIERPAYMENT]: 'Yetkazib beruvchilarga to\'lovlar',
   [EPageAccess.STUFF]: 'Xodimlar',
   [EPageAccess.STUFFPAYMENT]: 'Xodimlarga to\'lovlar',
-  [EPageAccess.CHAT]: 'Chat',
-  [EPageAccess.REMINDER]: 'Eslatmalar',
 };

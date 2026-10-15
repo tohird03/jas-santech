@@ -1,18 +1,18 @@
-import React, {useEffect} from 'react';
-import {useParams} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {Segmented, Typography} from 'antd';
-import {SegmentedValue} from 'antd/es/segmented';
-import classNames from 'classnames';
-import {currencyTagUi} from '@/constants/payment';
-import {ISingleSupplierTabs, singleSupplierStore} from '@/stores/supplier';
-import {SegmentComponents, singleSupplierTabOptions} from './constants';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
+import { Segmented, Typography } from 'antd';
+import { SegmentedValue } from 'antd/es/segmented';
+import { SegmentComponents, singleSupplierTabOptions } from './constants';
+import { useParams } from 'react-router-dom';
 import styles from './single-supplier.scss';
+import classNames from 'classnames';
+import { ISingleSupplierTabs, singleSupplierStore } from '@/stores/supplier';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
 export const SingleSupplier = observer(() => {
-  const {supplierId} = useParams();
+  const { supplierId } = useParams();
 
   const handleChangeProductTab = (value: SegmentedValue) => {
     singleSupplierStore.setActiveTabs(value as ISingleSupplierTabs);
@@ -33,17 +33,17 @@ export const SingleSupplier = observer(() => {
   }, []);
 
   return (
-    <main className="single-supplier-page">
+    <main>
       <div className={cn('single-supplier__head')}>
         <Segmented
-          value={singleSupplierStore.activeTabs}
+          defaultValue={ISingleSupplierTabs.ORDER}
           onChange={handleChangeProductTab}
           options={singleSupplierTabOptions}
           className={cn('single-supplier__segment')}
         />
 
         <Typography.Title
-          className={cn('single-supplier__title')}
+          className={cn('single-client__title')}
           level={3}
         >
           Yetkazib beruvchiga qarz: {

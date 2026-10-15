@@ -1,9 +1,9 @@
 import {authStore} from './auth';
-import {clientsInfoStore, paymentsStore, singleClientStore} from './clients';
-import {incomeProductsStore, ordersStore, productsListStore, returnedOrdersStore, warehouseStore} from './products';
 import {profileStore} from './profile';
-import {singleSupplierStore, supplierInfoStore, supplierPaymentsStore} from './supplier';
-import {currencyStore, staffsStore} from './workers';
+import {clientsInfoStore, paymentsStore, singleClientStore} from './clients';
+import {staffsStore, currencyStore} from './workers';
+import {supplierInfoStore, supplierPaymentsStore, singleSupplierStore} from './supplier';
+import {productsListStore, incomeProductsStore, ordersStore, returnedOrdersStore, warehouseStore} from './products';
 
 export const stores = {
   authStore,

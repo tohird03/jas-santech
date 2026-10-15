@@ -1,9 +1,9 @@
-import {ICurrency} from '@/api/auth/types';
-import {IIncomeOrder} from '@/api/income-products/types';
+import { ICurrency } from '@/api/auth/types';
+import { IIncomeOrder } from '@/api/income-products/types';
 
 export function calculateSettlement(
   order: IIncomeOrder,
-  payments: {currencyId: string, amount: number}[],
+  payments: { currencyId: string, amount: number }[],
   currencies: ICurrency[],
   defaultCurrencySymbol: 'UZS' | 'USD'
 ) {

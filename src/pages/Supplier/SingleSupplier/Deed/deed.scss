@@ -1,34 +1,37 @@
-.supplier-deed__head {
+.deed__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
   margin-bottom: 20px;
 }
-
-.supplier-deed__filter {
+.deed__filter {
   display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
+  flex-direction: row;
+  gap: 20px;
+}
+.deed__search {
+  width: 250px;
+  margin-right: 10px;
 }
 
 @media only screen and (max-width: 800px) {
-  .supplier-deed__head {
+  .deed__head {
     flex-direction: column;
-    align-items: stretch;
   }
-
-  .supplier-deed__filter {
+  .deed__filter {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
+    gap: 15px !important;
     width: 100%;
   }
-
-  .supplier-deed__filter .ant-picker,
-  .supplier-deed__filter .ant-btn {
+  .deed__search {
     width: 100%;
+  }
+}
+
+
+.deed {
+  &__green-col {
+    background-color: green;
   }
 }

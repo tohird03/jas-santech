@@ -1,9 +1,13 @@
 import React, {FC} from 'react';
 import {observer} from 'mobx-react';
-import {EditOutlined} from '@ant-design/icons';
-import {Button} from 'antd';
-import {IOrderProducts} from '@/api/order/types';
-import {productsListStore} from '@/stores/products';
+import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {Button, Popconfirm} from 'antd';
+import {addNotification} from '@/utils';
+import { IProducts } from '@/api/product/types';
+import { productsListStore } from '@/stores/products';
+import { productsApi } from '@/api/product/product';
+import { IOrderProducts } from '@/api/order/types';
 
 type Props = {
   product: IOrderProducts;

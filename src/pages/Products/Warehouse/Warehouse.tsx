@@ -1,21 +1,18 @@
-import React, {useEffect} from 'react';
-import {observer} from 'mobx-react';
-import {PlusCircleOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
-import {Button, Table, Typography} from 'antd';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
+import { useQuery } from '@tanstack/react-query';
+import { Button, Table, Typography } from 'antd';
 import classNames from 'classnames';
-import {DataTable} from '@/components/Datatable/datatable';
-import {warehouseStore} from '@/stores/products';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {AddEditModal} from './AddEditModal';
-import {clientsColumns} from './constants';
+import { AddEditModal } from './AddEditModal';
 import styles from './warehouse.scss';
+import { clientsColumns } from './constants';
+import { warehouseStore } from '@/stores/products';
+import { PlusCircleOutlined } from '@ant-design/icons';
 
 const cn = classNames.bind(styles);
 
 export const Warehouse = observer(() => {
-  const isMobile = useMediaQuery('(max-width: 800px)');
-  const {data: warehousesData, isLoading: loading} = useQuery({
+  const { data: warehousesData, isLoading: loading } = useQuery({
     queryKey: ['getWarehouses'],
     queryFn: () =>
       warehouseStore.getWarehouses(),
@@ -30,7 +27,7 @@ export const Warehouse = observer(() => {
   }, []);
 
   return (
-    <main className="warehouse-page">
+    <main>
       <div className={cn('currency__head')}>
         <Typography.Title level={3}>Skladlar</Typography.Title>
         <div className={cn('supplier-info__filter')}>
@@ -44,21 +41,11 @@ export const Warehouse = observer(() => {
         </div>
       </div>
 
-      {isMobile ? (
-        <DataTable
-          className="warehouse-cards"
-          isMobile
-          columns={clientsColumns}
-          data={warehousesData?.data?.data || []}
-          loading={loading}
-        />
-      ) : (
-        <Table
-          columns={clientsColumns}
-          dataSource={warehousesData?.data?.data || []}
-          loading={loading}
-        />
-      )}
+      <Table
+        columns={clientsColumns}
+        dataSource={warehousesData?.data?.data || []}
+        loading={loading}
+      />
 
       {warehouseStore.isOpenAddEditCurrency && <AddEditModal />}
     </main>

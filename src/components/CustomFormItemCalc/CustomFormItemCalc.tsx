@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Form, Input} from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, InputNumber } from 'antd';
 
 
 interface CustomFormItemProps {
@@ -11,7 +11,7 @@ interface CustomFormItemProps {
   initialValue: number;
 }
 
-const CustomFormItem: React.FC<CustomFormItemProps> = ({label, name, initialValue, form, rules}) => {
+const CustomFormItem: React.FC<CustomFormItemProps> = ({ label, name, initialValue, form, rules }) => {
   const [inputValue, setInputValue] = useState<string>(initialValue.toString());
 
   const handleInputChange = (input: string) => {
@@ -31,7 +31,7 @@ const CustomFormItem: React.FC<CustomFormItemProps> = ({label, name, initialValu
         } else if (operator === '-') {
           result = baseValue - operand;
         }
-        form.setFieldsValue({[name]: result});
+        form.setFieldsValue({ [name]: result });
         setInputValue(result.toString());
       } else {
 
@@ -51,7 +51,7 @@ const CustomFormItem: React.FC<CustomFormItemProps> = ({label, name, initialValu
     >
       <Input
         placeholder="Masalan: 10+12="
-        style={{width: '100%'}}
+        style={{ width: '100%' }}
         onChange={(e) => handleInputChange(e.target.value)}
         value={inputValue}
       />
@@ -59,4 +59,4 @@ const CustomFormItem: React.FC<CustomFormItemProps> = ({label, name, initialValu
   );
 };
 
-export {CustomFormItem};
+export { CustomFormItem };

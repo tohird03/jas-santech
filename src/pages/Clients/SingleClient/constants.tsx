@@ -1,8 +1,8 @@
 import React from 'react';
-import {Orders} from '@/pages/Products';
-import {ISingleClientTabs} from '@/stores/clients';
-import {ClientsPayments} from '../Payments';
-import {Deed} from './Deed';
+import { ISingleClientTabs } from '@/stores/clients';
+import { Orders } from '@/pages/Products';
+import { Deed } from './Deed';
+import { ClientsPayments } from '../Payments';
 
 export const singleClientTabOptions = [
   {

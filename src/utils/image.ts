@@ -1,4 +1,4 @@
-import {umsStages} from '@/api/endpoints';
+import { umsStages } from '@/api/endpoints';
 
 export const imageUrlWithBase = (url: string) => {
   if (url) {

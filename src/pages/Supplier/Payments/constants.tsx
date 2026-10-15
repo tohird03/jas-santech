@@ -1,12 +1,11 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import {ISupplierPayments} from '@/api/payment-income/types';
-import {ClipText} from '@/components/ClipText';
-import {currencyTagUi} from '@/constants/payment';
-import {SupplierNameLink} from '@/pages/ActionComponents/SupplierNameLink';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {priceFormat} from '@/utils/priceFormat';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
+import { priceFormat } from '@/utils/priceFormat';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { ISupplierPayments } from '@/api/payment-income/types';
+import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
+import { currencyTagUi } from '@/constants/payment';
 
 export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
   {
@@ -21,22 +20,21 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'client',
     title: 'Yetkazib beruvchi',
     align: 'center',
-    render: (value, record) => <SupplierNameLink supplier={record?.supplier} plain clip />,
+    render: (value, record) => <SupplierNameLink supplier={record?.supplier} />,
   },
   {
     key: 'totalPayment',
     dataIndex: 'totalPayment',
     title: 'Jami to\'lov',
     align: 'center',
+    width: '150px',
     render: (value, record) => (
-      <span className="currency-row">
-        {record?.totalsByCurrency?.map(payment => (
-          <span className="currency-item" key={payment?.currency?.id}>
-            {priceFormat(payment?.total)}
-            {currencyTagUi(payment?.currency?.symbol)}
-          </span>
-        ))}
-      </span>
+      record?.totalsByCurrency?.map(payment => (
+        <div key={payment?.currency?.id}>
+          {priceFormat(payment?.total)}
+          {currencyTagUi(payment?.currency?.symbol)}
+        </div>
+      ))
     ),
   },
   {
@@ -44,19 +42,7 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    render: (value, record) => {
-      const description = record?.description || '';
-
-      if (!description) {
-        return null;
-      }
-
-      return (
-        <ClipText text={description}>
-          <span className="cell-ellipsis">{description}</span>
-        </ClipText>
-      );
-    },
+    render: (value, record) => <span>{record?.description}</span>,
   },
   {
     key: 'createdAt',
@@ -68,7 +54,7 @@ export const paymentsColumns: ColumnType<ISupplierPayments>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     render: (value, record) => <Action supplierPayment={record} />,
   },

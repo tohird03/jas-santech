@@ -1,11 +1,10 @@
 import React from 'react';
-import {Tag} from 'antd';
-import {ColumnType} from 'antd/es/table';
-import {IClientDeed, IClientDeedAction, IClientDeedType} from '@/api/clients';
-import {ClipText} from '@/components/ClipText';
-import {currencyTagUi} from '@/constants/payment';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {priceFormat} from '@/utils/priceFormat';
+import { ColumnType } from 'antd/es/table';
+import { priceFormat } from '@/utils/priceFormat';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { IClientDeed, IClientDeedAction, IClientDeedType } from '@/api/clients';
+import { Tag } from 'antd';
+import { currencyTagUi } from '@/constants/payment';
 
 export const deedColumns: ColumnType<IClientDeed>[] = [
   {
@@ -13,31 +12,30 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     dataIndex: 'index',
     title: '#',
     align: 'center',
-    width: 56,
+    width: '40px',
     render: (value, record, index) => index + 1,
   },
   {
-    key: 'date',
-    dataIndex: 'date',
+    key: 'data',
+    dataIndex: 'data',
     title: 'Vaqti',
     align: 'center',
-    width: 168,
+    width: '100px',
     render: (value, record) => getFullDateFormat(record?.date),
   },
   {
     key: 'type',
     dataIndex: 'type',
     title: 'Harakat turi',
-    align: 'center',
-    width: 120,
+    width: '50px',
     render: (value, record) => <Tag color={clientDeedActionColor[record?.action]}>{clientDeedAction[record?.action]}</Tag>,
   },
   {
     key: 'debt',
     dataIndex: 'debt',
-    title: 'Debet',
+    title: 'Дебит',
     align: 'center',
-    width: 160,
+    width: '100px',
     className: 'green-col',
     render: (value, record) => (
       record?.type === IClientDeedType.DEBIT
@@ -53,11 +51,11 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     ),
   },
   {
-    key: 'credit',
-    dataIndex: 'credit',
-    title: 'Kredit',
+    key: 'data',
+    dataIndex: 'data',
+    title: 'Кредит',
     align: 'center',
-    width: 160,
+    width: '100px',
     className: 'red-col',
     render: (value, record) => (
       record?.type === IClientDeedType.KREDIT
@@ -77,21 +75,8 @@ export const deedColumns: ColumnType<IClientDeed>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    width: 220,
-    className: 'deed-note',
-    render: (value, record) => {
-      const description = record?.description || '';
-
-      if (!description) {
-        return null;
-      }
-
-      return (
-        <ClipText text={description}>
-          <span className="cell-ellipsis">{description}</span>
-        </ClipText>
-      );
-    },
+    width: '200px',
+    render: (value, record) => <span>{record?.description}</span>,
   },
 ];
 

@@ -1,8 +1,11 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import {ICurrency} from '@/api/auth/types';
-import {priceFormat} from '@/utils/priceFormat';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
+import { priceFormat } from '@/utils/priceFormat';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { IStaffsPayments } from '@/api/staffs-payments/types';
+import { currencyTagUi } from '@/constants/payment';
+import { ICurrency } from '@/api/auth/types';
 
 export const clientsColumns: ColumnType<ICurrency>[] = [
   {
@@ -28,9 +31,9 @@ export const clientsColumns: ColumnType<ICurrency>[] = [
     render: (value, record) => <span>{priceFormat(record?.exchangeRate)}</span>,
   },
   {
-    key: 'actions',
+    key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     render: (value, record) => <Action currency={record} />,
   },

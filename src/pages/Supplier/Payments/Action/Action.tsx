@@ -1,27 +1,28 @@
-import React, {FC} from 'react';
-import {observer} from 'mobx-react';
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {Button, Popconfirm} from 'antd';
-import {incomePaymentApi} from '@/api/payment-income';
-import {ISupplierPayments} from '@/api/payment-income/types';
-import {supplierPaymentsStore} from '@/stores/supplier';
-import {addNotification} from '@/utils';
+import React, { FC } from 'react';
+import { observer } from 'mobx-react';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button, Popconfirm } from 'antd';
+import { addNotification } from '@/utils';
+import { ISupplierPayments } from '@/api/payment-income/types';
+import { supplierPaymentsStore } from '@/stores/supplier';
+import { incomePaymentApi } from '@/api/payment-income';
+import { authStore } from '@/stores/auth';
 
 type Props = {
   supplierPayment: ISupplierPayments;
 };
 
-export const Action: FC<Props> = observer(({supplierPayment}) => {
+export const Action: FC<Props> = observer(({ supplierPayment }) => {
   const queryClient = useQueryClient();
 
-  const {mutate: deletePayment} =
+  const { mutate: deletePayment } =
     useMutation({
       mutationKey: ['deletePayment'],
       mutationFn: (id: string) => incomePaymentApi.deleteIncomePayment(id!),
       onSuccess: () => {
         addNotification('To\'lov o\'chirildi');
-        queryClient.invalidateQueries({queryKey: ['getPayments']});
+        queryClient.invalidateQueries({ queryKey: ['getPayments'] });
       },
       onError: addNotification,
     });
@@ -37,14 +38,14 @@ export const Action: FC<Props> = observer(({supplierPayment}) => {
 
 
   return (
-    <div style={{display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
+    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
       <Button onClick={handleEditPayment} type="primary" icon={<EditOutlined />} />
       <Popconfirm
         title="To'lovni o'chirish"
         description="Rostdan ham bu to'lovni o'chirishni xohlaysizmi?"
         onConfirm={handleDeletePayment}
         okText="Ha"
-        okButtonProps={{style: {background: 'red'}}}
+        okButtonProps={{ style: { background: 'red' } }}
         cancelText="Yo'q"
       >
         <Button type="primary" icon={<DeleteOutlined />} danger />

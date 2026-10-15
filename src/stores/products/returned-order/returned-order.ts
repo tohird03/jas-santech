@@ -1,8 +1,8 @@
-import {makeAutoObservable} from 'mobx';
-import {returnedOrderApi} from '@/api/returned-order/returned-order';
-import {IGetReturnedOrdersParams, IReturnedOrder} from '@/api/returned-order/types';
-import {addNotification} from '@/utils';
-import {ISingleReturnedOrderPayment} from './type';
+import { makeAutoObservable } from 'mobx';
+import { addNotification } from '@/utils';
+import { IGetReturnedOrdersParams, IReturnedOrder, IReturnedOrderPayment } from '@/api/returned-order/types';
+import { returnedOrderApi } from '@/api/returned-order/returned-order';
+import { ISingleReturnedOrderPayment } from './type';
 
 class ReturnedOrdersStore {
   #today = new Date();

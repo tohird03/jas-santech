@@ -12,9 +12,9 @@ import {
   TeamOutlined,
   UsergroupAddOutlined,
 } from '@ant-design/icons';
-import {EPageAccess} from '@/api/staffs';
 import {ROUTES} from '@/constants';
 import {IMenuItems} from './types';
+import { EPageAccess } from '@/api/staffs';
 
 export const mainMenuList: IMenuItems[] = [
   {

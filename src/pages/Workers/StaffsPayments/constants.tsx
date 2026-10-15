@@ -1,15 +1,10 @@
 import React from 'react';
-import {ColumnType} from 'antd/es/table';
-import classNames from 'classnames';
-import {IStaffsPayments} from '@/api/staffs-payments/types';
-import {ClipText} from '@/components/ClipText';
-import {currencyTagUi} from '@/constants/payment';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {priceFormat} from '@/utils/priceFormat';
-import {Action} from './Action';
-import styles from './staffs-payments.scss';
-
-const cn = classNames.bind(styles);
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
+import { priceFormat } from '@/utils/priceFormat';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { IStaffsPayments } from '@/api/staffs-payments/types';
+import { currencyTagUi } from '@/constants/payment';
 
 export const clientsColumns: ColumnType<IStaffsPayments>[] = [
   {
@@ -17,7 +12,6 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     dataIndex: 'index',
     title: '#',
     align: 'center',
-    width: 64,
     render: (value, record, index) => index + 1,
   },
   {
@@ -25,57 +19,36 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     dataIndex: 'name',
     title: 'Xodim',
     align: 'center',
-    width: 440,
-    render: (value, record) => {
-      const phone = record?.employee?.phone || '';
-      const phoneText = !phone || phone.startsWith('+') ? phone : `+${phone}`;
-
-      return (
-        <div className={cn('staff-payment__person')}>
-          <ClipText text={record?.employee?.fullname}>
-            <p className={`${cn('staff-payment__name')} cell-ellipsis`}>{record?.employee?.fullname}</p>
-          </ClipText>
-          {phoneText ? <p className={cn('staff-payment__phone')}>{phoneText}</p> : null}
-        </div>
-      );
-    },
+    render: (value, record) => (
+      <div>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.employee?.fullname}</p>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.employee?.phone}</p>
+      </div>
+    ),
   },
   {
-    key: 'amount',
+    key: 'description',
     dataIndex: 'description',
     title: 'To\'lov qiymati',
     align: 'center',
-    width: 300,
+    width: 200,
     render: (value, record) => (
-      <span className="currency-row">
+      <span>
         {record?.methods?.map(method => (
-          <span className="currency-item" key={method?.currency?.id}>{priceFormat(method?.amount)}{currencyTagUi(method?.currency?.symbol)}</span>
+          <span key={method?.currency?.id}>{priceFormat(method?.amount)}{currencyTagUi(method?.currency?.symbol)}</span>
         ))}
       </span>
     ),
   },
   {
-    key: 'note',
+    key: 'description',
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    width: 280,
-    render: (value, record) => {
-      const description = record?.description || '';
-
-      if (!description) {
-        return null;
-      }
-
-      return (
-        <ClipText text={description}>
-          <span className={cn('staff-payment__note')}>{description}</span>
-        </ClipText>
-      );
-    },
+    render: (value, record) => <span>{record?.description}</span>,
   },
   {
-    key: 'date',
+    key: 'description',
     dataIndex: 'description',
     title: 'To\'lov vaqti',
     align: 'center',
@@ -83,11 +56,10 @@ export const clientsColumns: ColumnType<IStaffsPayments>[] = [
     render: (value, record) => <span>{getFullDateFormat(record?.createdAt)}</span>,
   },
   {
-    key: 'actions',
+    key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
-    width: 120,
     render: (value, record) => <Action staffsPayment={record} />,
   },
 ];

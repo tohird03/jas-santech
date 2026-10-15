@@ -23,7 +23,6 @@
   }
 
   &__menu {
-    overflow-x: hidden;
     overflow-y: auto;
   }
 
@@ -39,7 +38,6 @@
 
 .site-layout {
   height: 100vh;
-  overflow: hidden;
   margin-left: 0;
 
   @media screen and (min-width: 1201px) {
@@ -75,8 +73,6 @@
 
 .menu-count-label__text {
   min-width: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
 }
 
 .ant-layout-sider:not(.ant-layout-sider-collapsed) .menu-count--icon .ant-badge-count {

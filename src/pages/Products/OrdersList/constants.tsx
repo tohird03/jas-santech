@@ -1,17 +1,16 @@
 import React from 'react';
-import {Image, Tag} from 'antd';
-import {ColumnType} from 'antd/es/table';
-import {IOrder, IOrderProducts, IOrderStatus, ITotalOrderPaymentCalc} from '@/api/order/types';
-import {ClipText} from '@/components/ClipText';
-import {currencyTagUi} from '@/constants/payment';
-import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {imageUrlWithBase} from '@/utils/image';
-import {priceFormat} from '@/utils/priceFormat';
-import {Action} from './Action';
-import {OrderDescUpdate} from './OrderDescUpdate/OrderDescUpdate';
-import {ActionShowProduct} from './OrderShowInfoModal/Action';
-import {PaymentStatus} from './PaymentStatus';
+import { ColumnType } from 'antd/es/table';
+import { Action } from './Action';
+import { IOrder, IOrderProducts, IOrderStatus, ITotalOrderPaymentCalc } from '@/api/order/types';
+import { Image, Tag } from 'antd';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { priceFormat } from '@/utils/priceFormat';
+import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
+import { PaymentStatus } from './PaymentStatus';
+import { currencyTagUi } from '@/constants/payment';
+import { imageUrlWithBase } from '@/utils/image';
+import { OrderDescUpdate } from './OrderDescUpdate/OrderDescUpdate';
+import { ActionShowProduct } from './OrderShowInfoModal/Action';
 
 export const ordersColumns: ColumnType<IOrder>[] = [
   {
@@ -28,7 +27,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Mijoz',
     align: 'center',
     width: '300px',
-    render: (value, record) => <ClientNameLink client={record?.client} clip />,
+    render: (value, record) => <ClientNameLink client={record?.client} />,
   },
   {
     key: 'status',
@@ -58,19 +57,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Sotuvchi',
     align: 'center',
     width: '100px',
-    render: (value, record) => (
-      <ClipText text={record?.staff?.fullname}>
-        <div className="clip-box">
-          <p className="cell-ellipsis" style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
-        </div>
-      </ClipText>
-    ),
+    render: (value, record) => <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>,
   },
   {
     key: 'totalPrice',
     dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
+    width: '150px',
     render: (value, record) => {
       const data = record?.totalPrices;
 
@@ -79,14 +73,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <div className="orders-money">
+        <>
           {data.map(price => (
-            <span className="orders-money__line" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
-        </div>
+        </>
       );
     },
   },
@@ -95,6 +89,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
+    width: '120px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -103,14 +98,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <div className="orders-money">
+        <>
           {data.map(price => (
-            <span className="orders-money__line" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
-        </div>
+        </>
       );
     },
   },
@@ -119,6 +114,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
+    width: '130px',
     render: (value, record) => {
       const data = record?.debtByCurrency;
 
@@ -127,14 +123,14 @@ export const ordersColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <div className="orders-money">
+        <>
           {data.map(price => (
-            <span className="orders-money__line" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.amount)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
-        </div>
+        </>
       );
     },
   },
@@ -144,16 +140,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
     title: 'Sotilgan vaqti',
     align: 'center',
     width: '150px',
-    render: (value, record) => {
-      const [day, time] = (getFullDateFormat(record?.date) || '').split(' ');
-
-      return (
-        <span className="orders-date">
-          <span>{day}</span>
-          <span>{time}</span>
-        </span>
-      );
-    },
+    render: (value, record) => getFullDateFormat(record?.date),
   },
   {
     key: 'description',
@@ -166,7 +153,7 @@ export const ordersColumns: ColumnType<IOrder>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     width: '150px',
     render: (value, record) => <Action orders={record} />,
@@ -174,9 +161,9 @@ export const ordersColumns: ColumnType<IOrder>[] = [
 ];
 
 export const PRICE_TYPE_OPTIONS = [
-  {label: 'Sotib olingan narx', value: 'cost'},
-  {label: 'Ulgurji narx', value: 'wholesale'},
-  {label: 'Sotish narxi', value: 'selling'},
+  { label: 'Sotib olingan narx', value: 'cost' },
+  { label: 'Ulgurji narx', value: 'wholesale' },
+  { label: 'Sotish narxi', value: 'selling' },
 ];
 
 export const OrderStatus: Record<IOrderStatus, string> = {
@@ -204,8 +191,8 @@ export const ordersInfoColumns: ColumnType<IOrder>[] = [
     title: 'Mijoz',
     align: 'center',
     render: (value, record) => (
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
-        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.client?.fullname}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.client?.fullname}</p>
         <i>+{record?.client?.phone}</i>
       </div>
     ),
@@ -216,8 +203,8 @@ export const ordersInfoColumns: ColumnType<IOrder>[] = [
     title: 'Sotuvchi',
     align: 'center',
     render: (value, record) => (
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0'}}>
-        <p style={{margin: 0, fontWeight: 'bold'}}>{record?.staff?.fullname}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 0' }}>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>
         <i>+{record?.staff?.phone}</i>
       </div>
     ),
@@ -252,6 +239,7 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
+    width: '150px',
     render: (value, record) => {
       const data = record?.totalPrices;
 
@@ -260,14 +248,14 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <div className="orders-money">
+        <>
           {data.map(price => (
-            <span className="orders-money__line" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
-        </div>
+        </>
       );
     },
   },
@@ -276,6 +264,7 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
+    width: '120px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -284,14 +273,14 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       }
 
       return (
-        <div className="orders-money">
+        <>
           {data.map(price => (
-            <span className="orders-money__line" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
-        </div>
+        </>
       );
     },
   },
@@ -300,6 +289,7 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
     dataIndex: 'debt',
     title: 'Qarzga',
     align: 'center',
+    width: '130px',
     render: (value, record) => {
       const data = record?.debtByCurrency;
 
@@ -310,10 +300,10 @@ export const ordersInfoPaymentColumns: ColumnType<IOrder>[] = [
       return (
         <>
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.amount)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
         </>
       );
@@ -350,13 +340,7 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'Mahsulot nomi',
     align: 'center',
     width: '150px',
-    render: (value, record) => (
-      <ClipText text={record?.product?.name}>
-        <div className="clip-box">
-          <span className="cell-ellipsis">{record?.product?.name}</span>
-        </div>
-      </ClipText>
-    ),
+    render: (value, record) => record?.product?.name,
   },
   {
     key: 'count',
@@ -384,6 +368,7 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     dataIndex: 'total',
     title: 'Jami narxi',
     align: 'center',
+    width: '150px',
     render: (value, record) => (
       <span>{priceFormat(record?.prices?.selling?.totalPrice)}{currencyTagUi(record?.prices?.selling?.currency?.symbol)}</span>
     ),
@@ -394,13 +379,7 @@ export const ordersInfoProductsColumns: ColumnType<IOrderProducts>[] = [
     title: 'O\'ram haqida ma\'lumot',
     align: 'center',
     width: 300,
-    render: (value, record) => (
-      <ClipText text={record?.product?.description}>
-        <div className="clip-box">
-          <span className="cell-ellipsis">{record?.product?.description}</span>
-        </div>
-      </ClipText>
-    ),
+    render: (value, record) => <span>{record?.product?.description}</span>,
   },
   {
     key: 'action',
@@ -419,6 +398,7 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
+    width: '150px',
     render: (value, record) => {
       const data = record?.totalPrices;
 
@@ -429,10 +409,10 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
       return (
         <div style={{textAlign: 'end'}}>
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
         </div>
       );
@@ -443,6 +423,7 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     dataIndex: 'totalPay',
     title: 'Jami to\'lov',
     align: 'center',
+    width: '150px',
     render: (value, record) => {
       const data = record?.totalPayments;
 
@@ -453,10 +434,10 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
       return (
         <div style={{textAlign: 'end'}}>
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
         </div>
       );
@@ -467,6 +448,7 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
     dataIndex: 'debt',
     title: 'Jami - Qarzga',
     align: 'center',
+    width: '150px',
     render: (value, record) => {
       const data = record?.totalDebts;
 
@@ -477,10 +459,10 @@ export const ordersTotalCalc: ColumnType<ITotalOrderPaymentCalc>[] = [
       return (
         <div style={{textAlign: 'end'}}>
           {data.map(price => (
-            <span className="currency-item" key={price?.currency?.id}>
+            <div key={price?.currency?.id}>
               {priceFormat(price?.total)}
               {currencyTagUi(price?.currency?.symbol)}
-            </span>
+            </div>
           ))}
         </div>
       );
@@ -494,7 +476,7 @@ export const FilterOrderStatusOptions = [
     label: (
       <Tag
         color={OrderStatusColor[IOrderStatus.ACCEPTED]}
-        style={{width: '100%', fontSize: '14px'}}
+        style={{ width: '100%', fontSize: '14px' }}
       >
         {OrderStatus[IOrderStatus.ACCEPTED]}
       </Tag>
@@ -505,7 +487,7 @@ export const FilterOrderStatusOptions = [
     label: (
       <Tag
         color={OrderStatusColor[IOrderStatus.NOTACCEPTED]}
-        style={{width: '100%', fontSize: '14px'}}
+        style={{ width: '100%', fontSize: '14px' }}
       >
         {OrderStatus[IOrderStatus.NOTACCEPTED]}
       </Tag>

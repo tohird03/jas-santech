@@ -1,14 +1,14 @@
-import {ICurrency} from '../auth/types';
-import {IClientsInfo, ISeller} from '../clients';
-import {IOrder} from '../order/types';
-import {IPagination, IPaymentType} from '../types';
+import { ICurrency } from "../auth/types";
+import { IClientsInfo, ISeller } from "../clients"
+import { IOrder } from "../order/types"
+import { IPagination, IPaymentType } from "../types"
 
 export interface IClientsPayments extends IPaymentType {
-  id: string;
-  createdAt: string;
-  order: IOrder;
-  client: IClientsInfo;
-  staff: ISeller;
+  id: string,
+  createdAt: string,
+  order: IOrder,
+  client: IClientsInfo,
+  staff: ISeller,
   description: string;
   paymentMethods: IPaymentMethodsGet[];
   totalsByCurrency: IClientTotalPayments[];
@@ -20,7 +20,7 @@ export interface IClientTotalPayments {
 }
 
 export interface IPaymentMethodsGet {
-  type: 'cash' | 'balance';
+  type: 'cash' | 'balance',
   currency: ICurrency;
   amount: number;
 }
@@ -34,15 +34,15 @@ export interface IGetClientsPaymentsParams extends IPagination {
 }
 
 export interface IAddEditPaymentParams {
-  id?: string;
-  clientId: string;
+  id?: string,
+  clientId: string,
   description: string;
   paymentMethods: IPaymentMethods[];
   changeMethods: IPaymentMethods[];
 }
 
 export interface IPaymentMethods {
-  type: string;
+  type: string,
   currencyId: string;
   amount: number;
 }

@@ -1,7 +1,9 @@
-import {makeAutoObservable} from 'mobx';
-import {warehouseApi} from '@/api/warehouse';
-import {IProductWarehouse} from '@/api/warehouse/types';
-import {addNotification} from '@/utils';
+import { makeAutoObservable } from 'mobx';
+import { addNotification } from '@/utils';
+import { authApi } from '@/api';
+import { ICurrency } from '@/api/auth/types';
+import { warehouseApi } from '@/api/warehouse';
+import { IProductWarehouse } from '@/api/warehouse/types';
 
 class Warehouse {
   isOpenAddEditCurrency = false;

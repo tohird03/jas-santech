@@ -1,12 +1,12 @@
 import React from 'react';
 import {ColumnType} from 'antd/es/table';
-import {IClientsPayments} from '@/api/payment/types';
-import {ClipText} from '@/components/ClipText';
-import {currencyTagUi} from '@/constants/payment';
-import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {priceFormat} from '@/utils/priceFormat';
+import {IClientsInfo} from '@/api/clients';
 import {Action} from './Action';
+import { priceFormat } from '@/utils/priceFormat';
+import { IClientsPayments } from '@/api/payment/types';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
+import { currencyTagUi } from '@/constants/payment';
 
 export const paymentsColumns: ColumnType<IClientsPayments>[] = [
   {
@@ -21,7 +21,7 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'client',
     title: 'Mijoz',
     align: 'center',
-    render: (value, record) => <ClientNameLink client={record?.client} plain clip />,
+    render: (value, record) => <ClientNameLink client={record?.client} />,
   },
   {
     key: 'cash',
@@ -29,14 +29,12 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     title: 'Jami to\'lov',
     align: 'center',
     render: (value, record) => (
-      <span className="currency-row">
-        {record?.totalsByCurrency?.map(payment => (
-          <span className="currency-item" key={payment?.currency?.id}>
-            {priceFormat(payment?.total)}
-            {currencyTagUi(payment?.currency?.symbol)}
-          </span>
-        ))}
-      </span>
+      record?.totalsByCurrency?.map(payment => (
+        <div key={payment?.currency?.id}>
+          {priceFormat(payment?.total)}
+          {currencyTagUi(payment?.currency?.symbol)}
+        </div>
+      ))
     ),
   },
   {
@@ -44,19 +42,7 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'description',
     title: 'Ma\'lumot',
     align: 'center',
-    render: (value, record) => {
-      const description = record?.description || '';
-
-      if (!description) {
-        return null;
-      }
-
-      return (
-        <ClipText text={description}>
-          <span className="cell-ellipsis">{description}</span>
-        </ClipText>
-      );
-    },
+    render: (value, record) => <span>{record?.description}</span>,
   },
   {
     key: 'createdAt',
@@ -70,24 +56,12 @@ export const paymentsColumns: ColumnType<IClientsPayments>[] = [
     dataIndex: 'seller',
     title: 'Sotuvchi',
     align: 'center',
-    render: (value, record) => {
-      const fullname = record?.staff?.fullname || '';
-
-      if (!fullname) {
-        return null;
-      }
-
-      return (
-        <ClipText text={fullname}>
-          <span className="cell-ellipsis" style={{fontWeight: 'bold'}}>{fullname}</span>
-        </ClipText>
-      );
-    },
+    render: (value, record) => <p style={{ margin: 0, fontWeight: 'bold' }}>{record?.staff?.fullname}</p>,
   },
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     width: 200,
     render: (value, record) => <Action clientPayment={record} />,

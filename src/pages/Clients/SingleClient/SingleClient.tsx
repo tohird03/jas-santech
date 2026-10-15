@@ -1,18 +1,18 @@
-import React, {useEffect} from 'react';
-import {useParams} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {Segmented, Typography} from 'antd';
-import {SegmentedValue} from 'antd/es/segmented';
-import classNames from 'classnames';
-import {currencyTagUi} from '@/constants/payment';
-import {ISingleClientTabs, singleClientStore} from '@/stores/clients/single-client';
-import {SegmentComponents, singleClientTabOptions} from './constants';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
+import { Segmented, Typography } from 'antd';
+import { ISingleClientTabs, singleClientStore } from '@/stores/clients/single-client';
+import { SegmentedValue } from 'antd/es/segmented';
+import { SegmentComponents, singleClientTabOptions } from './constants';
+import { useParams } from 'react-router-dom';
 import styles from './single-client.scss';
+import classNames from 'classnames';
+import { currencyTagUi } from '@/constants/payment';
 
 const cn = classNames.bind(styles);
 
 export const SingleClient = observer(() => {
-  const {clientId} = useParams();
+  const { clientId } = useParams();
 
   const handleChangeProductTab = (value: SegmentedValue) => {
     singleClientStore.setActiveTabs(value as ISingleClientTabs);
@@ -33,10 +33,10 @@ export const SingleClient = observer(() => {
   }, []);
 
   return (
-    <main className="single-client-page">
+    <main>
       <div className={cn('single-client__head')}>
         <Segmented
-          value={singleClientStore.activeTabs}
+          defaultValue={ISingleClientTabs.ORDER}
           onChange={handleChangeProductTab}
           options={singleClientTabOptions}
           className={cn('single-client__segment')}

@@ -1,7 +1,7 @@
 import React from 'react';
-import {MenuProps} from 'antd';
-import {IStaff} from '@/stores/profile/types';
-import {IMenuItems} from './types';
+import { MenuProps } from 'antd';
+import { IMenuItems } from './types';
+import { IStaff } from '@/stores/profile/types';
 
 export type MenuItem = Required<MenuProps>['items'][number];
 

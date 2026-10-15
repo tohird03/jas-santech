@@ -190,10 +190,7 @@ export const Reminders = () => {
           client={{
             id: record.client?.id || record.clientId,
             fullname: record.client?.fullname || '',
-            phone: record.client?.phone,
           }}
-          plain
-          clip
         />
       ),
     },

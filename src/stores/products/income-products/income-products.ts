@@ -1,7 +1,8 @@
-import {makeAutoObservable} from 'mobx';
-import {incomeProductsApi} from '@/api/income-products';
-import {IGetIncomeOrdersParams, IIncomeOrder, IIncomeOrderPayment} from '@/api/income-products/types';
-import {addNotification} from '@/utils';
+import { makeAutoObservable } from 'mobx';
+import { addNotification } from '@/utils';
+import { IAddIncomeOrderProducts, IGetIncomeOrdersParams, IIncomeOrder, IIncomeOrderPayment } from '@/api/income-products/types';
+import { incomeProductsApi } from '@/api/income-products';
+import { IOrderPayment } from '../orders-list/types';
 
 class IncomeProductsStore {
   #today = new Date();

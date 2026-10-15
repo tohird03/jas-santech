@@ -1,13 +1,13 @@
-import {ICurrency} from '../auth/types';
-import {IOrder} from '../order/types';
-import {ISupplierInfo} from '../supplier/types';
-import {IPagination, IPaymentType} from '../types';
+import { ICurrency } from "../auth/types";
+import { IOrder } from "../order/types"
+import { ISupplierInfo } from "../supplier/types";
+import { IPagination, IPaymentType } from "../types"
 
 export interface ISupplierPayments extends IPaymentType {
-  id: string;
-  createdAt: string;
-  order: IOrder;
-  supplier: ISupplierInfo;
+  id: string,
+  createdAt: string,
+  order: IOrder,
+  supplier: ISupplierInfo,
   totalsByCurrency: {
     total: number;
     currency: ICurrency;
@@ -22,15 +22,15 @@ export interface IIncomeGetClientsPaymentsParams extends IPagination {
 }
 
 export interface IAddEditPaymentParams {
-  id?: string;
-  supplierId: string;
+  id?: string,
+  supplierId: string,
   description: string;
   paymentMethods: IPaymentMethods[];
   changeMethods: IPaymentMethods[];
 }
 
 export interface IPaymentMethods {
-  type: string;
+  type: string,
   currencyId: string;
   amount: number;
 }

@@ -4,7 +4,6 @@ import {Navigate, useRoutes} from 'react-router-dom';
 import {Loading} from '@/components';
 import {ROUTES} from '@/constants';
 import {Layout} from '@/modules/Layout';
-import {ClientStatistic} from '@/pages/Clients';
 import {
   ChatPage,
   ClientsInfo,
@@ -28,6 +27,7 @@ import {
 } from './lazy';
 import {ProtectedRoutes} from './ProtectedRoutes';
 import {PublicRoutes} from './PublicRoutes';
+import { ClientStatistic } from '@/pages/Clients';
 
 type Props = {
   isAuth: boolean | null;

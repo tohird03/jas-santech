@@ -1,38 +1,8 @@
 import React from 'react';
 import {ColumnsType} from 'antd/es/table';
-import {IClientStatistic, IReportAmount} from '@/api/clients';
-import {CurrencyAmountZero, currencyTagUi} from '@/constants/payment';
-import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
-import {priceFormat} from '@/utils/priceFormat';
-
-const headerCell = (className: string) => () => ({className});
-
-const sellingHead = headerCell('report-head-selling');
-const paymentHead = headerCell('report-head-payment');
-const returnHead = headerCell('report-head-return');
-
-const Amounts = ({rows}: {rows?: IReportAmount[]}) => {
-  const filled = (rows || []).filter((row) => Number(row?.amount));
-
-  if (!filled.length) {
-    return <CurrencyAmountZero />;
-  }
-
-  return (
-    <span className="currency-row">
-      {filled.map((row) => {
-        const symbol = row.currency?.symbol === 'USD' ? 'USD' : 'UZS';
-
-        return (
-          <span className="currency-item" key={`${row.currency?.id || symbol}-${row.amount}`}>
-            {priceFormat(row.amount)}
-            {currencyTagUi(symbol)}
-          </span>
-        );
-      })}
-    </span>
-  );
-};
+import { IClientStatistic } from '@/api/clients';
+import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
+import { priceFormat } from '@/utils/priceFormat';
 
 export const staffsWorkingTimeReportsColumns: ColumnsType<IClientStatistic> = [
   {
@@ -40,122 +10,240 @@ export const staffsWorkingTimeReportsColumns: ColumnsType<IClientStatistic> = [
     dataIndex: 'index',
     title: '#',
     align: 'center',
-    width: 64,
+    width: 20,
     render: (value, record, index) => index + 1,
   },
   {
     key: 'name',
-    dataIndex: 'fullname',
+    dataIndex: 'name',
     title: 'Mijoz',
     align: 'center',
-    width: 320,
-    render: (value, record) => <ClientNameLink client={record} plain centered clip />,
+    width: 50,
+    render: (value, record) => <ClientNameLink client={record} />,
   },
   {
-    key: 'selling',
+    key: 'order',
     title: 'Sotuv',
     align: 'center',
-    onHeaderCell: sellingHead,
+    width: '100px',
+    onHeaderCell: () => ({
+      style: {
+        backgroundColor: '#BFF5C0',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+    }),
     children: [
+      {
+        title: 'Jami',
+        key: 'totalOrder',
+        dataIndex: 'totalOrder',
+        width: 50,
+        className: 'client__order',
+        render: (value, record) => priceFormat(record?.calc?.selling?.totalPrice || 0),
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BFF5C0',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
       {
         title: 'Soni',
         key: 'sellingCount',
-        width: 80,
-        align: 'center',
-        onHeaderCell: sellingHead,
-        render: (value, record) => record?.calc?.selling?.count || 0,
-      },
-      {
-        title: 'Summa',
-        key: 'sellingSum',
-        width: 180,
-        align: 'right',
-        onHeaderCell: sellingHead,
-        render: (value, record) => <Amounts rows={record?.calc?.selling?.totalPriceByCurrency} />,
+        dataIndex: 'sellingCount',
+        width: 50,
+        className: 'client__order',
+        render: (value, record) => record?.calc?.selling?.count,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BFF5C0',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
       },
     ],
   },
   {
-    key: 'sellingPayment',
-    title: 'Sotuv to\'lovi',
+    key: 'order',
+    title: 'To\'lov',
     align: 'center',
-    onHeaderCell: paymentHead,
+    width: '100px',
+    onHeaderCell: () => ({
+      style: {
+        backgroundColor: '#BEE6FF',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+    }),
     children: [
       {
-        title: 'Soni',
-        key: 'sellingPaymentCount',
-        width: 80,
-        align: 'center',
-        onHeaderCell: paymentHead,
-        render: (value, record) => record?.calc?.selling?.paymentCount || 0,
+        title: 'Jami',
+        key: 'totalOrder',
+        dataIndex: 'totalOrder',
+        width: 50,
+        className: 'client__payment',
+        render: (value, record) => record?.calc?.selling?.payment?.total,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
       },
       {
-        title: 'Summa',
-        key: 'sellingPaymentSum',
-        width: 180,
-        align: 'right',
-        onHeaderCell: paymentHead,
-        render: (value, record) => <Amounts rows={record?.calc?.selling?.paymentByCurrency} />,
+        title: 'Soni',
+        key: 'sellingCount',
+        dataIndex: 'sellingCount',
+        width: 50,
+        className: 'client__payment',
+        render: (value, record) => record?.calc?.selling?.payment?.count,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Naqd',
+        key: 'sellingCount',
+        dataIndex: 'sellingCount',
+        width: 50,
+        className: 'client__payment',
+        render: (value, record) => record?.calc?.selling?.payment?.totalCash,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Bank kartasi',
+        key: 'sellingCount',
+        dataIndex: 'sellingCount',
+        width: 50,
+        className: 'client__payment',
+        render: (value, record) => record?.calc?.selling?.payment?.totalCard,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'O\'tkazma',
+        key: 'sellingCount',
+        dataIndex: 'sellingCount',
+        width: 50,
+        className: 'client__payment',
+        render: (value, record) => record?.calc?.selling?.payment?.totalTransfer,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Boshqa usullar',
+        key: 'sellingCount',
+        dataIndex: 'sellingCount',
+        width: 50,
+        className: 'client__payment',
+        render: (value, record) => record?.calc?.selling?.payment?.totalOther,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#BEE6FF',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
       },
     ],
   },
   {
-    key: 'clientPayment',
-    title: 'Alohida to\'lov',
-    align: 'center',
-    onHeaderCell: paymentHead,
-    children: [
-      {
-        title: 'Soni',
-        key: 'clientPaymentCount',
-        width: 80,
-        align: 'center',
-        onHeaderCell: paymentHead,
-        render: (value, record) => record?.calc?.clientPayment?.count || 0,
-      },
-      {
-        title: 'Summa',
-        key: 'clientPaymentSum',
-        width: 180,
-        align: 'right',
-        onHeaderCell: paymentHead,
-        render: (value, record) => <Amounts rows={record?.calc?.clientPayment?.totalByCurrency} />,
-      },
-    ],
-  },
-  {
-    key: 'returning',
+    key: 'order',
     title: 'Qaytaruv',
     align: 'center',
-    onHeaderCell: returnHead,
+    width: '100px',
+    onHeaderCell: () => ({
+      style: {
+        backgroundColor: '#FFBDBD',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+    }),
     children: [
       {
-        title: 'Soni',
-        key: 'returningCount',
-        width: 80,
-        align: 'center',
-        onHeaderCell: returnHead,
-        render: (value, record) => record?.calc?.returning?.count || 0,
+        title: 'Jami',
+        key: 'totalReturning',
+        dataIndex: 'totalReturning',
+        width: 50,
+        className: 'client__returning',
+        render: (value, record) => record?.calc?.returning?.totalPrice,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#FFBDBD',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
       },
       {
-        title: 'To\'lov',
-        key: 'returningSum',
-        width: 180,
-        align: 'right',
-        onHeaderCell: returnHead,
-        render: (value, record) => <Amounts rows={record?.calc?.returning?.paymentByCurrency} />,
+        title: 'Soni',
+        key: 'totalCount',
+        dataIndex: 'totalCount',
+        width: 50,
+        className: 'client__returning',
+        render: (value, record) => record?.calc?.returning?.count,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#FFBDBD',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Mijoz hisobidan',
+        key: 'totalFromBalance',
+        dataIndex: 'totalFromBalance',
+        width: 50,
+        className: 'client__returning',
+        render: (value, record) => record?.calc?.returning?.payment?.totalFromBalance,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#FFBDBD',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
+      },
+      {
+        title: 'Naqd',
+        key: 'totalCash',
+        dataIndex: 'totalCash',
+        width: 50,
+        className: 'client__returning',
+        render: (value, record) => record?.calc?.returning?.payment?.totalCash,
+        onHeaderCell: () => ({
+          style: {
+            backgroundColor: '#FFBDBD',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }),
       },
     ],
-  },
-  {
-    key: 'debt',
-    title: 'Qarz',
-    width: 180,
-    align: 'right',
-    onHeaderCell: () => ({
-      className: 'report-head-debt',
-      rowSpan: 2,
-    }),
-    render: (value, record) => <Amounts rows={record?.calc?.debtByCurrency} />,
   },
 ];

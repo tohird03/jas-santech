@@ -1,4 +1,4 @@
-import {TStage} from './types';
+import { TStage } from './types';
 export const stage = process.env.REACT_APP_STAGE || 'dev';
 
 export enum Endpoints {
@@ -15,7 +15,7 @@ export enum Endpoints {
   // CLIENTS
   ClientsMany = '/client/many',
   ClientOne = '/client/one',
-  ClientsStatistic = '/statistics/client-report',
+  ClientsStatistic = '/client/many/report',
 
   // CLIENTS PAYMENTS
   ClientsPaymentsMany = '/client-payment/many',
@@ -95,27 +95,27 @@ export enum Endpoints {
   Supplier = '/user/supplier',
 
   // PRODUCTS
-  Products = '/product',
-  ProductsIncomeOrder = '/incomingOrder',
-  ProductsIncomeOrderProduct = '/incomingProduct',
-  ProductsOrder = '/Order',
-  ProductsOrderStatistic = '/Order/statistica',
-  ProductsOrderProduct = '/orderProduct',
-  ProductsOrderExel = '/Order/upload',
-  ProductsIncomeOrderExel = '/incomingOrder/upload',
-  ProductsReturnedOrderExel = '/returned-order/upload',
+  products = '/product',
+  productsIncomeOrder = '/incomingOrder',
+  productsIncomeOrderProduct = '/incomingProduct',
+  productsOrder = '/Order',
+  productsOrderStatistic = '/Order/statistica',
+  productsOrderProduct = '/orderProduct',
+  productsOrderExel = '/Order/upload',
+  productsIncomeOrderExel = '/incomingOrder/upload',
+  productsReturnedOrderExel = '/returned-order/upload',
 
   // PAYMENT
-  Payment = '/client-payment/many',
-  PaymentUpload = '/payment/upload',
-  IncomePayment = '/incomingOrderPayment',
+  payment = '/client-payment/many',
+  paymentUpload = '/payment/upload',
+  incomePayment = '/incomingOrderPayment',
 
   // ROLES
-  Role = '/role',
+  role = '/role',
 
   // RETURNED ORDER
-  ReturnedOrder = '/returned-order',
-  ReturnedProduct = '/returned-product',
+  returnedOrder = '/returned-order',
+  returnedProduct = '/returned-product',
 
   // CHAT
   ChatMany = '/chat/many',

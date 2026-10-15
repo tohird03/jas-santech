@@ -1,7 +1,7 @@
-import {AxiosResponse} from 'axios';
-import {Endpoints, umsStages} from '../endpoints';
-import {INetworkConfig, Instance} from '../instance';
-import {IResponse} from '../types';
+import { AxiosResponse } from 'axios';
+import { Endpoints, umsStages } from '../endpoints';
+import { INetworkConfig, Instance } from '../instance';
+import { IResponse } from '../types';
 import {
   IAddProductsToReturnedOrder,
   IAddReturnedOrders,
@@ -22,22 +22,22 @@ class ReturnedOrderApi extends Instance {
   }
 
   getReturnedOrders = (params: IGetReturnedOrdersParams): Promise<IResponse<IReturnedOrder[]>> =>
-    this.get(Endpoints.ReturnedOrderMany, {params});
+    this.get(Endpoints.ReturnedOrderMany, { params });
 
-  addReturnedOrder = (params: IAddReturnedOrders): Promise<{data: IReturnedOrder}> =>
+  addReturnedOrder = (params: IAddReturnedOrders): Promise<{ data: IReturnedOrder }> =>
     this.resPost(Endpoints.ReturnedOrderOne, params);
 
-  getSingleReturnedOrder = (orderId: string): Promise<{data: IReturnedOrder}> =>
-    this.get(Endpoints.ReturnedOrderOne, {params: {id: orderId}});
+  getSingleReturnedOrder = (orderId: string): Promise<{ data: IReturnedOrder }> =>
+    this.get(Endpoints.ReturnedOrderOne, { params: { id: orderId } });
 
   updateReturnedOrder = (params: IUpdateReturnedOrder): Promise<AxiosResponse> =>
-    this.patch(Endpoints.ReturnedOrderOne, params, {params: {id: params?.id}});
+    this.patch(Endpoints.ReturnedOrderOne, params, { params: { id: params?.id } });
 
   addProductToReturnedOrder = (params: IAddProductsToReturnedOrder): Promise<AxiosResponse> =>
     this.post(Endpoints.AddEditProductToReturning, params);
 
   updateProductFromReturnedOrder = (params: IUpdateProductFromReturnedOrders): Promise<AxiosResponse> =>
-    this.patch(Endpoints.AddEditProductToReturning, params, {params: {id: params?.id}});
+    this.patch(Endpoints.AddEditProductToReturning, params, { params: { id: params?.id } });
 
   getAllUploadReturnedOrderToExel = (params: IGetReturnedOrdersParams): Promise<any> =>
     this.get(`${Endpoints.ReturnedAllExcel}`, {
@@ -51,7 +51,7 @@ class ReturnedOrderApi extends Instance {
 
   getUploadReturnedOrderToExel = (returnedOrderId: string): Promise<any> =>
     this.get(Endpoints.ReturnedOneExcel, {
-      params: {id: returnedOrderId},
+      params: { id: returnedOrderId },
       responseType: 'arraybuffer',
       headers: {
         'Content-Type': 'application/json',
@@ -60,10 +60,10 @@ class ReturnedOrderApi extends Instance {
     });
 
   deleteReturnedOrder = (id: string): Promise<AxiosResponse> =>
-    this.delete(Endpoints.ReturnedOrderOne, {params: {id, method: 'hard'}});
+    this.delete(Endpoints.ReturnedOrderOne, { params: { id, method: 'hard' } });
 
   deleteProductFromReturnedOrder = (id: string): Promise<AxiosResponse> =>
-    this.delete(Endpoints.AddEditProductToReturning, {params: {id, method: 'hard'}});
+    this.delete(Endpoints.AddEditProductToReturning, { params: { id, method: 'hard' } });
 
 }
 

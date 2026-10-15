@@ -1,106 +1,37 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
-import {Button, DatePicker, DatePickerProps, Input, Select, Table, Tooltip, Typography} from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react';
+import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import { Button, DatePicker, DatePickerProps, Input, Pagination, Select, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
-import dayjs from 'dayjs';
-import {ordersApi} from '@/api/order';
-import {IOrderStatus, IOrderTotalPrice} from '@/api/order/types';
-import {staffsApi} from '@/api/staffs';
-import {DataTable} from '@/components/Datatable/datatable';
-import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
-import {currencyTagUi} from '@/constants/payment';
-import {AddEditModal as AddEditClientModal} from '@/pages/Clients/ClientsInfo/AddEditModal';
-import {clientsInfoStore} from '@/stores/clients';
-import {ordersStore, productsListStore} from '@/stores/products';
-import {addNotification} from '@/utils';
-import {dateFormat} from '@/utils/getDateFormat';
-import {getPaginationParams} from '@/utils/getPaginationParams';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {priceFormat} from '@/utils/priceFormat';
-import {AddEditModal} from '../ProductsList/AddEditModal';
-import {AddEditModal as AddEditOrder} from './AddEditModal';
-import {FilterOrderStatusOptions, ordersColumns} from './constants';
+import { DataTable } from '@/components/Datatable/datatable';
+import { getPaginationParams } from '@/utils/getPaginationParams';
+import { useMediaQuery } from '@/utils/mediaQuery';
+import { AddEditModal as AddEditOrder } from './AddEditModal';
 import styles from './orders.scss';
-import {OrderShowInfoModal} from './OrderShowInfoModal';
-import {PaymentModal} from './PaymentModal';
+import { FilterOrderStatusOptions, ordersColumns, ordersTotalCalc } from './constants';
+import { ordersStore, productsListStore } from '@/stores/products';
+import dayjs from 'dayjs';
+import { OrderShowInfoModal } from './OrderShowInfoModal';
+import { PaymentModal } from './PaymentModal';
+import { clientsInfoStore } from '@/stores/clients';
+import { useParams } from 'react-router-dom';
+import { ordersApi } from '@/api/order';
+import { addNotification } from '@/utils';
+import { AddEditModal as AddEditClientModal } from '@/pages/Clients/ClientsInfo/AddEditModal';
+import { AddEditModal } from '../ProductsList/AddEditModal';
+import { dateFormat } from '@/utils/getDateFormat';
+import { staffsApi } from '@/api/staffs';
+import { IOrderStatus } from '@/api/order/types';
 
 const cn = classNames.bind(styles);
 
-const orderColumnKeys = ['index', 'client', 'status', 'payment', 'seller', 'totalPrice', 'totalPay', 'debt', 'createdAt', 'description', 'action'];
-const orderColumnTitles = [
-  {key: 'index', title: '#'},
-  {key: 'client', title: 'Mijoz'},
-  {key: 'status', title: 'Sotuv holati'},
-  {key: 'payment', title: 'To\'lov holati'},
-  {key: 'seller', title: 'Sotuvchi'},
-  {key: 'totalPrice', title: 'Jami narxi'},
-  {key: 'totalPay', title: 'Jami to\'lov'},
-  {key: 'debt', title: 'Qarzga'},
-  {key: 'createdAt', title: 'Sotilgan vaqti'},
-  {key: 'description', title: 'Ma\'lumot'},
-  {key: 'action', title: 'Amallar'},
-];
-const orderDefaultWidths = {
-  index: 48,
-  client: 240,
-  status: 140,
-  payment: 116,
-  seller: 88,
-  totalPrice: 140,
-  totalPay: 140,
-  debt: 140,
-  createdAt: 124,
-  description: 180,
-  action: 136,
-};
-const orderMinWidths = {
-  index: 44,
-  client: 160,
-  status: 136,
-  payment: 112,
-  seller: 80,
-  totalPrice: 132,
-  totalPay: 132,
-  debt: 132,
-  createdAt: 118,
-  description: 120,
-  action: 128,
-};
-
-const orderMoney = (items?: IOrderTotalPrice[]) => {
-  if (!items?.length) {
-    return 0;
-  }
-
-  return (
-    <div className="orders-money">
-      {items.map((price) => (
-        <span className="orders-money__line" key={price?.currency?.id}>
-          {priceFormat(price?.total)}
-          {currencyTagUi(price?.currency?.symbol)}
-        </span>
-      ))}
-    </div>
-  );
-};
-
 export const Orders = observer(() => {
-  const {clientId} = useParams();
+  const { clientId } = useParams();
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const {boxRef, apply, picker} = useResizableColumns({
-    keys: orderColumnKeys,
-    defaults: orderDefaultWidths,
-    mins: orderMinWidths,
-    titles: orderColumnTitles,
-    flexKey: 'client',
-  });
-  const columns = apply(ordersColumns);
 
-  const {data: ordersData, isLoading: loading} = useQuery({
+  const { data: ordersData, isLoading: loading } = useQuery({
     queryKey: [
       'getOrders',
       ordersStore.pageNumber,
@@ -125,7 +56,7 @@ export const Orders = observer(() => {
       }),
   });
 
-  const {data: sellerData, isLoading: loadingSeller} = useQuery({
+  const { data: sellerData, isLoading: loadingSeller } = useQuery({
     queryKey: ['getSellers'],
     queryFn: () =>
       staffsApi.getStaffs({
@@ -219,17 +150,53 @@ export const Orders = observer(() => {
     ordersStore.reset();
   }, []);
 
-  const calc = ordersData?.data?.calcPage;
-  const summaryLabelKey = columns.some((column) => column.key === 'client')
-    ? 'client'
-    : String(columns[0]?.key ?? '');
-
   return (
-    <main ref={boxRef} className="orders-page">
+    <main>
       <div className={cn('orders__head')}>
-        <Typography.Title level={3} className={cn('orders__title')}>Sotuvlar ro&apos;yxati</Typography.Title>
-        <div className={cn('orders__actions')}>
-          {picker}
+        <Typography.Title level={3}>Sotuvlar ro&apos;yxati</Typography.Title>
+        <div className={cn('orders__filter')}>
+          <Input
+            placeholder="Sotuvlarni qidirish"
+            allowClear
+            onChange={handleSearch}
+            className={cn('orders__search')}
+          />
+          <DatePicker
+            className={cn('promotion__datePicker')}
+            onChange={handleStartDateChange}
+            placeholder={'Boshlanish sanasi'}
+            defaultValue={dayjs(ordersStore.startDate)}
+            allowClear={false}
+          />
+          <DatePicker
+            className={cn('promotion__datePicker')}
+            onChange={handleEndDateChange}
+            placeholder={'Tugash sanasi'}
+            defaultValue={dayjs(ordersStore.endDate)}
+            allowClear={false}
+          />
+          <Select
+            options={sellerOptions}
+            onChange={handleChangeSeller}
+            className={cn('orders__search')}
+            placeholder="Sotuvchilar"
+            loading={loadingSeller}
+            allowClear
+          />
+          <Select
+            options={FilterOrderStatusOptions}
+            onChange={handleChangeFilter}
+            className={cn('orders__search')}
+            placeholder="Sotuv holati"
+            allowClear
+          />
+          <Button
+            onClick={handleAddNewOrder}
+            type="primary"
+            icon={<PlusCircleOutlined />}
+          >
+            Yangi sotuv qo&apos;shish
+          </Button>
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -237,135 +204,39 @@ export const Orders = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Excelga yuklash
-            </Button>
-          </Tooltip>
-          <Tooltip placement="top" title="Yangi sotuv qo'shish">
-            <Button
-              onClick={handleAddNewOrder}
-              type="primary"
-              icon={<PlusCircleOutlined />}
-            >
-              Qo&apos;shish
+              Exelda Yuklash
             </Button>
           </Tooltip>
         </div>
       </div>
-      <div className={cn('orders__filter')}>
-        <Input
-          placeholder="Sotuvlarni qidirish"
-          allowClear
-          onChange={handleSearch}
-          className={cn('orders__search')}
-        />
-        <DatePicker
-          className={cn('promotion__datePicker')}
-          onChange={handleStartDateChange}
-          placeholder={'Boshlanish sanasi'}
-          defaultValue={dayjs(ordersStore.startDate)}
-          allowClear={false}
-        />
-        <DatePicker
-          className={cn('promotion__datePicker')}
-          onChange={handleEndDateChange}
-          placeholder={'Tugash sanasi'}
-          defaultValue={dayjs(ordersStore.endDate)}
-          allowClear={false}
-        />
-        <Select
-          options={sellerOptions}
-          onChange={handleChangeSeller}
-          placeholder="Sotuvchilar"
-          loading={loadingSeller}
-          allowClear
-        />
-        <Select
-          options={FilterOrderStatusOptions}
-          onChange={handleChangeFilter}
-          placeholder="Sotuv holati"
-          allowClear
+
+      <DataTable
+        columns={ordersColumns}
+        data={ordersData?.data?.data || []}
+        loading={loading}
+        isMobile={isMobile}
+        pagination={{
+          total: ordersData?.data?.totalCount,
+          current: ordersStore?.pageNumber,
+          pageSize: ordersStore?.pageSize,
+          showSizeChanger: true,
+          onChange: handlePageChange,
+          ...getPaginationParams(ordersData?.data?.totalCount),
+        }}
+      />
+
+      <div>
+        <DataTable
+          columns={ordersTotalCalc}
+          data={[ordersData?.data?.calcPage || {}]}
+          isMobile
+          loading={loading}
+          cardStyle={{ width: '500px' }}
+          className="total-calc"
+          loadingLength={1}
+          rowKey="1"
         />
       </div>
-
-      {isMobile ? (
-        <DataTable
-          className="orders-page__cards"
-          columns={columns}
-          data={ordersData?.data?.data || []}
-          loading={loading}
-          isMobile
-          summary={(
-            <div className={cn('orders__total')}>
-              <div className={cn('orders__total-item')}>
-                <span>Jami narxi</span>
-                <div>{orderMoney(calc?.totalPrices)}</div>
-              </div>
-              <div className={cn('orders__total-item')}>
-                <span>Jami to&apos;lov</span>
-                <div>{orderMoney(calc?.totalPayments)}</div>
-              </div>
-              <div className={cn('orders__total-item')}>
-                <span>Qarzga</span>
-                <div>{orderMoney(calc?.totalDebts)}</div>
-              </div>
-            </div>
-          )}
-          pagination={{
-            total: ordersData?.data?.totalCount,
-            current: ordersStore?.pageNumber,
-            pageSize: ordersStore?.pageSize,
-            showSizeChanger: true,
-            onChange: handlePageChange,
-            ...getPaginationParams(ordersData?.data?.totalCount),
-          }}
-        />
-      ) : (
-        <Table
-          {...resizableTableProps}
-          className="resizable-table orders-table"
-          bordered
-          rowKey="id"
-          columns={columns}
-          dataSource={ordersData?.data?.data || []}
-          loading={loading}
-          scroll={{y: 400}}
-          pagination={{
-            total: ordersData?.data?.totalCount,
-            current: ordersStore?.pageNumber,
-            pageSize: ordersStore?.pageSize,
-            showSizeChanger: true,
-            pageSizeOptions: [20, 50, 100, 500, 1000],
-            onChange: handlePageChange,
-            ...getPaginationParams(ordersData?.data?.totalCount),
-          }}
-          summary={() => (
-            <Table.Summary fixed>
-              <Table.Summary.Row>
-                {columns.map((column, index) => {
-                  const key = String(column.key);
-                  let content: React.ReactNode = null;
-
-                  if (key === summaryLabelKey) {
-                    content = 'Jami';
-                  } else if (key === 'totalPrice') {
-                    content = orderMoney(calc?.totalPrices);
-                  } else if (key === 'totalPay') {
-                    content = orderMoney(calc?.totalPayments);
-                  } else if (key === 'debt') {
-                    content = orderMoney(calc?.totalDebts);
-                  }
-
-                  return (
-                    <Table.Summary.Cell key={key} index={index}>
-                      <div style={{fontWeight: 'bold', textAlign: 'center'}}>{content}</div>
-                    </Table.Summary.Cell>
-                  );
-                })}
-              </Table.Summary.Row>
-            </Table.Summary>
-          )}
-        />
-      )}
 
       {ordersStore.isOpenAddEditNewOrderModal && <AddEditOrder />}
       {ordersStore.isOpenShowOrderModal && <OrderShowInfoModal />}

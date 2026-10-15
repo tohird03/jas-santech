@@ -18,7 +18,6 @@ export const ROUTES = {
   clientsChat: '/clients/chat',
   clientsReminder: '/clients/reminder',
 
-
   // SUPPLIER
   supplier: '/supplier',
   supplierInfo: '/supplier/supplier-info',

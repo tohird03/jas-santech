@@ -1,77 +1,30 @@
-.supplier-payments__head {
+.clients-payments__head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
   margin-bottom: 20px;
 }
-.supplier-payments__filter {
+.clients-payments__filter {
   display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: row;
   gap: 10px;
 }
-.supplier-payments__search {
-  width: 180px;
-}
-
-.supplier-payments__actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: nowrap;
-}
-
-.supplier-payments__total {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 12px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-}
-
-.supplier-payments__cards .cell-ellipsis,
-.supplier-payments__cards .name-clip,
-.supplier-payments__cards .currency-row,
-.supplier-payments__total .currency-row {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  text-align: right;
+.clients-payments__search {
+  width: 250px;
+  margin-right: 10px;
 }
 
 @media only screen and (max-width: 1100px) {
-  .supplier-payments__head {
+  .clients-payments__head {
     flex-direction: column;
-    align-items: stretch;
   }
-  .supplier-payments__filter {
+  .clients-payments__filter {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 10px !important;
+    gap: 15px !important;
     width: 100%;
   }
-  .supplier-payments__search {
+  .clients-payments__search {
     width: 100%;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .supplier-payments__filter .ant-picker,
-  .supplier-payments__actions,
-  .supplier-payments__actions .ant-btn {
-    width: 100%;
-  }
-  .supplier-payments__actions {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

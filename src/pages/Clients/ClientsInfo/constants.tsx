@@ -1,13 +1,13 @@
 import React from 'react';
-import {CheckCircleFilled, MinusOutlined} from '@ant-design/icons';
-import {Tooltip} from 'antd';
-import {ColumnType} from 'antd/es/table';
-import {IClientDebtFilter, IClientsInfo} from '@/api/clients';
-import {CurrencyAmountZero, currencyTagUi} from '@/constants/payment';
-import {ClientNameLink} from '@/pages/ActionComponents/ClientNameLink';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {formatPhoneNumber} from '@/utils/phoneFormat';
-import {Action} from './Action';
+import { ColumnType } from 'antd/es/table';
+import { IClientDebtFilter, IClientsInfo } from '@/api/clients';
+import { Action } from './Action';
+import { formatPhoneNumber } from '@/utils/phoneFormat';
+import { priceFormat } from '@/utils/priceFormat';
+import { ClientNameLink } from '@/pages/ActionComponents/ClientNameLink';
+import { getFullDateFormat } from '@/utils/getDateFormat';
+import { Tag } from 'antd';
+import { currencyTagUi } from '@/constants/payment';
 
 export const clientsColumns: ColumnType<IClientsInfo>[] = [
   {
@@ -22,7 +22,7 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
     dataIndex: 'name',
     title: 'Mijoz',
     align: 'center',
-    render: (value, record) => <ClientNameLink client={record} rowHover clip />,
+    render: (value, record) => <ClientNameLink client={record} />,
   },
   {
     key: 'phone',
@@ -38,30 +38,20 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
     align: 'center',
     render: (value, record) => (
       record?.debtByCurrency?.length > 0
-        ? (
-          <span className="currency-row">
-            {record?.debtByCurrency?.map(debt => (
-              <span className="currency-item" key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
-            ))}
-          </span>
-        ) : <CurrencyAmountZero />),
+        ? record?.debtByCurrency?.map(debt => (
+          <span key={debt?.currency?.id}>{debt?.amount}{currencyTagUi(debt?.currency?.symbol)}</span>
+        )) : 0),
   },
   {
     key: 'isActiveBot',
     dataIndex: 'isActiveBot',
     title: 'Telegram bot',
     align: 'center',
-    render: (value, record) => {
-      const active = Boolean(record?.telegram?.isActive);
-
-      return (
-        <Tooltip title={active ? 'Botda ro\'yxatdan o\'tgan' : 'Botda ro\'yxatdan o\'tmagan'}>
-          {active
-            ? <CheckCircleFilled className="bot-mark bot-mark--on" />
-            : <MinusOutlined className="bot-mark" />}
-        </Tooltip>
-      );
-    },
+    render: (value, record) => (
+      <Tag color={record?.telegram?.isActive ? '#228B22' : '#FF7F50'}>
+        {record?.telegram?.isActive ? 'Active' : 'NoActive'}
+      </Tag>
+    ),
   },
   {
     key: 'lastSale',
@@ -73,7 +63,7 @@ export const clientsColumns: ColumnType<IClientsInfo>[] = [
   {
     key: 'action',
     dataIndex: 'action',
-    title: 'Amallar',
+    title: 'Action',
     align: 'center',
     render: (value, record) => <Action client={record} />,
   },

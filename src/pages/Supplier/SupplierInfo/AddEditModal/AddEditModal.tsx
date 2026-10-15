@@ -2,11 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {observer} from 'mobx-react';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {Form, Input, InputNumber, Modal} from 'antd';
-import {supplierInfoApi} from '@/api/supplier/supplier';
-import {IAddEditSupplier} from '@/api/supplier/types';
-import {supplierInfoStore} from '@/stores/supplier';
 import {addNotification} from '@/utils';
 import {regexPhoneNumber} from '@/utils/phoneFormat';
+import { IAddEditClientInfo, clientsInfoApi } from '@/api/clients';
+import { supplierInfoStore } from '@/stores/supplier';
+import { supplierInfoApi } from '@/api/supplier/supplier';
+import { IAddEditSupplier } from '@/api/supplier/types';
 
 export const AddEditSupplierModal = observer(() => {
   const [form] = Form.useForm();

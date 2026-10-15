@@ -1,12 +1,12 @@
-import {makeAutoObservable, observable} from 'mobx';
-import {MenuProps} from 'antd';
-import {authApi} from '@/api';
-import {ILoginForm} from '@/api/auth/types';
-import {mainMenuList} from '@/modules/Layout/constants';
-import {generateAllMenuItems} from '@/modules/Layout/utils';
-import {addNotification} from '@/utils/addNotification';
-import {IStaff} from '../profile/types';
-import {TokenType} from './types';
+import { makeAutoObservable, observable } from 'mobx';
+import { MenuProps } from 'antd';
+import { authApi } from '@/api';
+import { ILoginForm } from '@/api/auth/types';
+import { addNotification } from '@/utils/addNotification';
+import { IStaff } from '../profile/types';
+import { TokenType } from './types';
+import { generateAllMenuItems } from '@/modules/Layout/utils';
+import { mainMenuList } from '@/modules/Layout/constants';
 
 class AuthStore {
   isAuth: boolean | null = false;

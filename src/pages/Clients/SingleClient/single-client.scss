@@ -3,62 +3,13 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
   }
   &__segment {
-    margin-bottom: 16px;
+    margin-bottom: 30px;
   }
   &__title {
     margin: 0;
     padding: 0;
-    white-space: normal;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .single-client__head {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .single-client__segment.ant-segmented {
-    width: 100%;
-  }
-
-  .single-client__segment .ant-segmented-group {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .single-client__segment .ant-segmented-item {
-    width: 100%;
-  }
-
-  .single-client__segment .ant-segmented-item-label {
-    white-space: normal;
-    text-align: center;
-  }
-
-  .single-client__segment.ant-segmented .ant-segmented-thumb {
-    display: none !important;
-  }
-
-  .single-client__segment.ant-segmented .ant-segmented-item:has(input:checked) {
-    background: #3823d7 !important;
-  }
-
-  .single-client__segment.ant-segmented .ant-segmented-item:has(input:checked) .ant-segmented-item-label {
-    color: #fff !important;
-  }
-
-  .single-client__title {
-    margin-right: 0;
-  }
-
-  .single-client-page .deed {
-    overflow: visible;
-    flex: none;
-    height: auto;
+    margin-right: 200px;
   }
 }

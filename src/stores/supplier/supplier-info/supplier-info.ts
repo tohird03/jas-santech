@@ -1,7 +1,8 @@
 import {makeAutoObservable} from 'mobx';
-import {supplierInfoApi} from '@/api/supplier/supplier';
-import {IGetSupplierInfoParams, ISupplierDebtFilter, ISupplierInfo} from '@/api/supplier/types';
+import {IClientDebtFilter} from '@/api/clients';
 import {addNotification} from '@/utils';
+import { supplierInfoApi } from '@/api/supplier/supplier';
+import { IGetSupplierInfoParams, ISupplierDebtFilter, ISupplierInfo } from '@/api/supplier/types';
 
 class SupplierInfoStore {
   pageNumber = 1;

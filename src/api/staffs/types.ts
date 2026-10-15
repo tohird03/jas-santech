@@ -52,7 +52,6 @@ export enum EPageAccess {
   REMINDER = 'reminder',
 }
 
-
 export interface IStaffPer {
   id: string;
   name: string;

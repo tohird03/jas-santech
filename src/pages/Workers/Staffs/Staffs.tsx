@@ -5,7 +5,6 @@ import {useQuery} from '@tanstack/react-query';
 import {Button, Input, Typography} from 'antd';
 import classNames from 'classnames';
 import {DataTable} from '@/components/Datatable/datatable';
-import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
 import {staffsStore} from '@/stores/workers';
 import {getPaginationParams} from '@/utils/getPaginationParams';
 import {useMediaQuery} from '@/utils/mediaQuery';
@@ -15,37 +14,8 @@ import styles from './staffs.scss';
 
 const cn = classNames.bind(styles);
 
-const columnKeys = ['index', 'name', 'phone', 'active', 'actions'];
-const columnTitles = [
-  {key: 'index', title: '#'},
-  {key: 'name', title: 'Xodim'},
-  {key: 'phone', title: 'Telefon raqami'},
-  {key: 'active', title: 'Faolligi'},
-  {key: 'actions', title: 'Amallar'},
-];
-const defaultWidths = {
-  index: 64,
-  name: 520,
-  phone: 210,
-  active: 130,
-  actions: 120,
-};
-const minWidths = {
-  index: 56,
-  name: 160,
-  phone: 150,
-  active: 110,
-  actions: 112,
-};
-
 export const Staffs = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
-  const {boxRef, apply, picker} = useResizableColumns({
-    keys: columnKeys,
-    defaults: defaultWidths,
-    mins: minWidths,
-    titles: columnTitles,
-  });
 
   const {data: staffsData, isLoading: loading} = useQuery({
     queryKey: [
@@ -79,10 +49,8 @@ export const Staffs = observer(() => {
     staffsStore.reset();
   }, []);
 
-  const columns = apply(staffsColumns);
-
   return (
-    <main ref={boxRef} className="staffs-page">
+    <main>
       <div className={cn('staffs__head')}>
         <Typography.Title level={3}>Xodimlar</Typography.Title>
         <div className={cn('staffs__filter')}>
@@ -92,25 +60,21 @@ export const Staffs = observer(() => {
             onChange={handleSearch}
             className={cn('staffs__search')}
           />
-          {picker}
           <Button
             onClick={handleAddNewStaff}
             type="primary"
             icon={<PlusCircleOutlined />}
           >
-            Xodim qo&apos;shish
+            Xodim qoshish
           </Button>
         </div>
       </div>
 
       <DataTable
-        className={resizableTableProps.className}
-        columns={columns}
+        columns={staffsColumns}
         data={staffsData?.data?.data || []}
         loading={loading}
         isMobile={isMobile}
-        tableLayout={resizableTableProps.tableLayout}
-        components={resizableTableProps.components}
         pagination={{
           total: staffsData?.data?.totalCount,
           current: staffsStore?.pageNumber,

@@ -1,61 +1,27 @@
-import React, {useEffect, useState} from 'react';
-import {observer} from 'mobx-react';
-import {DownloadOutlined, PlusCircleOutlined} from '@ant-design/icons';
-import {useQuery} from '@tanstack/react-query';
-import {Button, Input, InputNumber, Select, Tooltip, Typography} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react';
+import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import { Button, Input, InputNumber, Select, Tooltip, Typography } from 'antd';
 import classNames from 'classnames';
-import {supplierInfoApi} from '@/api/supplier/supplier';
-import {ISupplierDebtFilter, ISupplierInfo} from '@/api/supplier/types';
-import {DataTable} from '@/components/Datatable/datatable';
-import {resizableTableProps, useResizableColumns} from '@/components/Datatable/use-resizable-columns';
-import {supplierInfoStore} from '@/stores/supplier';
-import {addNotification} from '@/utils';
-import {getPaginationParams} from '@/utils/getPaginationParams';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {AddEditSupplierModal} from './AddEditModal';
-import {supplierColumns, supplierDebtFilter} from './constants';
+import { DataTable } from '@/components/Datatable/datatable';
+import { getPaginationParams } from '@/utils/getPaginationParams';
+import { useMediaQuery } from '@/utils/mediaQuery';
+import { AddEditSupplierModal } from './AddEditModal';
 import styles from './supplier-info.scss';
+import { supplierColumns, supplierDebtFilter } from './constants';
+import { supplierInfoStore } from '@/stores/supplier';
+import { ISupplierDebtFilter, ISupplierInfo } from '@/api/supplier/types';
+import { supplierInfoApi } from '@/api/supplier/supplier';
+import { addNotification } from '@/utils';
 
 const cn = classNames.bind(styles);
-
-const supplierColumnKeys = ['index', 'name', 'phone', 'debt', 'lastSale', 'action'];
-const supplierColumnTitles = [
-  {key: 'index', title: '#'},
-  {key: 'name', title: 'Yetkazib beruvchi'},
-  {key: 'phone', title: 'Telefon raqami'},
-  {key: 'debt', title: 'Yetkazib beruvchiga qarz'},
-  {key: 'lastSale', title: 'Oxirgi xarid'},
-  {key: 'action', title: 'Amallar'},
-];
-const supplierDefaultWidths = {
-  index: 64,
-  name: 360,
-  phone: 180,
-  debt: 280,
-  lastSale: 180,
-  action: 120,
-};
-const supplierMinWidths = {
-  index: 56,
-  name: 160,
-  phone: 140,
-  debt: 160,
-  lastSale: 140,
-  action: 112,
-};
 
 export const SupplierInfo = observer(() => {
   const isMobile = useMediaQuery('(max-width: 800px)');
   const [downloadLoading, setDownLoadLoading] = useState(false);
-  const {boxRef, apply, picker} = useResizableColumns({
-    keys: supplierColumnKeys,
-    defaults: supplierDefaultWidths,
-    mins: supplierMinWidths,
-    titles: supplierColumnTitles,
-  });
-  const columns = apply(supplierColumns);
 
-  const {data: supplierData, isLoading: loading} = useQuery({
+  const { data: supplierData, isLoading: loading } = useQuery({
     queryKey: [
       'getSuppliers',
       supplierInfoStore.pageNumber,
@@ -129,7 +95,7 @@ export const SupplierInfo = observer(() => {
   }, []);
 
   return (
-    <main ref={boxRef} className="supplier-info-page">
+    <main>
       <div className={cn('supplier-info__head')}>
         <Typography.Title level={3}>Yetkazib beruvchilar ro&apos;yxati</Typography.Title>
         <div className={cn('supplier-info__filter')}>
@@ -139,40 +105,21 @@ export const SupplierInfo = observer(() => {
             onChange={handleSearch}
             className={cn('supplier-info__search')}
           />
-          {isMobile ? (
-            <>
-              <InputNumber
-                className={cn('supplier-info__debt')}
-                placeholder="Qarz miqdorini kiriting"
-                onChange={handleDebtValueChange}
-                defaultValue={0}
-              />
+          <InputNumber
+            placeholder="Qarz miqdorini kiriting"
+            onChange={handleDebtValueChange}
+            style={{ width: '350px' }}
+            defaultValue={0}
+            addonAfter={
               <Select
-                className={cn('supplier-info__debt-type')}
                 options={supplierDebtFilter}
                 onChange={handleDebtFilterChange}
+                style={{ width: '200px' }}
                 placeholder="Hammasi"
                 value={supplierInfoStore.debtType}
               />
-            </>
-          ) : (
-            <InputNumber
-              placeholder="Qarz miqdorini kiriting"
-              onChange={handleDebtValueChange}
-              style={{width: 460}}
-              defaultValue={0}
-              addonAfter={
-                <Select
-                  options={supplierDebtFilter}
-                  onChange={handleDebtFilterChange}
-                  style={{width: '240px'}}
-                  placeholder="Hammasi"
-                  value={supplierInfoStore.debtType}
-                />
-              }
-            />
-          )}
-          {picker}
+            }
+          />
           <Tooltip placement="top" title="Excelda yuklash">
             <Button
               onClick={handleDownloadExcel}
@@ -180,7 +127,7 @@ export const SupplierInfo = observer(() => {
               icon={<DownloadOutlined />}
               loading={downloadLoading}
             >
-              Excelga yuklash
+              Exelda Yuklash
             </Button>
           </Tooltip>
           <Button
@@ -194,10 +141,7 @@ export const SupplierInfo = observer(() => {
       </div>
 
       <DataTable
-        className={isMobile ? 'supplier-info__cards' : resizableTableProps.className}
-        columns={columns}
-        tableLayout={resizableTableProps.tableLayout}
-        components={resizableTableProps.components}
+        columns={supplierColumns}
         data={supplierData?.data?.data || []}
         loading={loading}
         isMobile={isMobile}

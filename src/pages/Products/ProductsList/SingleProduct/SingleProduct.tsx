@@ -1,88 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {observer} from 'mobx-react';
-import {DatePicker, DatePickerProps, Table, Typography} from 'antd';
-import {ColumnsType} from 'antd/es/table';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react';
+import { useParams } from 'react-router-dom';
+import { incomeProductsStore, ordersStore, productsListStore, returnedOrdersStore } from '@/stores/products';
+import { DatePicker, DatePickerProps, Table, Typography } from 'antd';
+import { singleProductColumns } from './constants';
 import classNames from 'classnames/bind';
+import { styles } from './single-product.scss';
 import dayjs from 'dayjs';
-import {ISingleProductStory} from '@/api/product/types';
-import {DataTable} from '@/components/Datatable/datatable';
-import {currencyTagUi} from '@/constants/payment';
-import {incomeProductsStore, ordersStore, productsListStore, returnedOrdersStore} from '@/stores/products';
-import {getFullDateFormat} from '@/utils/getDateFormat';
-import {useMediaQuery} from '@/utils/mediaQuery';
-import {AddEditIncomeOrderModal} from '../../IncomeProducts/AddEditModal';
-import {AddEditModal} from '../../OrdersList/AddEditModal';
-import {AddEditReturnedOrderModal} from '../../ReturnedOrders/AddEditModal';
-import {singleProductColumns} from './constants';
-import {ProductStoryClientName} from './ProductStoryName/ProductStoryName';
-import styles from './single-product.scss';
+import { AddEditModal } from '../../OrdersList/AddEditModal';
+import { AddEditReturnedOrderModal } from '../../ReturnedOrders/AddEditModal';
+import { AddEditIncomeOrderModal } from '../../IncomeProducts/AddEditModal';
 
 const cn = classNames.bind(styles);
 
-const storyTypeLabel: Record<ISingleProductStory['type'], string> = {
-  selling: 'Sotuv',
-  arrival: 'Tushum',
-  returning: 'Qaytgan',
-};
-
-const storyPrice = (record: ISingleProductStory) => {
-  const kind = record?.type === 'arrival' ? 'cost' : 'selling';
-  const price = record?.prices?.find((item) => item.type === kind);
-
-  if (!price) {
-    return null;
-  }
-
-  return (
-    <span>
-      {price.price?.toLocaleString()}
-      {' '}
-      {currencyTagUi(price?.currency?.symbol)}
-    </span>
-  );
-};
-
-const mobileColumns: ColumnsType<ISingleProductStory> = [
-  {
-    key: 'type',
-    dataIndex: 'type',
-    title: 'Turi',
-    render: (value, record) => storyTypeLabel[record?.type],
-  },
-  {
-    key: 'name',
-    dataIndex: 'name',
-    title: 'Nomi',
-    render: (value, record) => (
-      <ProductStoryClientName client={record} type={record?.type} />
-    ),
-  },
-  {
-    key: 'count',
-    dataIndex: 'count',
-    title: 'Soni',
-    render: (value, record) => record?.count,
-  },
-  {
-    key: 'price',
-    dataIndex: 'price',
-    title: 'Narx',
-    render: (value, record) => storyPrice(record),
-  },
-  {
-    key: 'createdAt',
-    dataIndex: 'createdAt',
-    title: 'Vaqti',
-    render: (value, record) => getFullDateFormat(record?.createdAt),
-  },
-];
-
 export const SingleProduct = observer(() => {
-  const {productId} = useParams();
-  const isMobile = useMediaQuery('(max-width: 800px)');
+  const { productId } = useParams();
   const [loading, setLoading] = useState(false);
-  const storyCount = productsListStore?.singleProductStoryCount;
 
   const handleStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
     if (!dateString) {
@@ -124,17 +57,23 @@ export const SingleProduct = observer(() => {
   }, [productId, productsListStore.startDate, productsListStore.endDate]);
 
   return (
-    <main className="single-product-page">
-      <div className={cn('single-product__head')}>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <Typography.Title className={cn('single-product__name')} level={3}>
-            {storyCount?.name}
+          <Typography.Title
+            className={cn('single-product__name')}
+            level={3}
+          >
+            {productsListStore?.singleProductStoryCount?.name}
           </Typography.Title>
-          <Typography.Title className={cn('single-product__name')} level={4}>
-            Qoldig&apos;i: {storyCount?.count}
+          <Typography.Title
+            className={cn('single-product__name')}
+            level={4}
+          >
+            Qoldig&apos;i: {productsListStore?.singleProductStoryCount?.count}
           </Typography.Title>
         </div>
-        <div className={cn('single-product__filter')}>
+        <div>
           <DatePicker
             className={cn('promotion__datePicker')}
             onChange={handleStartDateChange}
@@ -152,83 +91,67 @@ export const SingleProduct = observer(() => {
         </div>
       </div>
 
-      {isMobile ? (
-        <>
-          <div className={cn('single-product__total')}>
-            <div className={cn('total__order')}>
-              <span>Jami sotuv</span>
-              <b>{storyCount?.totalSellingCount}</b>
-            </div>
-            <div className={cn('total__arrival')}>
-              <span>Jami tushum</span>
-              <b>{storyCount?.totalArrivalCount}</b>
-            </div>
-            <div className={cn('total__returning')}>
-              <span>Jami qaytgan</span>
-              <b>{storyCount?.totalReturningCount}</b>
-            </div>
-            <div className={cn('total')}>
-              <span>Umumiy qoldiq</span>
-              <b>{storyCount?.actualCount}</b>
-            </div>
-          </div>
-          <DataTable
-            className="product-story-cards"
-            isMobile
-            columns={mobileColumns}
-            data={productsListStore?.singleProductStory || []}
-            loading={loading}
-            pagination={false}
-            rowClassName={(record: ISingleProductStory) => `product-story-card--${record?.type}`}
-          />
-        </>
-      ) : (
-        <Table
-          columns={singleProductColumns}
-          dataSource={productsListStore?.singleProductStory || []}
-          bordered
-          summary={() => (
-            <>
-              <Table.Summary.Row>
-                <Table.Summary.Cell colSpan={1} index={0}>
-                  Jami
-                </Table.Summary.Cell>
-                <Table.Summary.Cell colSpan={4} index={1} className={cn('total__order')}>
-                  <div style={{textAlign: 'center', fontWeight: 'bold'}}>
-                    {storyCount?.totalSellingCount}
-                  </div>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={2} colSpan={4} className={cn('total__arrival')}>
-                  <div style={{textAlign: 'center', fontWeight: 'bold'}}>
-                    {storyCount?.totalArrivalCount}
-                  </div>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={3} colSpan={4} className={cn('total__returning')}>
-                  <div style={{textAlign: 'center', fontWeight: 'bold'}}>
-                    {storyCount?.totalReturningCount}
-                  </div>
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-              <Table.Summary.Row>
-                <Table.Summary.Cell colSpan={1} index={0}>
-                  Umumiy qoldiq
-                </Table.Summary.Cell>
-                <Table.Summary.Cell colSpan={12} index={2} className={cn('total')}>
-                  <div style={{textAlign: 'center', fontWeight: 'bold'}}>
-                    {storyCount?.actualCount}
-                  </div>
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            </>
-          )}
-          pagination={false}
-          loading={loading}
-        />
-      )}
+      <Table
+        columns={singleProductColumns}
+        dataSource={productsListStore?.singleProductStory || []}
+        bordered
+        summary={(pageData) => (
+          <>
+            <Table.Summary.Row>
+              <Table.Summary.Cell colSpan={1} index={0}>
+                Jami
+              </Table.Summary.Cell>
+              <Table.Summary.Cell
+                colSpan={4}
+                index={1}
+                className={cn('total__order')}
+              >
+                <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                  {productsListStore?.singleProductStoryCount?.totalSellingCount}
+                </div>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell
+                index={2}
+                colSpan={4}
+                className={cn('total__arrival')}
+              >
+                <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                  {productsListStore?.singleProductStoryCount?.totalArrivalCount}
+                </div>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell
+                index={3}
+                colSpan={4}
+                className={cn('total__returning')}
+              >
+                <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                  {productsListStore?.singleProductStoryCount?.totalReturningCount}
+                </div>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+            <Table.Summary.Row>
+              <Table.Summary.Cell colSpan={1} index={0}>
+                Umumiy qoldiq
+              </Table.Summary.Cell>
+              <Table.Summary.Cell
+                colSpan={12}
+                index={2}
+                className={cn('total')}
+              >
+                <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                  {productsListStore?.singleProductStoryCount?.actualCount}
+                </div>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          </>
+        )}
+        pagination={false}
+        loading={loading}
+      />
 
-      {ordersStore.isOpenAddEditNewOrderModal && <AddEditModal />}
-      {returnedOrdersStore.isOpenAddEditReturnedOrderModal && <AddEditReturnedOrderModal />}
-      {incomeProductsStore.isOpenAddEditIncomeProductsModal && <AddEditIncomeOrderModal />}
-    </main>
+      { ordersStore.isOpenAddEditNewOrderModal && <AddEditModal />}
+      { returnedOrdersStore.isOpenAddEditReturnedOrderModal && <AddEditReturnedOrderModal />}
+      { incomeProductsStore.isOpenAddEditIncomeProductsModal && <AddEditIncomeOrderModal />}
+    </div>
   );
 });

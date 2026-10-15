@@ -1,5 +1,6 @@
 import React from 'react';
-import {PaymentTypes} from './types';
+import { Tag } from 'antd';
+import { PaymentTypes } from './types';
 
 export const orderPaymentType: Record<PaymentTypes, string> = {
   [PaymentTypes.CASH]: 'Naqd',
@@ -56,12 +57,6 @@ const currencyColors = {
   USD: '#16A34A',
   UZS: '#2563EB',
 };
-
-export const CurrencyAmountZero = () => (
-  <span className="currency-row">
-    <span className="currency-item currency-item--zero">0</span>
-  </span>
-);
 
 export const currencyTagUi = (currencySymb: 'UZS' | 'USD', fontSizes = '12px') => (
   <p
