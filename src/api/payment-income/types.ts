@@ -8,6 +8,8 @@ export interface ISupplierPayments extends IPaymentType {
   createdAt: string,
   order: IOrder,
   supplier: ISupplierInfo,
+  paymentMethods?: IPaymentMethods[];
+  changeMethods?: IPaymentMethods[];
   totalsByCurrency: {
     total: number;
     currency: ICurrency;

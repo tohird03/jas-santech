@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, Form, Input, InputNumber, Modal, Select, Spin, message, notification } from 'antd';
 import { observer } from 'mobx-react';
 import { priceFormat } from '@/utils/priceFormat';
@@ -9,11 +9,14 @@ import { authStore } from '@/stores/auth';
 import { PaymentTypeOptions, currencyTagUi } from '@/constants/payment';
 import { PaymentTypes } from '@/constants/types';
 import { calculateSettlement } from '../utils';
-import { supplierInfoStore, supplierPaymentsStore } from '@/stores/supplier';
+import { singleSupplierStore, supplierInfoStore, supplierPaymentsStore } from '@/stores/supplier';
 import { ISupplierInfo } from '@/api/supplier/types';
-import { IAddEditPaymentForm, IAddEditPaymentParams } from '@/api/payment-income/types';
+import { IAddEditPaymentForm, IAddEditPaymentParams, IPaymentMethods } from '@/api/payment-income/types';
 import { incomePaymentApi } from '@/api/payment-income';
 import { addNotification } from '@/utils';
+
+const methodSymbol = (method: IPaymentMethods & { currency?: { symbol?: string } }) =>
+  method.currency?.symbol;
 
 export const AddEditModal = observer(() => {
   const [form] = Form.useForm();
@@ -24,6 +27,7 @@ export const AddEditModal = observer(() => {
   const paymentsForm = Form.useWatch('payments', form) || [];
   const [searchSupplier, setSearchSupplier] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<ISupplierInfo | null>(null);
+  const keepSavedChange = useRef(false);
 
   const { data: clientsData, isLoading: loadingClients } = useQuery({
     queryKey: ['getClients', searchSupplier],
@@ -100,7 +104,7 @@ export const AddEditModal = observer(() => {
     }
 
     const addEditPaymentValues: IAddEditPaymentParams = {
-      supplierId: values?.supplierId,
+      supplierId: supplierId || values?.supplierId,
       paymentMethods: values?.payments,
       description: values?.description,
       changeMethods,
@@ -239,6 +243,8 @@ export const AddEditModal = observer(() => {
   const usdChange = Form.useWatch('usdChange', form) || 0;
 
   useEffect(() => {
+    if (keepSavedChange.current) return;
+
     form.setFieldsValue({
       uzsChange: settlement.change.uzs || 0,
       usdChange: settlement.change.usd || 0,
@@ -268,18 +274,80 @@ export const AddEditModal = observer(() => {
   };
 
   useEffect(() => {
+    if (keepSavedChange.current) return;
+
     form.setFieldsValue({
       uzsChange: settlement.change.uzs > 0 ? settlement.change.uzs : undefined,
       usdChange: settlement.change.usd > 0 ? settlement.change.usd : undefined,
     });
   }, [settlement]);
 
-  const clientsOptions = useMemo(() => (
-    clientsData?.data?.data.map((supplier) => ({
+  useEffect(() => {
+    const payment = supplierPaymentsStore.singlePayment;
+
+    if (!payment?.id) {
+      keepSavedChange.current = false;
+
+      if (supplierId && singleSupplierStore.activeSupplier?.id === supplierId) {
+        setSelectedClient(singleSupplierStore.activeSupplier);
+        form.setFieldsValue({ supplierId });
+      }
+
+      return;
+    }
+
+    const savedPayments = payment.paymentMethods ?? [];
+    const savedChanges = payment.changeMethods ?? [];
+    const amountOf = (type: string, symbol: 'UZS' | 'USD') =>
+      savedChanges
+        .filter((method) => method.type === type && methodSymbol(method) === symbol)
+        .reduce((sum, method) => sum + Number(method.amount || 0), 0);
+
+    if (payment.supplier) {
+      setSelectedClient(payment.supplier);
+    }
+
+    keepSavedChange.current = true;
+    form.setFieldsValue({
+      supplierId: payment.supplier?.id,
+      description: payment.description,
+      payments: savedPayments.length
+        ? savedPayments.map((method) => ({
+          type: method.type,
+          amount: Number(method.amount),
+          currencyId: method.currencyId,
+        }))
+        : [{
+          amount: 0,
+          type: PaymentTypes.CASH,
+          currencyId: authStore?.staffInfo?.currency?.id,
+        }],
+      uzsChange: amountOf('balance', 'UZS') || undefined,
+      usdChange: amountOf('balance', 'USD') || undefined,
+      uzsCash: amountOf('cash', 'UZS'),
+      usdCash: amountOf('cash', 'USD'),
+    });
+  }, [supplierPaymentsStore.singlePayment, supplierId, singleSupplierStore.activeSupplier, form]);
+
+  const clientsOptions = useMemo(() => {
+    const options = clientsData?.data?.data.map((supplier) => ({
       value: supplier?.id,
       label: `${supplier?.fullname}: +${supplier?.phone}`,
-    }))
-  ), [clientsData]);
+    })) ?? [];
+    const current = supplierPaymentsStore.singlePayment?.supplier
+      || (supplierId && singleSupplierStore.activeSupplier?.id === supplierId
+        ? singleSupplierStore.activeSupplier
+        : null);
+
+    if (current?.id && !options.some((option) => option.value === current.id)) {
+      options.unshift({
+        value: current.id,
+        label: `${current.fullname}: +${current.phone}`,
+      });
+    }
+
+    return options;
+  }, [clientsData, supplierPaymentsStore.singlePayment, supplierId, singleSupplierStore.activeSupplier]);
 
   const currencyManyData = useMemo(() => (
     currencyMany?.data.map((currency) => ({
@@ -346,6 +414,9 @@ export const AddEditModal = observer(() => {
         <Form
           form={form}
           onFinish={handleSubmitPayment}
+          onValuesChange={(changed) => {
+            if ('payments' in changed) keepSavedChange.current = false;
+          }}
           layout="vertical"
           autoComplete="off"
           className="order__payment-form"
@@ -365,7 +436,8 @@ export const AddEditModal = observer(() => {
             name="supplierId"
           >
             <Select
-              showSearch
+              showSearch={!supplierId}
+              disabled={Boolean(supplierId)}
               placeholder="Yetkazib beruvchi"
               loading={loadingClients}
               notFoundContent={loadingClients ? <Spin style={{ margin: '10px' }} /> : null}
@@ -380,7 +452,7 @@ export const AddEditModal = observer(() => {
                 }
               }}
               options={clientsOptions}
-              allowClear
+              allowClear={!supplierId}
             />
           </Form.Item>
           <Form.List name="payments">
@@ -415,7 +487,6 @@ export const AddEditModal = observer(() => {
                     </Form.Item>
                     <Form.Item
                       name={[name, 'currencyId']}
-                      initialValue={authStore?.staffInfo?.currency?.id}
                       rules={[{ required: true, message: 'Valyuta tanlang' }]}
                       style={{ width: '25%' }}
                     >

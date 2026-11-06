@@ -1,6 +1,61 @@
 import { ICurrency } from '@/api/auth/types';
 import { IIncomeOrder } from '@/api/income-products/types';
 
+export interface IIncomePageMoney {
+  currencyId: string;
+  total: number;
+  currency?: { id?: string, symbol?: string };
+}
+
+export interface IIncomePageCalc {
+  totalPrices: IIncomePageMoney[];
+  totalPayments: IIncomePageMoney[];
+  totalDebts: IIncomePageMoney[];
+}
+
+type MoneyLike = {
+  currencyId?: string;
+  total?: number;
+  amount?: number;
+  currency?: { id?: string, symbol?: string };
+};
+
+const addMoney = (map: Map<string, IIncomePageMoney>, rows: MoneyLike[] | undefined, field: 'total' | 'amount') => {
+  for (const row of rows || []) {
+    const id = row.currency?.id || row.currencyId;
+
+    if (!id) continue;
+
+    const add = Number(field === 'total' ? row.total : row.amount) || 0;
+    const prev = map.get(id);
+
+    if (prev) {
+      prev.total += add;
+    } else {
+      map.set(id, { currencyId: id, total: add, currency: row.currency });
+    }
+  }
+};
+
+/** Joriy sahifadagi tushumlar: tannarx, to‘lov va qarz, valyuta bo‘yicha. */
+export const sumIncomePageCalc = (orders: IIncomeOrder[]): IIncomePageCalc => {
+  const prices = new Map<string, IIncomePageMoney>();
+  const payments = new Map<string, IIncomePageMoney>();
+  const debts = new Map<string, IIncomePageMoney>();
+
+  for (const order of orders) {
+    addMoney(prices, order.totalPrices?.cost, 'total');
+    addMoney(payments, order.totalPayments, 'total');
+    addMoney(debts, order.debtByCurrency, 'amount');
+  }
+
+  return {
+    totalPrices: [...prices.values()],
+    totalPayments: [...payments.values()],
+    totalDebts: [...debts.values()],
+  };
+};
+
 export function calculateSettlement(
   order: IIncomeOrder,
   payments: { currencyId: string, amount: number }[],

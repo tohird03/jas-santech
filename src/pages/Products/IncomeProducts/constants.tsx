@@ -1,7 +1,8 @@
 import React from 'react';
 import { ColumnType } from 'antd/es/table';
 import { Action } from './Action';
-import { IIncomeOrder, IIncomeProduct, ITotalIncomeOrderPaymentCalc } from '@/api/income-products/types';
+import { IIncomeOrder, IIncomeProduct } from '@/api/income-products/types';
+import { IIncomePageCalc } from './utils';
 import { priceFormat } from '@/utils/priceFormat';
 import { SupplierNameLink } from '@/pages/ActionComponents/SupplierNameLink';
 import { PaymentStatus } from './PaymentStatus';
@@ -327,14 +328,35 @@ export const ordersInfoProductsColumns: ColumnType<IIncomeProduct>[] = [
   },
 ];
 
-export const incomeOrdersTotalCalc: ColumnType<ITotalIncomeOrderPaymentCalc>[] = [
+const renderMoneyRows = (rows?: IIncomePageCalc['totalPrices']) => {
+  if (!rows || rows.length === 0) {
+    return <div>0</div>;
+  }
+
+  return (
+    <div style={{ textAlign: 'end' }}>
+      {rows.map((price) => {
+        const symbol = price.currency?.symbol;
+
+        return (
+          <div key={price.currencyId}>
+            {priceFormat(price.total)}
+            {(symbol === 'UZS' || symbol === 'USD') && currencyTagUi(symbol)}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export const incomeOrdersTotalCalc: ColumnType<IIncomePageCalc>[] = [
   {
-    key: 'totalCost',
-    dataIndex: 'totalCost',
+    key: 'totalPrice',
+    dataIndex: 'totalPrice',
     title: 'Jami narxi',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalCost),
+    render: (value, record) => renderMoneyRows(record?.totalPrices),
   },
   {
     key: 'totalPay',
@@ -342,39 +364,7 @@ export const incomeOrdersTotalCalc: ColumnType<ITotalIncomeOrderPaymentCalc>[] =
     title: 'Jami to\'lov',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalPayment),
-  },
-  {
-    key: 'cash',
-    dataIndex: 'cash',
-    title: 'Jami - Naqd to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCashPayment),
-  },
-  {
-    key: 'card',
-    dataIndex: 'card',
-    title: 'Jami - Bank kartasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalCardPayment),
-  },
-  {
-    key: 'transfer',
-    dataIndex: 'transfer',
-    title: 'Jami - Bank o\'tkazmasi orqali to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalTransferPayment),
-  },
-  {
-    key: 'other',
-    dataIndex: 'other',
-    title: 'Jami - Boshqa usullar bilan to\'lov',
-    align: 'center',
-    width: '150px',
-    render: (value, record) => priceFormat(record?.totalOtherPayment),
+    render: (value, record) => renderMoneyRows(record?.totalPayments),
   },
   {
     key: 'debt',
@@ -382,6 +372,6 @@ export const incomeOrdersTotalCalc: ColumnType<ITotalIncomeOrderPaymentCalc>[] =
     title: 'Jami - Qarzga',
     align: 'center',
     width: '150px',
-    render: (value, record) => priceFormat(record?.totalDebt),
+    render: (value, record) => renderMoneyRows(record?.totalDebts),
   },
 ];

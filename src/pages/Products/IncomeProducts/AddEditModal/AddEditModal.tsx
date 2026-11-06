@@ -194,7 +194,7 @@ export const AddEditIncomeOrderModal = observer(() => {
     }
 
     const createOrderData: IAddEditIncomeOrder = {
-      supplierId: values?.supplierId,
+      supplierId: supplierId || values?.supplierId,
       date: values?.date,
       description: values?.description,
       products: [addProducts],
@@ -673,7 +673,8 @@ export const AddEditIncomeOrderModal = observer(() => {
             style={{ flex: 1, width: '100%' }}
           >
             <Select
-              showSearch
+              showSearch={!supplierId}
+              disabled={Boolean(supplierId)}
               ref={clientRef}
               placeholder="Yetkazib beruvchi"
               loading={loadingClients}
@@ -681,7 +682,7 @@ export const AddEditIncomeOrderModal = observer(() => {
               filterOption={false}
               onSearch={handleSearchSupplier}
               onClear={handleClearClient}
-              allowClear
+              allowClear={!supplierId}
               onChange={(value) => {
                 const client = supplierData?.data?.data?.find((client) => client.id === value);
 
@@ -693,6 +694,14 @@ export const AddEditIncomeOrderModal = observer(() => {
               style={{ flex: 1, width: '100%' }}
 
             >
+              {supplierId && singleSupplierStore.activeSupplier?.id === supplierId &&
+                !supplierData?.data?.data?.some((supplier) => supplier.id === supplierId) && (
+                <Select.Option key={supplierId} value={supplierId}>
+                  <div style={{ fontWeight: 600 }}>
+                    {singleSupplierStore.activeSupplier.fullname}
+                  </div>
+                </Select.Option>
+              )}
               {supplierData?.data?.data.map((supplier) => (
                 <Select.Option key={supplier.id} value={supplier.id}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>

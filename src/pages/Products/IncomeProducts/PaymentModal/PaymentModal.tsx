@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, Form, Input, InputNumber, Modal, Select, message, notification } from 'antd';
 import { observer } from 'mobx-react';
 import { priceFormat } from '@/utils/priceFormat';
@@ -14,6 +14,10 @@ import { incomeProductsStore } from '@/stores/products';
 import { IIncomeOrderPayment, IIncomeOrderPaymentForm, IIncomeOrderPaymentParams } from '@/api/income-products/types';
 import { incomeProductsApi } from '@/api/income-products';
 import { addNotification } from '@/utils';
+import { IPaymentMethods } from '@/api/payment-income/types';
+
+const methodSymbol = (method: IPaymentMethods & { currency?: { symbol?: string } }) =>
+  method.currency?.symbol;
 
 export const PaymentModal = observer(() => {
   const [form] = Form.useForm();
@@ -22,6 +26,7 @@ export const PaymentModal = observer(() => {
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [prevCurrencies, setPrevCurrencies] = useState<Record<number, string>>({});
   const paymentsForm = Form.useWatch('payments', form) || [];
+  const keepSavedChange = useRef(false);
 
   const { data: currencyMany } = useQuery({
     queryKey: ['getCurrencyMany'],
@@ -211,6 +216,8 @@ export const PaymentModal = observer(() => {
   const usdChange = Form.useWatch('usdChange', form) || 0;
 
   useEffect(() => {
+    if (keepSavedChange.current) return;
+
     form.setFieldsValue({
       uzsChange: settlement.change.uzs || 0,
       usdChange: settlement.change.usd || 0,
@@ -242,6 +249,8 @@ export const PaymentModal = observer(() => {
   // Q
 
   useEffect(() => {
+    if (keepSavedChange.current) return;
+
     form.setFieldsValue({
       uzsChange: settlement.change.uzs > 0 ? settlement.change.uzs : undefined,
       usdChange: settlement.change.usd > 0 ? settlement.change.usd : undefined,
@@ -260,14 +269,38 @@ export const PaymentModal = observer(() => {
   const debts = incomeProductsStore?.incomeOrder?.supplier?.debtByCurrency ?? [];
 
   useEffect(() => {
+    const order = incomeProductsStore.incomeOrder;
+    const payment = order?.payment;
+    const supplier = incomeProductsStore.incomeOrderPayment?.supplier || order?.supplier;
+    const savedPayments = payment?.paymentMethods ?? [];
+    const savedChanges = payment?.changeMethods ?? [];
+    const amountOf = (type: string, symbol: 'UZS' | 'USD') =>
+      savedChanges
+        .filter((method) => method.type === type && methodSymbol(method) === symbol)
+        .reduce((sum, method) => sum + Number(method.amount || 0), 0);
+
+    if (!savedPayments.length) {
+      keepSavedChange.current = false;
+      form.setFieldsValue({ supplierId: supplier?.id });
+
+      return;
+    }
+
+    keepSavedChange.current = true;
     form.setFieldsValue({
-      payments: incomeProductsStore?.incomeOrder?.payment?.paymentMethods || [{
-        amount: 0,
-        type: PaymentTypes.CASH,
-        currencyId: authStore?.staffInfo?.currency?.id,
-      }],
+      supplierId: supplier?.id,
+      description: payment?.description,
+      payments: savedPayments.map((method) => ({
+        type: method.type,
+        amount: Number(method.amount),
+        currencyId: method.currencyId,
+      })),
+      uzsChange: amountOf('balance', 'UZS') || undefined,
+      usdChange: amountOf('balance', 'USD') || undefined,
+      uzsCash: amountOf('cash', 'UZS'),
+      usdCash: amountOf('cash', 'USD'),
     });
-  }, [incomeProductsStore.incomeOrder]);
+  }, [incomeProductsStore.incomeOrder, incomeProductsStore.incomeOrderPayment, form]);
 
   return (
     <Modal
@@ -323,6 +356,9 @@ export const PaymentModal = observer(() => {
         <Form
           form={form}
           onFinish={handleSubmitPayment}
+          onValuesChange={(changed) => {
+            if ('payments' in changed) keepSavedChange.current = false;
+          }}
           layout="vertical"
           autoComplete="off"
           className="order__payment-form"
@@ -337,14 +373,14 @@ export const PaymentModal = observer(() => {
           }}
         >
           <Form.Item
-            label="Mijoz"
+            label="Yetkazib beruvchi"
             rules={[{ required: true }]}
-            name="userId"
+            name="supplierId"
             initialValue={incomeProductsStore.incomeOrderPayment?.supplier?.id}
           >
             <Select
               showSearch
-              placeholder="Mijoz"
+              placeholder="Yetkazib beruvchi"
               optionFilterProp="children"
               options={[{
                 value: incomeProductsStore.incomeOrderPayment?.supplier?.id,
@@ -385,7 +421,6 @@ export const PaymentModal = observer(() => {
                     </Form.Item>
                     <Form.Item
                       name={[name, 'currencyId']}
-                      initialValue={authStore?.staffInfo?.currency?.id}
                       rules={[{ required: true, message: 'Valyuta tanlang' }]}
                       style={{ width: '25%' }}
                     >

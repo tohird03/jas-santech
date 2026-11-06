@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
@@ -20,6 +20,7 @@ import { incomeProductsApi } from '@/api/income-products';
 import { supplierInfoStore } from '@/stores/supplier';
 import { AddEditSupplierModal } from '@/pages/Supplier/SupplierInfo/AddEditModal';
 import { AddEditModal } from '../ProductsList/AddEditModal';
+import { sumIncomePageCalc } from './utils';
 
 const cn = classNames.bind(styles);
 
@@ -48,6 +49,11 @@ export const IncomeProducts = observer(() => {
         supplierId,
       }),
   });
+
+  const pageCalc = useMemo(
+    () => sumIncomePageCalc(incomeOrdersData?.data?.data || []),
+    [incomeOrdersData?.data?.data]
+  );
 
   const handleAddIncomeProduct = () => {
     incomeProductsStore.setIsOpenAddEditIncomeProductsModal(true);
@@ -169,12 +175,13 @@ export const IncomeProducts = observer(() => {
       <div>
         <DataTable
           columns={incomeOrdersTotalCalc}
-          data={[incomeOrdersData?.data?.calc || {}]}
+          data={[pageCalc]}
           isMobile
           loading={loading}
           cardStyle={{ width: '500px' }}
           className="total-calc"
           loadingLength={1}
+          rowKey="1"
         />
       </div>
 
