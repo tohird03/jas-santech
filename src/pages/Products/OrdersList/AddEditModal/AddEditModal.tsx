@@ -54,6 +54,7 @@ export const AddEditModal = observer(() => {
   const [selectedClient, setSelectedClient] = useState<IClientsInfo | null>(null);
   const [priceType, setPriceType] = useState<'cost' | 'wholesale' | 'selling'>('selling');
   const [selectedProduct, setSelectedProduct] = useState<IProducts | null>(null);
+  const [preferredCurrencyId, setPreferredCurrencyId] = useState<string | null>(null);
 
   // GET DATAS
   const { data: clientsData, isLoading: loadingClients } = useQuery({
@@ -269,9 +270,7 @@ export const AddEditModal = observer(() => {
     const findProduct = productsData?.data?.data?.find(product => product?.id === productId);
 
     if (findProduct) {
-      form.setFieldValue('price', findProduct.prices[priceType]?.price);
-      form.setFieldValue('currencyId', findProduct.prices[priceType]?.currency?.id);
-
+      applyProductPrice(findProduct, priceType);
       setSelectedProduct(findProduct);
     }
 
@@ -302,6 +301,7 @@ export const AddEditModal = observer(() => {
         setIsUpdatingProduct(null);
         setIsOpenProductSelect(false);
         setPriceType('selling');
+        setPreferredCurrencyId(null);
 
         // Agar aktiv mijoz bo'lsa, uni o'rnatish
         if (singleClientStore.activeClient?.id) {
@@ -717,14 +717,32 @@ export const AddEditModal = observer(() => {
     })) || []
   ), [currencyMany]);
 
+  const applyProductPrice = (product: IProducts, type: typeof priceType) => {
+    const productPrice = product?.prices?.[type];
+
+    if (!productPrice) return;
+
+    const fromId = productPrice.currency?.id;
+    const toId = preferredCurrencyId || fromId;
+
+    const from = currencyManyData.find(c => c.value === fromId);
+    const to = currencyManyData.find(c => c.value === toId);
+
+    let finalPrice = productPrice.price;
+
+    if (from && to && from.value !== to.value) {
+      finalPrice = Math.round(((productPrice.price * from.rate) / to.rate) * 1000) / 1000;
+    }
+
+    form.setFieldsValue({
+      price: finalPrice,
+      currencyId: toId,
+    });
+  };
+
   useEffect(() => {
     if (selectedProduct) {
-      const selectedPrice = selectedProduct?.prices?.[priceType];
-
-      form.setFieldsValue({
-        price: selectedPrice?.price,
-        currencyId: selectedPrice?.currency?.id,
-      });
+      applyProductPrice(selectedProduct, priceType);
     }
   }, [priceType, selectedProduct]);
 
@@ -833,6 +851,11 @@ export const AddEditModal = observer(() => {
         autoComplete="off"
         className="order__add-products-form"
         onKeyPress={handleKeyPress}
+        onValuesChange={(changed) => {
+          if (changed.currencyId) {
+            setPreferredCurrencyId(changed.currencyId);
+          }
+        }}
       >
         <div className={cn('form__row')} style={{ display: 'flex' }}>
           <Form.Item
@@ -1081,7 +1104,12 @@ export const AddEditModal = observer(() => {
         </div>
       </div>
 
-      <DeletedOrderProduct />
+      <div>
+        <p style={{fontSize: '24px', marginTop: '30px'}}>
+          O&rsquo;chirilgan mahsulotlar
+        </p>
+        <DeletedOrderProduct />
+      </div>
     </Modal>
   );
 });
