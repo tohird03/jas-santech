@@ -2,9 +2,8 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  flex: 1 1 auto;
-  height: auto;
-  max-height: none;
+  height: calc(100vh - 160px);
+  max-height: calc(100vh - 160px);
   min-height: 0;
   overflow: hidden;
 }
@@ -222,6 +221,7 @@
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 16px;
   display: flex;
   flex-direction: column;

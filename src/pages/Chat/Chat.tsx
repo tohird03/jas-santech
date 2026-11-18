@@ -1,6 +1,6 @@
 import './chat.scss';
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {observer} from 'mobx-react';
 import {ArrowLeftOutlined, CloseOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, PaperClipOutlined, SendOutlined} from '@ant-design/icons';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
@@ -145,6 +145,7 @@ export const ChatPage = observer(() => {
   const [sending, setSending] = useState(false);
   const [summaries, setSummaries] = useState<Record<string, ChatSummary | null>>({});
   const threadRef = useRef<HTMLDivElement>(null);
+  const pinToLatest = useRef(true);
   const fileRef = useRef<HTMLInputElement>(null);
   const debouncedSearch = useDebounce(search, 400);
   const token = authStore.token?.accessToken;
@@ -334,12 +335,25 @@ export const ChatPage = observer(() => {
     socketRef.current?.emit('join', {clientId: client.id});
   }, [client?.id]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    pinToLatest.current = true;
+  }, [client?.id]);
+
+  useLayoutEffect(() => {
     const node = threadRef.current;
 
-    if (node) {
-      node.scrollTop = node.scrollHeight;
-    }
+    if (!node) return undefined;
+
+    const pin = () => {
+      if (pinToLatest.current) node.scrollTop = node.scrollHeight;
+    };
+
+    pin();
+    const observer = new ResizeObserver(pin);
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
   }, [messages, client?.id]);
 
   useEffect(() => {
@@ -563,7 +577,15 @@ export const ChatPage = observer(() => {
                 {client.telegram && !client.telegram.isActive && <Tag>telegram yo&apos;q</Tag>}
                 {client.telegram?.isActive && <Tag color="green">telegram</Tag>}
               </div>
-              <div className="chat-page__thread" ref={threadRef}>
+              <div
+                className="chat-page__thread"
+                ref={threadRef}
+                onScroll={(event) => {
+                  const node = event.currentTarget;
+
+                  pinToLatest.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48;
+                }}
+              >
                 {messagesLoading && <Spin />}
                 {messagesError && (
                   <div className="chat-page__empty">
