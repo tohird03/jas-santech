@@ -12,7 +12,6 @@ export const DeletedOrderProduct = observer(() => {
   return (
     <Table
       rowKey="id"
-      style={{marginTop: '30px'}}
       columns={ordersInfoProductsColumns}
       dataSource={deletedProducts}
       pagination={false}
